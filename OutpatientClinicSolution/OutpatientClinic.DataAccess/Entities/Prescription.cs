@@ -1,12 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OutpatientClinic.DataAccess.Entities
+namespace OutpatientClinic.DataAccess.Entities;
+
+public partial class Prescription
 {
-    internal class Prescription
-    {
-    }
+    public int PrescriptionId { get; set; }
+
+    public int RecordId { get; set; }
+
+    public string MedicalName { get; set; } = null!;
+
+    public string Dosage { get; set; } = null!;
+
+    public string? Instructions { get; set; }
+
+    public string? CreatedBy { get; set; }
+
+    public DateTime? CreatedDate { get; set; }
+
+    public string? UpdatedBy { get; set; }
+
+    public DateTime? UpdatedDate { get; set; }
+
+    public bool? IsDeleted { get; set; }
+
+    public virtual MedicalRecord Record { get; set; } = null!;
 }

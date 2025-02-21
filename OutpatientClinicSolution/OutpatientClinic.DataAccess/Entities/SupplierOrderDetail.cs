@@ -3,19 +3,17 @@ using System.Collections.Generic;
 
 namespace OutpatientClinic.DataAccess.Entities;
 
-public partial class DeliveryNote
+public partial class SupplierOrderDetail
 {
-    public int DeliveryNoteId { get; set; }
+    public int OrderDetailId { get; set; }
 
     public int? OrderId { get; set; }
 
-    public int? FacilityId { get; set; }
+    public int? ItemId { get; set; }
 
-    public DateOnly DeliveryDate { get; set; }
+    public int Quantity { get; set; }
 
-    public string? ReceivedBy { get; set; }
-
-    public string? Notes { get; set; }
+    public decimal UnitPrice { get; set; }
 
     public string? CreatedBy { get; set; }
 
@@ -27,9 +25,7 @@ public partial class DeliveryNote
 
     public bool? IsDeleted { get; set; }
 
-    public virtual ICollection<DeliveryNoteDetail> DeliveryNoteDetails { get; set; } = new List<DeliveryNoteDetail>();
-
-    public virtual Facility? Facility { get; set; }
+    public virtual Inventory? Item { get; set; }
 
     public virtual SupplierOrder? Order { get; set; }
 }

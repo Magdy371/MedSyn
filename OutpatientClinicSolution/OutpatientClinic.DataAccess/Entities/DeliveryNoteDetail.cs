@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace OutpatientClinic.DataAccess.Entities;
 
-public partial class Staff
+public partial class DeliveryNoteDetail
 {
-    public int StaffId { get; set; }
+    public int DeliveryDetailId { get; set; }
 
-    public string FirstName { get; set; } = null!;
+    public int? DeliveryNoteId { get; set; }
 
-    public string LastName { get; set; } = null!;
+    public int? ItemId { get; set; }
 
-    public int? ContactId { get; set; }
+    public int QuantityDelivered { get; set; }
 
     public string? CreatedBy { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Staff
 
     public bool? IsDeleted { get; set; }
 
-    public virtual ContactInfo? Contact { get; set; }
+    public virtual DeliveryNote? DeliveryNote { get; set; }
 
-    public virtual Doctor? Doctor { get; set; }
+    public virtual Inventory? Item { get; set; }
 }

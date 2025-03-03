@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\**" />
+    <Compile Remove="UnitOfWork\**" />
+    <EmbeddedResource Remove="Repositories\**" />
+    <EmbeddedResource Remove="UnitOfWork\**" />
+    <None Remove="Repositories\**" />
+    <None Remove="UnitOfWork\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Configurations\" />
   </ItemGroup>
 

@@ -6,8 +6,10 @@ namespace OutpatientClinic.Core.Repositories.Implementations
 {
     public class Repository<T> : IRepository<T> where T : class
     {
+        //Injections
         protected readonly DbContext _context;
         protected readonly DbSet<T> _dbSet;
+
 
         public Repository(DbContext context)
         {

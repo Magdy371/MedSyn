@@ -1,12 +1,79 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using OutpatientClinic.Core.Repositories.Implementations;
+using OutpatientClinic.Core.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace OutpatientClinic.DataAccess.UnitOfWork
+namespace OutpatientClinic.Core.UnitOfWork
 {
-    internal class UnitOfWork
+    /// <summary>
+    /// Represents the Unit of Work pattern for managing repositories and transactions.
+    /// </summary>
+    public class UnitOfWork : IUnitOfWork
     {
+        private readonly DbContext _context;
+        private readonly Dictionary<Type, object> _repositories;
+        private bool _disposed = false;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
+        public UnitOfWork(DbContext context)
+        {
+            _context = context;
+            _repositories = new Dictionary<Type, object>();
+        }
+
+        /// <summary>
+        /// Gets the repository for the specified entity type.
+        /// </summary>
+        /// <typeparam name="T">The type of the entity.</typeparam>
+        /// <returns>The repository for the specified entity type.</returns>
+        public IRepository<T> Repository<T>() where T : class
+        {
+            var type = typeof(T);
+            if (_repositories.ContainsKey(type))
+            {
+                return (IRepository<T>)_repositories[type];
+            }
+
+            var repositoryInstance = new Repository<T>(_context);
+            _repositories.Add(type, repositoryInstance);
+            return repositoryInstance;
+        }
+
+        /// <summary>
+        /// Saves all changes made in this context to the database.
+        /// </summary>
+        /// <returns>The number of state entries written to the database.</returns>
+        public async Task<int> CompleteAsync() =>
+            await _context.SaveChangesAsync();
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="UnitOfWork"/> and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+                _disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Releases all resources used by the <see cref="UnitOfWork"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OutpatientClinic.Core.UnitOfWork
+namespace OutpatientClinic.Core.UnitOfWorks
 {
     /// <summary>
     /// Represents the Unit of Work pattern for managing repositories and transactions.

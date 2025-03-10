@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutpatientClinic.Core.UnitOfWork
+namespace OutpatientClinic.Core.UnitOfWorks
 {
-    internal interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IDisposable
     {
         IRepository<T> Repository<T>() where T : class;
         Task<int> CompleteAsync();

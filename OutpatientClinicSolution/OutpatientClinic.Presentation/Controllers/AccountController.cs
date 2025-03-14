@@ -27,6 +27,7 @@ namespace OutpatientClinic.Presentation.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            [HttpGet]
             public IActionResult ForgotPassword()
             {
                 // Placeholder for forgot password logic
@@ -37,6 +38,17 @@ namespace OutpatientClinic.Presentation.Controllers
             {
                 // Placeholder for register logic
                 return View();
+            }
+            [HttpPost]
+            public IActionResult Register(SignUpViewModel model)
+            {
+                if (ModelState.IsValid)
+                {
+                    // TODO: Implement user registration logic
+                    return RedirectToAction("Login");
+                }
+
+                return View(model);
             }
     }
 }

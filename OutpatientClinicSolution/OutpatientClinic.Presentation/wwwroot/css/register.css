@@ -1,0 +1,37 @@
+﻿body {
+    background-color: #f8f9fa;
+}
+
+.signup-container {
+    display: flex;
+    max-width: 100%;
+    /*max-width: 900px;*/
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.left-section {
+    flex: 1;
+    background-color: #f0f4ff;
+    text-align: center;
+    padding: 20px;
+}
+
+    .left-section .logo {
+        width: 120px;
+        margin-bottom: 20px;
+    }
+
+    .left-section .hero-img {
+        width: 100%;
+    }
+
+.right-section {
+    flex: 1;
+    padding: 40px;
+}
+
+.btn-light {
+    margin: 5px;
+}

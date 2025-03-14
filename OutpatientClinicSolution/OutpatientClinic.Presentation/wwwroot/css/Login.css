@@ -1,0 +1,175 @@
+﻿/* Overall page container */
+.login-page-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100vh; /* Full viewport height for a sleek layout */
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Left side: Illustration */
+.login-illustration {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 10px 0 0 10px;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+    .login-illustration img {
+        max-width: 100%;
+        height: auto;
+    }
+
+/* Right side: Form area */
+.login-form-container {
+    flex: 1;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem;
+    box-sizing: border-box;
+}
+
+/* Welcome text */
+.welcome-text {
+    margin-bottom: 2rem;
+}
+
+    .welcome-text .brand {
+        color: #007bff;
+        font-weight: bold;
+    }
+
+/* Headings */
+h2, h3 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+h3 {
+    margin-bottom: 1.5rem;
+}
+
+/* Form group styles */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #007bff;
+    }
+
+/* Validation errors */
+.validation-error {
+    color: red;
+    font-size: 0.875rem;
+}
+
+/* Options (Remember me + Forgot link) */
+.options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+    .options input[type="checkbox"] {
+        margin-right: 0.25rem;
+    }
+
+.forgot-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
+
+/* Login button */
+.login-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .login-btn:hover {
+        background-color: #0056b3;
+    }
+
+/* Alternative logins */
+.alternative-logins {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+    .alternative-logins p {
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+.role-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.role-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.admin {
+    background-color: #17a2b8; /* Admin button color */
+}
+
+.doctor {
+    background-color: #28a745; /* Doctor button color */
+}
+
+.patient {
+    background-color: #dc3545; /* Patient button color */
+}
+
+/* Responsive goodness */
+@media screen and (max-width: 992px) {
+    .login-page-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .login-illustration,
+    .login-form-container {
+        border-radius: 0;
+        flex: unset;
+        width: 100%;
+        max-height: 50vh;
+    }
+}

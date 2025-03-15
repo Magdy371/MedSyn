@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OutpatientClinic.DataAccess\OutpatientClinic.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>

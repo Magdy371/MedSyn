@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OutpatientClinic.DataAccess.Entities;
 
 namespace OutpatientClinic.DataAccess.Context;
 
-public partial class OutpatientClinicDbContext : DbContext
+public partial class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
 {
     public OutpatientClinicDbContext()
     {
@@ -582,6 +584,14 @@ public partial class OutpatientClinicDbContext : DbContext
         });
 
         OnModelCreatingPartial(modelBuilder);
+
+        base.OnModelCreating(modelBuilder);
+
+        // Seeding roles
+        modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().HasData(
+            new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
+            new IdentityRole { Name = "Doctor", NormalizedName = "DOCTOR" },
+            new IdentityRole { Name = "Patient", NormalizedName = "PATIENT" });
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

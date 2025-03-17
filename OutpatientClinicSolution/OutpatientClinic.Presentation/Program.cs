@@ -43,6 +43,7 @@ namespace OutpatientClinic.Presentation
 
             // Register Specialized Services
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IClinicService, ClinicService>();
             builder.Services.AddScoped<IContactInfoService, ContactInfoService>();
             builder.Services.AddScoped<IStaffService, StaffService>();
@@ -68,23 +69,22 @@ namespace OutpatientClinic.Presentation
                 .AddDefaultTokenProviders();
 
             // Configure Authentication
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+            builder.Services.AddControllersWithViews();
+
+            // Enable Authentication & Authorization
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKey")),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    RequireExpirationTime = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
+                    options.Authority = builder.Configuration["Jwt:Issuer"];
+                    options.Audience = builder.Configuration["Jwt:Audience"];
+                });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("DoctorPolicy", policy => policy.RequireRole("Doctor"));
+                options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Patient"));
+                options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Staff"));
             });
         }
 

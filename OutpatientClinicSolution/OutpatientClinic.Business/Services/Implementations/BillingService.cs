@@ -1,4 +1,5 @@
-﻿using OutpatientClinic.Business.Services.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.UnitOfWorks;
 using OutpatientClinic.DataAccess.Entities;
 using System.Collections.Generic;
@@ -47,5 +48,15 @@ namespace OutpatientClinic.Business.Services.Implementations
 
         public async Task<IEnumerable<Billing>> FindBillingsByStatusAsync(string status) =>
             await _unitOfWork.Repository<Billing>().FindAsync(b => b.PaymentStatus != null && b.PaymentStatus.Contains(status));
+
+        public async Task<decimal> GetTotalRevenueAsync()
+        {
+            var paidBillings = await _unitOfWork.Repository<Billing>()
+                .FindAsync(b => b.PaymentStatus == "Paid");
+
+            return paidBillings.Sum(b => b.Amount);
+        }
+
+
     }
 }

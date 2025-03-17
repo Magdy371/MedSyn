@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<!-- Include FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+            <div class="position-sticky">
+                <ul class="nav flex-column text-white">
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" href="@Url.Action("Index", "Admin")">
+                            <i class="fa-solid fa-gauge"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("ManageUsers", "Admin")">
+                            <i class="fa-solid fa-user"></i> Manage Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Doctor")">
+                            <i class="fa-solid fa-user-doctor"></i> Doctors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Staff")">
+                            <i class="fa-solid fa-user-tie"></i> Staff
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Clinic")">
+                            <i class="fa-solid fa-hospital"></i> Clinics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Inventory")">
+                            <i class="fa-solid fa-boxes-stacked"></i> Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Reports", "Admin")">
+                            <i class="fa-solid fa-chart-line"></i> Reports
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Dashboard Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <h2>Admin Dashboard</h2>
+
+            <!-- Summary Stats -->
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-header">
+                            <i class="fa-solid fa-users"></i> Total Users
+                        </div>
+                        <div class="card-body">
+                            <h3>@ViewBag.TotalUsers</h3>
+                            <p>Registered users in the system</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-header">
+                            <i class="fa-solid fa-calendar-check"></i> Pending Appointments
+                        </div>
+                        <div class="card-body">
+                            <h3>@ViewBag.PendingAppointments</h3>
+                            <p>Appointments awaiting confirmation</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card text-white bg-warning mb-3">
+                        <div class="card-header">
+                            <i class="fa-solid fa-dollar-sign"></i> Revenue
+                        </div>
+                        <div class="card-body">
+                            <h3>$@ViewBag.TotalRevenue</h3>
+                            <p>Total earnings this month</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access Panels -->
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Manage Users</div>
+                        <div class="card-body">
+                            <p>View and manage system users.</p>
+                            <a href="@Url.Action("ManageUsers", "Admin")" class="btn btn-primary">Go to Users</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">View Reports</div>
+                        <div class="card-body">
+                            <p>Check system analytics and logs.</p>
+                            <a href="@Url.Action("Reports", "Admin")" class="btn btn-info">View Reports</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    .sidebar {
+        height: 100vh;
+        padding-top: 20px;
+    }
+
+    .nav-link {
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    .card-header {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .card-body h3 {
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>

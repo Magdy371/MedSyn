@@ -1,4 +1,5 @@
-﻿using OutpatientClinic.Business.Services.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.UnitOfWorks;
 using OutpatientClinic.DataAccess.Entities;
 using System.Collections.Generic;
@@ -53,5 +54,12 @@ namespace OutpatientClinic.Business.Services.Implementations
 
         public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorAsync(int doctorId) =>
             await _unitOfWork.Repository<Appointment>().FindAsync(a => a.DoctorId == doctorId);
+
+        public async Task<int> GetPendingAppointmentsCountAsync()
+        {
+            var pendingAppointments = await _unitOfWork.Repository<Appointment>().FindAsync(a => a.Status == "Pending");
+            return pendingAppointments.Count();
+        }
+
     }
 }

@@ -27,6 +27,11 @@ namespace OutpatientClinic.Presentation.Controllers
 
             return View();
         }
+        public async Task<IActionResult> AdminIndex_Test()
+        {
+            
+            return View();
+        }
 
         public async Task<IActionResult> ManageUsers()
         {

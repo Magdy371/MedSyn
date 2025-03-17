@@ -1,0 +1,230 @@
+﻿@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex" style="min-height: 100vh;">
+    <!-- Sidebar -->
+    <div class="bg-primary text-white p-3" style="width: 240px;">
+        <div class="d-flex align-items-center mb-4">
+            <!-- Logo / Brand -->
+            <img src="~/images/logo.png" alt="Cliniva Logo" style="height: 40px; margin-right: 8px;" />
+            <span class="fs-5 fw-bold">Cliniva</span>
+        </div>
+        <!-- Nav Items -->
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white active" aria-current="page" href="#">
+                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="#">
+                    <i class="fas fa-calendar-check me-2"></i> Appointments
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="#">
+                    <i class="fas fa-user-md me-2"></i> Doctors
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="#">
+                    <i class="fas fa-user-injured me-2"></i> Patients
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="#">
+                    <i class="fas fa-briefcase-medical me-2"></i> Operations
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="#">
+                    <i class="fas fa-chart-bar me-2"></i> Reports
+                </a>
+            </li>
+            <!-- Add more as needed -->
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 bg-light">
+        <!-- Top Navbar -->
+        <nav class="navbar navbar-light bg-white shadow-sm px-4">
+            <div class="d-flex align-items-center">
+                <h4 class="m-0">Dashboard</h4>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="d-flex align-items-center">
+                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="User" />
+                    <span>Ellie Jones</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="p-4">
+            <!-- Stat Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-shrink-0 rounded-circle bg-primary text-white p-3 me-3">
+                                <i class="fas fa-calendar-check fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Appointments</h6>
+                                <h5 class="fw-bold text-primary">650</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-shrink-0 rounded-circle bg-warning text-white p-3 me-3">
+                                <i class="fas fa-briefcase-medical fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Operations</h6>
+                                <h5 class="fw-bold text-warning">54</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-shrink-0 rounded-circle bg-success text-white p-3 me-3">
+                                <i class="fas fa-user-plus fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">New Patients</h6>
+                                <h5 class="fw-bold text-success">129</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-shrink-0 rounded-circle bg-info text-white p-3 me-3">
+                                <i class="fas fa-dollar-sign fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Earning</h6>
+                                <h5 class="fw-bold text-info">$2,950</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Other Info -->
+            <div class="row g-3">
+                <!-- Left chart area -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">Hospital Survey</span>
+                            <select class="form-select w-auto">
+                                <option>Monthly</option>
+                                <option>Weekly</option>
+                                <option>Yearly</option>
+                            </select>
+                        </div>
+                        <div class="card-body">
+                            <!-- Example chart placeholder (use Chart.js or your library of choice) -->
+                            <canvas id="hospitalSurveyChart" style="width: 100%; height: 300px;"></canvas>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <span class="me-3">
+                                <i class="fas fa-circle text-primary me-1"></i>OPD Patients
+                            </span>
+                            <span>
+                                <i class="fas fa-circle text-warning me-1"></i>Non Patients
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right info boxes -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-body text-center">
+                            <h6 class="mb-2">Total Appointments</h6>
+                            <h3 class="fw-bold">128</h3>
+                            <div class="d-flex justify-content-around mt-3">
+                                <div>
+                                    <span class="badge bg-primary">73 Completed</span>
+                                </div>
+                                <div>
+                                    <span class="badge bg-warning text-dark">55 Upcoming</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">Revenue</h6>
+                                <span class="text-muted">$$</span>
+                            </div>
+                            <h4 class="fw-bold">$4,589</h4>
+                            <!-- Example mini chart placeholder -->
+                            <canvas id="revenueChart" style="width: 100%; height: 100px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js (optional if you want to show real charts) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script>
+        // Example: Initialize your Hospital Survey Chart
+        var ctxHospital = document.getElementById('hospitalSurveyChart').getContext('2d');
+        var hospitalChart = new Chart(ctxHospital, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [
+                    {
+                        label: 'OPD Patients',
+                        data: [30, 45, 60, 40, 80, 70],
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 2,
+                        fill: true
+                    },
+                    {
+                        label: 'Non Patients',
+                        data: [20, 35, 40, 50, 65, 55],
+                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 2,
+                        fill: true
+                    }
+                ]
+            }
+        });
+
+        // Example: Initialize your Revenue Chart
+        var ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+        var revenueChart = new Chart(ctxRevenue, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [500, 700, 400, 900, 1200],
+                    backgroundColor: 'rgba(23, 162, 184, 0.8)'
+                }]
+            }
+        });
+    </script>
+}

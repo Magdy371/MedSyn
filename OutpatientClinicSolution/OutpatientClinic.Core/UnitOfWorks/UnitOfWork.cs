@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OutpatientClinic.Core.Repositories.Implementations;
 using OutpatientClinic.Core.Repositories.Interfaces;
+using OutpatientClinic.DataAccess.Context;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace OutpatientClinic.Core.UnitOfWorks
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _context;
+        private readonly OutpatientClinicDbContext _context;
         private readonly Dictionary<Type, object> _repositories;
         private bool _disposed = false;
 
@@ -20,7 +21,7 @@ namespace OutpatientClinic.Core.UnitOfWorks
         /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
         /// </summary>
         /// <param name="context">The database context.</param>
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(OutpatientClinicDbContext context)
         {
             _context = context;
             _repositories = new Dictionary<Type, object>();

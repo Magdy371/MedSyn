@@ -7,7 +7,7 @@ using OutpatientClinic.DataAccess.Entities;
 
 namespace OutpatientClinic.DataAccess.Context;
 
-public partial class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
+public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
 {
     public OutpatientClinicDbContext()
     {
@@ -56,8 +56,13 @@ public partial class OutpatientClinicDbContext : IdentityDbContext<ApplicationUs
 
     public virtual DbSet<SupplierOrderDetail> SupplierOrderDetails { get; set; }
 
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //    => optionsBuilder.UseSqlServer("Data Source=DESKTOP-NAUIN65\\DEPIR2_2024;Initial Catalog=OutpatientClinic;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=OutpatientClinicDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -583,16 +588,14 @@ public partial class OutpatientClinicDbContext : IdentityDbContext<ApplicationUs
                 .HasConstraintName("FK__SupplierO__Order__75A278F5");
         });
 
-        OnModelCreatingPartial(modelBuilder);
-
         base.OnModelCreating(modelBuilder);
 
         // Seeding roles
-        modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().HasData(
-            new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
-            new IdentityRole { Name = "Doctor", NormalizedName = "DOCTOR" },
-            new IdentityRole { Name = "Patient", NormalizedName = "PATIENT" });
+        modelBuilder.Entity<IdentityRole>().HasData(
+        new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
+        new IdentityRole { Name = "Doctor", NormalizedName = "DOCTOR" },
+        new IdentityRole { Name = "Patient", NormalizedName = "PATIENT" },
+        new IdentityRole { Name = "Staff", NormalizedName = "STAFF" }
+    );
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

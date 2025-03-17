@@ -677,9 +677,10 @@ namespace OutpatientClinic.DataAccess.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "525c1589-8ac2-4396-b600-1d239d721d1d", null, "Doctor", "DOCTOR" },
-                    { "80497362-5072-472b-a8ba-bf79b33bb806", null, "Admin", "ADMIN" },
-                    { "8b14e31a-85d1-47d2-ae56-96f6b800e5ed", null, "Patient", "PATIENT" }
+                    { "19a3f0b3-771f-4d5d-afa0-a888586ff7b2", null, "Doctor", "DOCTOR" },
+                    { "2e92ffe1-6ef8-49ea-a5d3-50c91efb6bec", null, "Staff", "STAFF" },
+                    { "8701813c-ef74-4a58-9ea1-473fa2779810", null, "Admin", "ADMIN" },
+                    { "8f7d621f-be28-47e8-8258-7bbfb3ad47bb", null, "Patient", "PATIENT" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -28,15 +28,13 @@ namespace OutpatientClinic.Presentation
             app.Run();
         }
 
-        private static void ConfigureServices(WebApplicationBuilder builder)
+        public static void ConfigureServices(WebApplicationBuilder builder)
         {
             // Add services to the container
             builder.Services.AddControllersWithViews();
 
-            // Configure DbContext
             builder.Services.AddDbContext<OutpatientClinicDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             // Configure Unit of Work
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -90,7 +88,7 @@ namespace OutpatientClinic.Presentation
             });
         }
 
-        private static void ConfigurePipeline(WebApplication app)
+        public static void ConfigurePipeline(WebApplication app)
         {
             // Configure the HTTP request pipeline
             if (!app.Environment.IsDevelopment())

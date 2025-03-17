@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutpatientClinic.DataAccess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutpatientClinic.Business", "OutpatientClinic.Business\OutpatientClinic.Business.csproj", "{314CB8FD-151A-4B00-A35E-2B338A7E2470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutpatientClinic.Presentation", "OutpatientClinic.Presentation\OutpatientClinic.Presentation.csproj", "{881A4175-E45C-4C60-B135-60A909BE5766}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutpatientClinic.Presentation", "OutpatientClinic.Presentation\OutpatientClinic.Presentation.csproj", "{9DF04D97-26FB-F10A-9AB2-4CC8C5918DB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,12 +29,15 @@ Global
 		{314CB8FD-151A-4B00-A35E-2B338A7E2470}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{314CB8FD-151A-4B00-A35E-2B338A7E2470}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{314CB8FD-151A-4B00-A35E-2B338A7E2470}.Release|Any CPU.Build.0 = Release|Any CPU
-		{881A4175-E45C-4C60-B135-60A909BE5766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{881A4175-E45C-4C60-B135-60A909BE5766}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{881A4175-E45C-4C60-B135-60A909BE5766}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{881A4175-E45C-4C60-B135-60A909BE5766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DF04D97-26FB-F10A-9AB2-4CC8C5918DB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DF04D97-26FB-F10A-9AB2-4CC8C5918DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DF04D97-26FB-F10A-9AB2-4CC8C5918DB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DF04D97-26FB-F10A-9AB2-4CC8C5918DB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DA2C3199-3CCC-4AD6-B20E-89B1C722001F}
 	EndGlobalSection
 EndGlobal

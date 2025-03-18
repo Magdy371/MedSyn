@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OutpatientClinic.Business.Services.Interfaces;
-using OutpatientClinic.Core.DTOs;
 using OutpatientClinic.DataAccess.Context;
 using OutpatientClinic.DataAccess.Entities;
 
@@ -23,6 +22,7 @@ namespace OutpatientClinic.Business.Services.Implementations
             _context = context;
         }
 
+        // Dashboard Statistics
         public async Task<int> GetTotalUsersAsync()
         {
             return await _userManager.Users.CountAsync();
@@ -38,12 +38,13 @@ namespace OutpatientClinic.Business.Services.Implementations
             return await _context.Billings.Where(b => b.PaymentStatus == "Paid").SumAsync(b => b.Amount);
         }
 
+        // User Management
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
         {
             return await _userManager.Users.ToListAsync();
         }
 
-        public async Task<ApplicationUser?> GetUserByIdAsync(string userId)
+        public async Task<ApplicationUser> GetUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);
         }
@@ -51,16 +52,18 @@ namespace OutpatientClinic.Business.Services.Implementations
         public async Task<bool> AssignRoleAsync(string userId, string role)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null || !await _roleManager.RoleExistsAsync(role)) return false;
+            if (user == null || !await _roleManager.RoleExistsAsync(role))
+                return false;
 
-            await _userManager.AddToRoleAsync(user, role);
-            return true;
+            var result = await _userManager.AddToRoleAsync(user, role);
+            return result.Succeeded;
         }
 
         public async Task<bool> RemoveUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return false;
+            if (user == null)
+                return false;
 
             var result = await _userManager.DeleteAsync(user);
             return result.Succeeded;
@@ -68,7 +71,9 @@ namespace OutpatientClinic.Business.Services.Implementations
 
         public async Task<IEnumerable<string>> GetRolesAsync()
         {
-            return await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            return await _roleManager.Roles
+                .Select(r => r.Name!)
+                .ToListAsync();
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OutpatientClinic.DataAccess.Entities;
 using OutpatientClinic.Business.Services.Interfaces;
+
 namespace OutpatientClinic.Business.Services.Implementations
 {
     public class AuthService : IAuthService
@@ -23,10 +24,10 @@ namespace OutpatientClinic.Business.Services.Implementations
         public async Task<string> GenerateToken(ApplicationUser user, string role)
         {
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-                new Claim(ClaimTypes.Role, role)
-            };
+               {
+                   new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                   new Claim(ClaimTypes.Role, role)
+               };
 
             var secret = _config["Jwt:Secret"];
             if (string.IsNullOrEmpty(secret))
@@ -37,7 +38,13 @@ namespace OutpatientClinic.Business.Services.Implementations
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(claims: claims, signingCredentials: creds);
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds);
+
             return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
         }
     }

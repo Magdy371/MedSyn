@@ -34,7 +34,8 @@ namespace OutpatientClinic.Presentation
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<OutpatientClinicDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             // Configure Unit of Work
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -43,6 +44,7 @@ namespace OutpatientClinic.Presentation
 
             // Register Specialized Services
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IClinicService, ClinicService>();
             builder.Services.AddScoped<IContactInfoService, ContactInfoService>();
@@ -75,8 +77,16 @@ namespace OutpatientClinic.Presentation
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = builder.Configuration["Jwt:Issuer"];
-                    options.Audience = builder.Configuration["Jwt:Audience"];
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
+                    };
                 });
 
             builder.Services.AddAuthorization(options =>

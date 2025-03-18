@@ -1,4 +1,4 @@
-﻿namespace OutpatientClinic.Core.DTOs
+﻿namespace OutpatientClinic.Core.DTOS
 {
     public class RegisterModel
     {

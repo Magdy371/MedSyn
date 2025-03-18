@@ -10,10 +10,14 @@ namespace OutpatientClinic.Presentation.Controllers
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
+        private readonly IAppointmentService _appointmentService;
+        private readonly IBillingService _billingService;
 
-        public AdminController(IAdminService adminService)
+        public AdminController(IAdminService adminService, IAppointmentService appointmentService, IBillingService billingService)
         {
             _adminService = adminService;
+            _appointmentService = appointmentService;
+            _billingService = billingService;
         }
 
         // Dashboard view displaying summary statistics
@@ -23,7 +27,7 @@ namespace OutpatientClinic.Presentation.Controllers
             ViewBag.PendingAppointments = await _adminService.GetPendingAppointmentsCountAsync();
             ViewBag.TotalRevenue = await _adminService.GetTotalRevenueAsync();
 
-            return View("AdminIndex_Test");
+            return View();
         }
 
         // View for managing users
@@ -44,6 +48,11 @@ namespace OutpatientClinic.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> AssignRole(RoleAssignmentDto model)
         {
+            if (string.IsNullOrEmpty(model.UserId) || string.IsNullOrEmpty(model.Role))
+            {
+                return BadRequest("User ID and Role cannot be null or empty.");
+            }
+
             var result = await _adminService.AssignRoleAsync(model.UserId, model.Role);
             if (result)
                 return RedirectToAction("ManageUsers");

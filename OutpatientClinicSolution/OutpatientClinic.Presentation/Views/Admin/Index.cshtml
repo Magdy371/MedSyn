@@ -1,0 +1,136 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" aria-current="page" href="@Url.Action("Index", "Admin")">
+                            <i class="fa-solid fa-gauge"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("ManageUsers", "Admin")">
+                            <i class="fa-solid fa-users"></i> Manage Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Doctor")">
+                            <i class="fa-solid fa-user-doctor"></i> Doctors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Staff")">
+                            <i class="fa-solid fa-user-tie"></i> Staff
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Clinic")">
+                            <i class="fa-solid fa-hospital"></i> Clinics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Inventory")">
+                            <i class="fa-solid fa-boxes-stacked"></i> Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Reports", "Admin")">
+                            <i class="fa-solid fa-chart-line"></i> Reports
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Admin Dashboard</h1>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="row">
+                <!-- Total Users Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fa-solid fa-users"></i> Total Users</h5>
+                            <p class="card-text display-4">@ViewBag.TotalUsers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Appointments Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fa-solid fa-calendar-check"></i> Pending Appointments</h5>
+                            <p class="card-text display-4">@ViewBag.PendingAppointments</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Revenue Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fa-solid fa-dollar-sign"></i> Revenue</h5>
+                            <p class="card-text display-4">$@ViewBag.TotalRevenue</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access Panels -->
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <i class="fa-solid fa-users"></i> User Management
+                        </div>
+                        <div class="card-body">
+                            <p>View and manage system users, assign roles, and perform critical actions.</p>
+                            <a href="@Url.Action("ManageUsers", "Admin")" class="btn btn-primary">Manage Users</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <i class="fa-solid fa-chart-line"></i> System Reports
+                        </div>
+                        <div class="card-body">
+                            <p>Access system analytics, logs, and performance reports.</p>
+                            <a href="@Url.Action("Reports", "Admin")" class="btn btn-info">View Reports</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Optional Inline Styles (or add to a separate CSS file) -->
+<style>
+    .sidebar {
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+    .nav-link {
+        font-size: 1.1rem;
+        padding: 10px;
+    }
+    .card-header {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+    .card-text.display-4 {
+        font-size: 2.5rem;
+    }
+</style>

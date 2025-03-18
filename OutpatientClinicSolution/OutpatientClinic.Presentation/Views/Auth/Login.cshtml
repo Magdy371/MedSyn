@@ -1,0 +1,43 @@
+﻿@model OutpatientClinic.Core.DTOS.LoginModel
+@{
+    ViewBag.Title = "Login";
+}
+<head>
+    <link rel="stylesheet" href="~/css/Login.css" />
+</head>
+<!-- Outer container to center and style the login page -->
+<div class=" login-page-container">
+    <!--Left Side-->
+    <div class="login-illustration">
+        <img src="~/images/heart_illustration.png" alt="Clinic Illustration" />
+    </div>
+    <!--Right Side-->
+    <div class="login-form-container">
+        <div class="welcome-text">
+            <h2>Welcome to <span class="brand">Cliniva</span></h2>
+            <p>Need an account? <a asp-action="Register" asp-controller="Auth">Sign Up</a></p>
+        </div>
+        <h3>Sign In</h3>
+        <form asp-action="Login" asp-controller = "Auth" method="post">
+            <div class="form-group">
+                <label asp-for = "Username"></label>
+                <input asp-for = "Username" class="form-control" placeholder="Username" />
+                <span asp-validation-for = "Username" class="validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" placeholder="Password" />
+                <span asp-validation-for = "Password" class="validation-error"></span>
+            </div>
+            @* <div class="options">
+                <div>
+                    <input asp-for="RememberMe" />
+                    <label asp-for="RememberMe">Remember me</label>
+                </div>
+                <a asp-action="ForgotPassword" asp-controller="Auth" class="forgot-link">Forgot Password?</a>
+            </div> *@
+            <button type="submit" class="login-btn">login</button> 
+            @* <button type="submit" class="btn btn-primary">Login</button> *@
+        </form>
+    </div>
+</div>

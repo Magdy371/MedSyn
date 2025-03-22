@@ -1,0 +1,25 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Department
+
+@{
+    ViewData["Title"] = "Edit Department";
+}
+
+<h2>Edit Department</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="DepartmentId" />
+
+    <div class="mb-3">
+        <label asp-for="DepartmentName" class="form-label">Department Name</label>
+        <input asp-for="DepartmentName" class="form-control" required />
+        <span asp-validation-for="DepartmentName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+        <input asp-for="UpdatedBy" class="form-control" value="Admin" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-success"><i class="fa-solid fa-save"></i> Update</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Cancel</a>
+</form>

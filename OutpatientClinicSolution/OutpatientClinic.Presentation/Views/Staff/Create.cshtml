@@ -1,0 +1,22 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Staff
+
+@{
+    ViewData["Title"] = "Create Staff";
+}
+
+<h2>Create Staff Member</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="FirstName" class="form-label">First Name</label>
+        <input asp-for="FirstName" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LastName" class="form-label">Last Name</label>
+        <input asp-for="LastName" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> Save</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Cancel</a>
+</form>

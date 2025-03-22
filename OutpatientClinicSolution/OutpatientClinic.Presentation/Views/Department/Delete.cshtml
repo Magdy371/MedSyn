@@ -1,0 +1,17 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Department
+
+@{
+    ViewData["Title"] = "Delete Department";
+}
+
+<h2>Are you sure you want to delete this department?</h2>
+
+<div class="alert alert-danger">
+    <strong>Department Name:</strong> @Model.DepartmentName
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="DepartmentId" />
+    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Cancel</a>
+</form>

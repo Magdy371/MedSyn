@@ -1,5 +1,58 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Doctor>
+
 @{
+    ViewData["Title"] = "Manage Doctors";
 }
+
+<h2>Doctors</h2>
+
+<a href="@Url.Action("Create")" class="btn btn-primary mb-3"><i class="fa-solid fa-plus"></i> Add Doctor</a>
+
+<!-- Filtering Section -->
+<form method="get">
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <select name="departmentId" asp-items="ViewBag.Departments" class="form-control">
+                <option value="">All Departments</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="specialty" class="form-control" placeholder="Search by Specialty" />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-filter"></i> Filter</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Doctor Name</th>
+            <th>Specialty</th>
+            <th>License Number</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doctor in Model)
+        {
+            <tr>
+                <td>@(doctor.DoctorNavigation != null ? doctor.DoctorNavigation.FirstName + " " + doctor.DoctorNavigation.LastName : "N/A")</td>
+                <td>@doctor.Specialty</td>
+                <td>@doctor.LicenseNumber</td>
+                <td>@doctor.Department.DepartmentName</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = doctor.DoctorId })" class="btn btn-warning btn-sm">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </a>
+                    <a href="@Url.Action("Delete", new { id = doctor.DoctorId })" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

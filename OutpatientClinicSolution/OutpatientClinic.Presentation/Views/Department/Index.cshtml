@@ -1,0 +1,49 @@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Department>
+
+@{
+    ViewData["Title"] = "Manage Departments";
+}
+
+<h2>Departments</h2>
+
+<a href="@Url.Action("Create")" class="btn btn-primary mb-3"><i class="fa-solid fa-plus"></i> Add Department</a>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Department Name</th>
+            <th>Created By</th>
+            <th>Created Date</th>
+            <th>Updated By</th>
+            <th>Updated Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var department in Model)
+        {
+            <tr class="@(department.IsDeleted == true ? "table-danger" : "")">
+                <td>@department.DepartmentName</td>
+                <td>@department.CreatedBy</td>
+                <td>@department.CreatedDate?.ToString("yyyy-MM-dd")</td>
+                <td>@department.UpdatedBy</td>
+                <td>@department.UpdatedDate?.ToString("yyyy-MM-dd")</td>
+                <td>
+                    @(department.IsDeleted == true ? "Deleted" : "Active")
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = department.DepartmentId })" class="btn btn-warning btn-sm">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </a>
+                    @if (department.IsDeleted == false)
+                    {
+                        <a href="@Url.Action("Delete", new { id = department.DepartmentId })" class="btn btn-danger btn-sm">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

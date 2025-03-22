@@ -1,5 +1,40 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Staff>
+
 @{
+    ViewData["Title"] = "Manage Staff";
 }
+
+<h2>Staff Members</h2>
+
+<a href="@Url.Action("Create")" class="btn btn-primary mb-3"><i class="fa-solid fa-plus"></i> Add Staff</a>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Created By</th>
+            <th>Created Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var staff in Model)
+        {
+            <tr class="@(staff.IsDeleted == true ? "table-danger" : "")">
+                <td>@staff.FirstName @staff.LastName</td>
+                <td>@staff.CreatedBy</td>
+                <td>@staff.CreatedDate?.ToString("yyyy-MM-dd")</td>
+                <td>@(staff.IsDeleted == true ? "Deleted" : "Active")</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = staff.StaffId })" class="btn btn-warning btn-sm">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </a>
+                    <a href="@Url.Action("Delete", new { id = staff.StaffId })" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

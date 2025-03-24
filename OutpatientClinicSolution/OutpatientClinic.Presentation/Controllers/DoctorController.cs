@@ -1,159 +1,248 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OutpatientClinic.Business.Services.Interfaces;
-using OutpatientClinic.Core.UnitOfWorks;
 using OutpatientClinic.DataAccess.Entities;
+using OutpatientClinic.Presentation.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OutpatientClinic.Presentation.Controllers
+namespace OutpatientClinic.Web.Controllers
 {
-    //[Authorize(Roles = "Admin")]
     public class DoctorController : Controller
     {
         private readonly IDoctorService _doctorService;
+        private readonly IDepartmentService _departmentService;
         private readonly IStaffService _staffService;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public DoctorController(IDoctorService doctorService, IStaffService staffService, IUnitOfWork unitOfWork)
+        public DoctorController(
+            IDoctorService doctorService,
+            IDepartmentService departmentService,
+            IStaffService staffService)
         {
             _doctorService = doctorService;
+            _departmentService = departmentService;
             _staffService = staffService;
-            _unitOfWork = unitOfWork;
         }
 
-        // GET: /Doctor
-        public async Task<IActionResult> Index(int? departmentId)
+        // GET: Doctor
+        public async Task<IActionResult> Index(string searchString, string filterType, string filterValue)
         {
-            var doctors = await _doctorService.GetAllDoctorsAsync();
-            if (departmentId.HasValue)
+            var doctors = await _doctorService.GetAllDoctorsWithDetailsAsync() ?? new List<Doctor>();
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                doctors = doctors.Where(d => d.DepartmentId == departmentId.Value);
+                doctors = doctors.Where(d =>
+                    d.DoctorNavigation != null &&
+                    (d.DoctorNavigation.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    d.DoctorNavigation.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    d.Specialty.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    (d.LicenseNumber != null && d.LicenseNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase)))).ToList();
             }
-            var departments = await _unitOfWork.Repository<Department>().GetAllAsync();
-            ViewBag.Departments = departments;
-            ViewBag.SelectedDepartment = departmentId;
+
+            switch (filterType)
+            {
+                case "department":
+                    if (!string.IsNullOrEmpty(filterValue) && int.TryParse(filterValue, out int departmentId))
+                    {
+                        doctors = doctors.Where(d => d.DepartmentId == departmentId).ToList();
+                    }
+                    break;
+                case "specialty":
+                    if (!string.IsNullOrEmpty(filterValue))
+                    {
+                        doctors = doctors.Where(d => d.Specialty == filterValue).ToList();
+                    }
+                    break;
+            }
+
+            var departments = await _departmentService.GetAllDepartmentsAsync() ?? new List<Department>();
+            ViewBag.Departments = new SelectList(departments, "DepartmentId", "DepartmentName");
+
+            var specialties = doctors.Select(d => d.Specialty).Distinct().OrderBy(s => s).ToList();
+            ViewBag.Specialties = new SelectList(specialties);
+
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentFilterType = filterType;
+            ViewBag.CurrentFilterValue = filterValue;
+
             return View(doctors);
         }
 
-        // GET: /Doctor/Details/5
+
+
+
+        // GET: Doctor/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var doctor = await _doctorService.GetDoctorByIdAsync(id);
             if (doctor == null)
+            {
                 return NotFound();
+            }
 
             return View(doctor);
         }
 
-        // GET: /Doctor/Create
+        // GET: Doctor/Create
         public async Task<IActionResult> Create()
         {
-            // Populate dropdowns
-            var departments = await _unitOfWork.Repository<Department>().GetAllAsync();
-            ViewBag.Departments = departments;
+            var allStaff = await _staffService.GetAllStaffAsync() ?? new List<Staff>();
+            var existingDoctors = await _doctorService.GetAllDoctorsAsync() ?? new List<Doctor>();
+            var existingDoctorIds = existingDoctors.Select(d => d.DoctorId).ToList();
 
-            var staffList = await _staffService.GetAllStaffAsync();
-            // Optionally filter out staff already assigned as doctors
-            ViewBag.StaffList = staffList;
-            return View();
+            var availableStaff = allStaff
+                .Where(s => !existingDoctorIds.Contains(s.StaffId))
+                .OrderBy(s => s.LastName)
+                .ThenBy(s => s.FirstName)
+                .ToList();
+
+            var departments = await _departmentService.GetAllDepartmentsAsync() ?? new List<Department>();
+
+            ViewBag.StaffId = new SelectList(availableStaff, "StaffId", "FullName");
+            ViewBag.DepartmentId = new SelectList(departments, "DepartmentId", "DepartmentName");
+
+            return View(new DoctorViewModel());
         }
 
-        // POST: /Doctor/Create
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Doctor doctor, int staffId)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(DoctorViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var staff = await _staffService.GetStaffByIdAsync(staffId);
-                if (staff == null)
+                try
                 {
-                    ModelState.AddModelError("", "Invalid staff selection.");
-                }
-                else
-                {
-                    // Set the doctor's primary key to the staff's ID.
-                    doctor.DoctorId = staff.StaffId;
-                    // Establish both sides of the relationship.
-                    doctor.DoctorNavigation = staff;
-                    staff.Doctor = doctor;
+                    var doctor = new Doctor
+                    {
+                        DoctorId = model.StaffId,
+                        DepartmentId = model.DepartmentId,
+                        Specialty = model.Specialty,
+                        LicenseNumber = model.LicenseNumber
+                    };
+
                     await _doctorService.CreateDoctorAsync(doctor);
                     return RedirectToAction(nameof(Index));
                 }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Unable to create doctor: {ex.Message}");
+                }
             }
 
-            // Repopulate dropdowns if there's a validation error.
-            ViewBag.Departments = await _unitOfWork.Repository<Department>().GetAllAsync();
-            ViewBag.StaffList = await _staffService.GetAllStaffAsync();
-            return View(doctor);
+            var allStaff = await _staffService.GetAllStaffAsync() ?? new List<Staff>();
+            var existingDoctors = await _doctorService.GetAllDoctorsAsync() ?? new List<Doctor>();
+            var existingDoctorIds = existingDoctors.Select(d => d.DoctorId).ToList();
+
+            var availableStaff = allStaff
+                .Where(s => !existingDoctorIds.Contains(s.StaffId))
+                .OrderBy(s => s.LastName)
+                .ThenBy(s => s.FirstName)
+                .ToList();
+
+            var departments = await _departmentService.GetAllDepartmentsAsync() ?? new List<Department>();
+
+            ViewBag.StaffId = new SelectList(availableStaff, "StaffId", "FullName", model.StaffId);
+            ViewBag.DepartmentId = new SelectList(departments, "DepartmentId", "DepartmentName", model.DepartmentId);
+
+            return View(model);
         }
 
-        // GET: /Doctor/Edit/5
+
+        // GET: Doctor/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var doctor = await _doctorService.GetDoctorByIdAsync(id);
             if (doctor == null)
+            {
                 return NotFound();
+            }
 
-            ViewBag.Departments = await _unitOfWork.Repository<Department>().GetAllAsync();
-            ViewBag.StaffList = await _staffService.GetAllStaffAsync();
-            ViewBag.SelectedStaffId = doctor.DoctorNavigation?.StaffId;
-            return View(doctor);
+            var departments = await _departmentService.GetAllDepartmentsAsync();
+            ViewBag.DepartmentId = new SelectList(departments, "DepartmentId", "DepartmentName", doctor.DepartmentId);
+
+            var model = new DoctorViewModel
+            {
+                DoctorId = doctor.DoctorId,
+                StaffId = doctor.DoctorId, // Same as DoctorId due to the 1:1 relationship
+                DepartmentId = doctor.DepartmentId,
+                Specialty = doctor.Specialty,
+                LicenseNumber = doctor.LicenseNumber,
+                StaffFirstName = doctor.DoctorNavigation.FirstName,
+                StaffLastName = doctor.DoctorNavigation.LastName
+            };
+
+            return View(model);
         }
 
-        // POST: /Doctor/Edit/5
+        // POST: Doctor/Edit/5
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Doctor doctor, int staffId)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, DoctorViewModel model)
         {
-            if (id != doctor.DoctorId)
-                return BadRequest();
+            if (id != model.DoctorId)
+            {
+                return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
-                var staff = await _staffService.GetStaffByIdAsync(staffId);
-                if (staff == null)
+                try
                 {
-                    ModelState.AddModelError("", "Invalid staff selection.");
-                }
-                else
-                {
-                    doctor.DoctorNavigation = staff;
-                    // Ensure the primary key is still set correctly.
-                    doctor.DoctorId = staff.StaffId;
-                    var updated = await _doctorService.UpdateDoctorAsync(doctor);
-                    if (updated)
-                        return RedirectToAction(nameof(Index));
+                    var doctor = await _doctorService.GetDoctorByIdAsync(id);
+                    if (doctor == null)
+                    {
+                        return NotFound();
+                    }
 
-                    ModelState.AddModelError("", "Unable to update the doctor. Please try again.");
+                    // Update properties
+                    doctor.DepartmentId = model.DepartmentId;
+                    doctor.Specialty = model.Specialty;
+                    doctor.LicenseNumber = model.LicenseNumber;
+
+                    await _doctorService.UpdateDoctorAsync(doctor);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Unable to update doctor: {ex.Message}");
                 }
             }
-            ViewBag.Departments = await _unitOfWork.Repository<Department>().GetAllAsync();
-            ViewBag.StaffList = await _staffService.GetAllStaffAsync();
-            return View(doctor);
+
+            // If we got this far, something failed, redisplay form
+            var departments = await _departmentService.GetAllDepartmentsAsync();
+            ViewBag.DepartmentId = new SelectList(departments, "DepartmentId", "DepartmentName", model.DepartmentId);
+
+            return View(model);
         }
 
-        // GET: /Doctor/Delete/5
+        // GET: Doctor/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var doctor = await _doctorService.GetDoctorByIdAsync(id);
             if (doctor == null)
+            {
                 return NotFound();
+            }
 
             return View(doctor);
         }
 
-        // POST: /Doctor/Delete/5
+        // POST: Doctor/Delete/5
         [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var deleted = await _doctorService.DeleteDoctorAsync(id);
-            if (!deleted)
-                return BadRequest("Delete operation failed.");
-
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _doctorService.DeleteDoctorAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Delete), new { id = id, error = ex.Message });
+            }
         }
     }
 }

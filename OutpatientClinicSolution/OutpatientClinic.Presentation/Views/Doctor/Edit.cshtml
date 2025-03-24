@@ -1,69 +1,76 @@
-﻿@model OutpatientClinic.DataAccess.Entities.Doctor
+﻿@model OutpatientClinic.Presentation.Models.DoctorViewModel
+
 @{
     ViewData["Title"] = "Edit Doctor";
-    var departments = ViewBag.Departments as IEnumerable<OutpatientClinic.DataAccess.Entities.Department>;
-    var staffList = ViewBag.StaffList as IEnumerable<OutpatientClinic.DataAccess.Entities.Staff>;
-    int? selectedStaffId = ViewBag.SelectedStaffId as int?;
 }
 
-<h2>Edit Doctor</h2>
+<h1>Edit Doctor</h1>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="DoctorId" />
-    <div class="form-group">
-        <label asp-for="Specialty" class="control-label"></label>
-        <input asp-for="Specialty" class="form-control" />
-        <span asp-validation-for="Specialty" class="text-danger"></span>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Edit Doctor Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="DoctorId" />
+                    <input type="hidden" asp-for="StaffId" />
+                    <input type="hidden" asp-for="StaffFirstName" />
+                    <input type="hidden" asp-for="StaffLastName" />
+
+                    <div class="form-group">
+                        <label class="control-label">Staff Member</label>
+                        <input type="text" value="@Model.FullName" class="form-control" readonly />
+                        <small class="form-text text-muted">Staff member cannot be changed</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="DepartmentId" class="control-label"></label>
+                        <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId">
+                            <option value="">-- Select Department --</option>
+                        </select>
+                        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Specialty" class="control-label"></label>
+                        <input asp-for="Specialty" class="form-control" />
+                        <span asp-validation-for="Specialty" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="LicenseNumber" class="control-label"></label>
+                        <input asp-for="LicenseNumber" class="form-control" />
+                        <span asp-validation-for="LicenseNumber" class="text-danger"></span>
+                        <small class="form-text text-muted">Enter the doctor's license number (e.g., A12345-B)</small>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="LicenseNumber" class="control-label"></label>
-        <input asp-for="LicenseNumber" class="form-control" />
-        <span asp-validation-for="LicenseNumber" class="text-danger"></span>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Information</h5>
+            </div>
+            <div class="card-body">
+                <p>You can edit the doctor's department, specialty, and license number.</p>
+                <p>The staff member association cannot be changed.</p>
+                <p>All fields except license number are required.</p>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="DepartmentId" class="control-label">Department</label>
-        <select id="DepartmentId" name="DepartmentId" class="form-control">
-            <option value="">Select Department</option>
-            @if (departments != null)
-            {
-                @foreach (var dept in departments)
-                {
-                    var optionTag = new TagBuilder("option");
-                    optionTag.Attributes["value"] = dept.DepartmentId.ToString();
-                    if (Model.DepartmentId == dept.DepartmentId)
-                    {
-                        optionTag.Attributes["selected"] = "selected";
-                    }
-                    optionTag.InnerHtml.Append(dept.DepartmentName);
-                    @Html.Raw(optionTag.ToString())
-                }
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="staffId" class="control-label">Staff</label>
-        <select id="staffId" name="staffId" class="form-control">
-            <option value="">Select Staff</option>
-            @if (staffList != null)
-            {
-                @foreach (var staff in staffList)
-                {
-                    var optionTag = new TagBuilder("option");
-                    optionTag.Attributes["value"] = staff.StaffId.ToString();
-                    if (selectedStaffId == staff.StaffId)
-                    {
-                        optionTag.Attributes["selected"] = "selected";
-                    }
-                    optionTag.InnerHtml.Append($"{staff.FirstName} {staff.LastName}");
-                    @Html.Raw(optionTag.ToString())
-                }
-            }
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,69 +1,118 @@
 ﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Doctor>
+
 @{
-    ViewData["Title"] = "Doctor List";
-    var departments = ViewBag.Departments as IEnumerable<OutpatientClinic.DataAccess.Entities.Department>;
-    int? selectedDepartment = ViewBag.SelectedDepartment as int?;
+    ViewData["Title"] = "Doctors";
 }
 
-<h2>Doctor List</h2>
+<h1>Doctors Directory</h1>
 
-<form method="get" asp-action="Index">
-    <div class="form-group">
-        <label for="departmentFilter">Filter by Department:</label>
-        <select id="departmentFilter" name="departmentId" class="form-control" onchange="this.form.submit()">
-            <option value="">All</option>
-            @if (departments != null)
-            {
-                @foreach (var dept in departments)
-                {
-                    var optionTag = new TagBuilder("option");
-                    optionTag.Attributes["value"] = dept.DepartmentId.ToString();
-                    if (selectedDepartment == dept.DepartmentId)
-                    {
-                        optionTag.Attributes["selected"] = "selected";
-                    }
-                    optionTag.InnerHtml.Append(dept.DepartmentName);
-                    @Html.Raw(optionTag.ToString())
-                }
-            }
-        </select>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a asp-action="Create" class="btn btn-primary">Create New Doctor</a>
     </div>
-</form>
+    <div class="col-md-6">
+        <form asp-action="Index" method="get" class="form-inline">
+            <div class="input-group w-100">
+                <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="form-control" placeholder="Search by name, specialty, license..." />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                    @if (!string.IsNullOrEmpty(ViewBag.CurrentFilter) || !string.IsNullOrEmpty(ViewBag.CurrentFilterType))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Doctor</a>
-</p>
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Filter by Department</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a asp-action="Index" asp-route-filterType="department" asp-route-filterValue="" class="list-group-item list-group-item-action @(ViewBag.CurrentFilterType == "department" && string.IsNullOrEmpty(ViewBag.CurrentFilterValue) ? "active" : "")">
+                        All Departments
+                    </a>
+                    @foreach (var item in ViewBag.Departments)
+                    {
+                        <a asp-action="Index" asp-route-filterType="department" asp-route-filterValue="@item.Value" class="list-group-item list-group-item-action @(ViewBag.CurrentFilterType == "department" && ViewBag.CurrentFilterValue == item.Value ? "active" : "")">
+                            @item.Text
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Filter by Specialty</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a asp-action="Index" asp-route-filterType="specialty" asp-route-filterValue="" class="list-group-item list-group-item-action @(ViewBag.CurrentFilterType == "specialty" && string.IsNullOrEmpty(ViewBag.CurrentFilterValue) ? "active" : "")">
+                        All Specialties
+                    </a>
+                    @foreach (var item in ViewBag.Specialties)
+                    {
+                        <a asp-action="Index" asp-route-filterType="specialty" asp-route-filterValue="@item.Text" class="list-group-item list-group-item-action @(ViewBag.CurrentFilterType == "specialty" && ViewBag.CurrentFilterValue == item.Text ? "active" : "")">
+                            @item.Text
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Doctor ID</th>
-            <th>Specialty</th>
-            <th>License Number</th>
-            <th>Department</th>
-            <th>Staff</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var doctor in Model)
-    {
-        <tr>
-            <td>@doctor.DoctorId</td>
-            <td>@doctor.Specialty</td>
-            <td>@doctor.LicenseNumber</td>
-            <td>@doctor.Department?.DepartmentName</td>
-            <td>
-                @(doctor.DoctorNavigation != null 
-                    ? $"{doctor.DoctorNavigation.FirstName} {doctor.DoctorNavigation.LastName}" 
-                    : "N/A")
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@doctor.DoctorId" class="btn btn-info btn-sm">Details</a>
-                <a asp-action="Edit" asp-route-id="@doctor.DoctorId" class="btn btn-warning btn-sm">Edit</a>
-                <a asp-action="Delete" asp-route-id="@doctor.DoctorId" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LicenseNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Department.DepartmentName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Specialty)
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @(item.DoctorNavigation?.FirstName + " " + item.DoctorNavigation?.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LicenseNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Department.DepartmentName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Specialty)
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a asp-action="Edit" asp-route-id="@item.DoctorId" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.DoctorId" class="btn btn-sm btn-outline-info">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.DoctorId" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div> 

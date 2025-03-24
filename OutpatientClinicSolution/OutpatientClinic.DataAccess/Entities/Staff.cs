@@ -26,4 +26,7 @@ public partial class Staff
     public virtual ContactInfo? Contact { get; set; }
 
     public virtual Doctor? Doctor { get; set; }
+
+    public string FullName => $"{FirstName} {LastName}";
+
 }

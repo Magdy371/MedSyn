@@ -12,8 +12,8 @@ using OutpatientClinic.DataAccess.Context;
 namespace OutpatientClinic.DataAccess.Migrations
 {
     [DbContext(typeof(OutpatientClinicDbContext))]
-    [Migration("20250317153926_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250323230407_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,25 +54,25 @@ namespace OutpatientClinic.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8701813c-ef74-4a58-9ea1-473fa2779810",
+                            Id = "07fa03b7-dfa8-4922-8c59-6ca84d0fcc4f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "19a3f0b3-771f-4d5d-afa0-a888586ff7b2",
+                            Id = "d1b81762-1cd7-4779-8a24-7bbbee3acc85",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "8f7d621f-be28-47e8-8258-7bbfb3ad47bb",
+                            Id = "59ad1d61-6db7-49d6-98f6-9e53c44ae022",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "2e92ffe1-6ef8-49ea-a5d3-50c91efb6bec",
+                            Id = "928b52b7-4884-4365-92f2-cbecdd3e5938",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });
@@ -1447,6 +1447,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                     b.HasOne("OutpatientClinic.DataAccess.Entities.Staff", "DoctorNavigation")
                         .WithOne("Doctor")
                         .HasForeignKey("OutpatientClinic.DataAccess.Entities.Doctor", "DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__Doctors__DoctorI__3D5E1FD2");
 

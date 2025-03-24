@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OutpatientClinic.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -364,7 +364,8 @@ namespace OutpatientClinic.DataAccess.Migrations
                         name: "FK__Doctors__DoctorI__3D5E1FD2",
                         column: x => x.DoctorID,
                         principalTable: "Staff",
-                        principalColumn: "StaffID");
+                        principalColumn: "StaffID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -677,10 +678,10 @@ namespace OutpatientClinic.DataAccess.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "19a3f0b3-771f-4d5d-afa0-a888586ff7b2", null, "Doctor", "DOCTOR" },
-                    { "2e92ffe1-6ef8-49ea-a5d3-50c91efb6bec", null, "Staff", "STAFF" },
-                    { "8701813c-ef74-4a58-9ea1-473fa2779810", null, "Admin", "ADMIN" },
-                    { "8f7d621f-be28-47e8-8258-7bbfb3ad47bb", null, "Patient", "PATIENT" }
+                    { "07fa03b7-dfa8-4922-8c59-6ca84d0fcc4f", null, "Admin", "ADMIN" },
+                    { "59ad1d61-6db7-49d6-98f6-9e53c44ae022", null, "Patient", "PATIENT" },
+                    { "928b52b7-4884-4365-92f2-cbecdd3e5938", null, "Staff", "STAFF" },
+                    { "d1b81762-1cd7-4779-8a24-7bbbee3acc85", null, "Doctor", "DOCTOR" }
                 });
 
             migrationBuilder.CreateIndex(

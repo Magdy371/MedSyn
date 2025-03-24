@@ -1,0 +1,28 @@
+﻿@model OutpatientClinic.DataAccess.Entities.ContactInfo
+@{
+    ViewData["Title"] = "Create Contact Info";
+}
+
+<h2>Create Contact Info</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Phone" class="control-label"></label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <!-- Add additional fields as necessary -->
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

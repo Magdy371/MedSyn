@@ -1,0 +1,36 @@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.ContactInfo>
+@{
+    ViewData["Title"] = "Contact Info List";
+}
+
+<h2>Contact Info List</h2>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Contact Info</a>
+</p>
+<table class = "table table-bordered">
+    <thead>
+        <tr>
+            <th>Contact ID</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var contact in Model)
+        {
+            <tr>
+                <td>@contact.ContactId</td>
+                <td>@contact.Phone</td>
+                <td>@contact.Email</td>
+                <td>@contact.CreatedDate?.ToString("MM/dd/yyyy")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@contact.ContactId" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@contact.ContactId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@contact.ContactId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

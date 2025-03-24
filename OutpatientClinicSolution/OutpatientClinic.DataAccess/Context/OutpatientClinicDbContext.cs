@@ -262,12 +262,12 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("datetime");
         });
 
+
         modelBuilder.Entity<Doctor>(entity =>
         {
             entity.HasKey(e => e.DoctorId).HasName("PK__Doctors__2DC00EDFCF437B0A");
 
             entity.HasIndex(e => e.DepartmentId, "IX_Doctors_DepartmentID");
-
             entity.HasIndex(e => e.LicenseNumber, "UQ__Doctors__E88901663FC5012E").IsUnique();
 
             entity.Property(e => e.DoctorId)
@@ -279,14 +279,15 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
 
             entity.HasOne(d => d.Department).WithMany(p => p.Doctors)
                 .HasForeignKey(d => d.DepartmentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.ClientSetNull) // Adjust if needed
                 .HasConstraintName("FK__Doctors__Departm__3E52440B");
 
             entity.HasOne(d => d.DoctorNavigation).WithOne(p => p.Doctor)
                 .HasForeignKey<Doctor>(d => d.DoctorId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // Ensure this is appropriate
                 .HasConstraintName("FK__Doctors__DoctorI__3D5E1FD2");
         });
+
 
         modelBuilder.Entity<Facility>(entity =>
         {
@@ -484,6 +485,7 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Prescript__Recor__5812160E");
         });
+
 
         modelBuilder.Entity<Staff>(entity =>
         {

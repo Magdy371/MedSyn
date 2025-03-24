@@ -1,0 +1,28 @@
+﻿@model OutpatientClinic.DataAccess.Entities.ContactInfo
+@{
+    ViewData["Title"] = "Contact Info Details";
+}
+
+<h2>Contact Info Details</h2>
+
+<div>
+    <h4>Contact Info</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Contact ID</dt>
+        <dd class="col-sm-10">@Model.ContactId</dd>
+
+        <dt class="col-sm-2">Phone</dt>
+        <dd class="col-sm-10">@Model.Phone</dd>
+
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Model.Email</dd>
+
+        <dt class="col-sm-2">Created Date</dt>
+        <dd class="col-sm-10">@Model.CreatedDate?.ToString("MM/dd/yyyy")</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ContactId" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

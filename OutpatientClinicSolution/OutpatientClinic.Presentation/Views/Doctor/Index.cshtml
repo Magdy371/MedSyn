@@ -1,58 +1,69 @@
 ﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Doctor>
-
 @{
-    ViewData["Title"] = "Manage Doctors";
+    ViewData["Title"] = "Doctor List";
+    var departments = ViewBag.Departments as IEnumerable<OutpatientClinic.DataAccess.Entities.Department>;
+    int? selectedDepartment = ViewBag.SelectedDepartment as int?;
 }
 
-<h2>Doctors</h2>
+<h2>Doctor List</h2>
 
-<a href="@Url.Action("Create")" class="btn btn-primary mb-3"><i class="fa-solid fa-plus"></i> Add Doctor</a>
-
-<!-- Filtering Section -->
-<form method="get">
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <select name="departmentId" asp-items="ViewBag.Departments" class="form-control">
-                <option value="">All Departments</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <input type="text" name="specialty" class="form-control" placeholder="Search by Specialty" />
-        </div>
-        <div class="col-md-4">
-            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-filter"></i> Filter</button>
-        </div>
+<form method="get" asp-action="Index">
+    <div class="form-group">
+        <label for="departmentFilter">Filter by Department:</label>
+        <select id="departmentFilter" name="departmentId" class="form-control" onchange="this.form.submit()">
+            <option value="">All</option>
+            @if (departments != null)
+            {
+                @foreach (var dept in departments)
+                {
+                    var optionTag = new TagBuilder("option");
+                    optionTag.Attributes["value"] = dept.DepartmentId.ToString();
+                    if (selectedDepartment == dept.DepartmentId)
+                    {
+                        optionTag.Attributes["selected"] = "selected";
+                    }
+                    optionTag.InnerHtml.Append(dept.DepartmentName);
+                    @Html.Raw(optionTag.ToString())
+                }
+            }
+        </select>
     </div>
 </form>
 
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Doctor</a>
+</p>
+
 <table class="table table-bordered">
-    <thead class="table-dark">
+    <thead>
         <tr>
-            <th>Doctor Name</th>
+            <th>Doctor ID</th>
             <th>Specialty</th>
             <th>License Number</th>
             <th>Department</th>
+            <th>Staff</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var doctor in Model)
-        {
-            <tr>
-                <td>@(doctor.DoctorNavigation != null ? doctor.DoctorNavigation.FirstName + " " + doctor.DoctorNavigation.LastName : "N/A")</td>
-                <td>@doctor.Specialty</td>
-                <td>@doctor.LicenseNumber</td>
-                <td>@doctor.Department.DepartmentName</td>
-                <td>
-                    <a href="@Url.Action("Edit", new { id = doctor.DoctorId })" class="btn btn-warning btn-sm">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </a>
-                    <a href="@Url.Action("Delete", new { id = doctor.DoctorId })" class="btn btn-danger btn-sm">
-                        <i class="fa-solid fa-trash"></i> Delete
-                    </a>
-                </td>
-            </tr>
-        }
+    @foreach (var doctor in Model)
+    {
+        <tr>
+            <td>@doctor.DoctorId</td>
+            <td>@doctor.Specialty</td>
+            <td>@doctor.LicenseNumber</td>
+            <td>@doctor.Department?.DepartmentName</td>
+            <td>
+                @(doctor.DoctorNavigation != null 
+                    ? $"{doctor.DoctorNavigation.FirstName} {doctor.DoctorNavigation.LastName}" 
+                    : "N/A")
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@doctor.DoctorId" class="btn btn-info btn-sm">Details</a>
+                <a asp-action="Edit" asp-route-id="@doctor.DoctorId" class="btn btn-warning btn-sm">Edit</a>
+                <a asp-action="Delete" asp-route-id="@doctor.DoctorId" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>
-

@@ -23,8 +23,16 @@ namespace OutpatientClinic.Business.Services.Implementations
 
         public async Task<Doctor> CreateDoctorAsync(Doctor doctor)
         {
+            //await _unitOfWork.Repository<Doctor>().AddAsync(doctor);
+            //await _unitOfWork.CompleteAsync();
+            //return doctor;
             await _unitOfWork.Repository<Doctor>().AddAsync(doctor);
-            await _unitOfWork.CompleteAsync();
+            var result = await _unitOfWork.CompleteAsync();
+            Console.WriteLine($"SaveChanges returned: {result}"); // Debugging
+            if (result == 0)
+            {
+                throw new Exception("Doctor was not saved to the database.");
+            }
             return doctor;
         }
 

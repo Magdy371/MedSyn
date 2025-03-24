@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Common;
 using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.DTOS;
 using OutpatientClinic.DataAccess.Entities;
@@ -27,6 +28,7 @@ namespace OutpatientClinic.Presentation.Controllers
         public IActionResult Login()
         {
             return View();
+            //return Ok();
         }
 
         // POST: /Auth/Login
@@ -36,17 +38,20 @@ namespace OutpatientClinic.Presentation.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
+            //return BadRequest(ModelState);
 
             if (string.IsNullOrEmpty(model.Username))
             {
                 ModelState.AddModelError("", "Username is required.");
                 return View(model);
+                //return BadRequest(ModelState);
             }
 
             if (string.IsNullOrEmpty(model.Password))
             {
                 ModelState.AddModelError("", "Password is required.");
                 return View(model);
+                //return BadRequest(ModelState);
             }
 
             var user = await _userManager.FindByNameAsync(model.Username);
@@ -54,6 +59,7 @@ namespace OutpatientClinic.Presentation.Controllers
             {
                 ModelState.AddModelError("", "Invalid login attempt.");
                 return View(model);
+                //return BadRequest(ModelState);
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: false);
@@ -61,6 +67,7 @@ namespace OutpatientClinic.Presentation.Controllers
             {
                 ModelState.AddModelError("", "Invalid login attempt.");
                 return View(model);
+                //return BadRequest(ModelState);
             }
 
             // Generate JWT Token
@@ -70,6 +77,7 @@ namespace OutpatientClinic.Presentation.Controllers
             {
                 ModelState.AddModelError("", "User does not have an assigned role.");
                 return View(model);
+                //return BadRequest(ModelState);
             }
             string token = await _authService.GenerateToken(user, role);
             TempData["Token"] = token; // Store token for possible API use
@@ -85,12 +93,14 @@ namespace OutpatientClinic.Presentation.Controllers
                 return RedirectToAction("Index", "Staff");
 
             return RedirectToAction("Index", "Home"); // Default redirection
+            //return Ok(new { message = "Login successful", token });
         }
 
         // GET: /Auth/Register
         public IActionResult Register()
         {
             return View();
+            //return Ok(new { message = "Registration successful"});
         }
 
         // POST: /Auth/Register
@@ -100,11 +110,13 @@ namespace OutpatientClinic.Presentation.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
+                //return BadRequest(ModelState);
 
             if (string.IsNullOrEmpty(model.Password))
             {
                 ModelState.AddModelError("", "Password is required.");
                 return View(model);
+                //return BadRequest(ModelState);
             }
 
             var user = new ApplicationUser
@@ -120,6 +132,7 @@ namespace OutpatientClinic.Presentation.Controllers
                 foreach (var error in result.Errors)
                     ModelState.AddModelError("", error.Description);
                 return View(model);
+                //return BadRequest(result.Errors);
             }
 
             // Assign role if provided
@@ -131,6 +144,7 @@ namespace OutpatientClinic.Presentation.Controllers
                     foreach (var error in roleResult.Errors)
                         ModelState.AddModelError("", error.Description);
                     return View(model);
+                    //return BadRequest(roleResult.Errors);
                 }
             }
 
@@ -141,6 +155,7 @@ namespace OutpatientClinic.Presentation.Controllers
             {
                 ModelState.AddModelError("", "User does not have an assigned role.");
                 return View(model);
+                //return BadRequest(ModelState);
             }
             var token = await _authService.GenerateToken(user, role);
 
@@ -155,6 +170,7 @@ namespace OutpatientClinic.Presentation.Controllers
                 return RedirectToAction("Index", "Staff");
 
             return RedirectToAction("Index", "Home"); // Default redirection
+            //return Ok(new { message = "Registration successful", token });
         }
 
         // POST: /Auth/Logout

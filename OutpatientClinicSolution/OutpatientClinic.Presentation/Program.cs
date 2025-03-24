@@ -34,7 +34,10 @@ namespace OutpatientClinic.Presentation
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<OutpatientClinicDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                //.EnableSensitiveDataLogging()
+                //.LogTo(Console.WriteLine, LogLevel.Information)
+                );
 
             // Configure Unit of Work
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

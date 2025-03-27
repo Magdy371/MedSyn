@@ -42,10 +42,11 @@ namespace OutpatientClinic.Business.Services.Implementations
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddDays(3),
                 signingCredentials: creds);
 
-            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+            //return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

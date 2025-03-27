@@ -104,26 +104,45 @@ namespace OutpatientClinic.Presentation.Controllers
         }
 
         // POST: /Auth/Register
+        // POST: /Auth/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
-                //return BadRequest(ModelState);
 
-            if (string.IsNullOrEmpty(model.Password))
+            // Check for existing username
+            var existingUserByUsername = await _userManager.FindByNameAsync(model.Username);
+            if (existingUserByUsername != null)
             {
-                ModelState.AddModelError("", "Password is required.");
+                ModelState.AddModelError("Username", "Username is already taken.");
                 return View(model);
-                //return BadRequest(ModelState);
             }
 
+            // Check for existing email
+            var existingUserByEmail = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUserByEmail != null)
+            {
+                ModelState.AddModelError("Email", "Email is already registered.");
+                return View(model);
+            }
+
+            // Check for existing phone number
+            var existingUserByPhone = _userManager.Users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber);
+            if (existingUserByPhone != null)
+            {
+                ModelState.AddModelError("PhoneNumber", "Phone number is already in use.");
+                return View(model);
+            }
+
+            // Proceed if all fields are unique
             var user = new ApplicationUser
             {
                 UserName = model.Username,
                 Email = model.Email,
-                FullName = model.FullName
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

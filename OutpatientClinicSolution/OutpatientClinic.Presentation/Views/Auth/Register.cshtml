@@ -24,6 +24,7 @@
 
             <form asp-action="Register" asp-controller="Auth" method="post">
 
+                <!-- Username Field -->
                 <div class="mb-3">
                     <label asp-for="Username" class="form-label">Username</label>
                     <div class="input-group">
@@ -31,7 +32,14 @@
                         <input asp-for="Username" class="form-control" id="Username" required>
                     </div>
                     <span asp-validation-for="Username" class="text-danger"></span>
+                    <!-- Add uniqueness error -->
+                    @if (ViewData.ModelState["Username"]?.Errors.Any(e => e.ErrorMessage == "Username is already taken.") == true)
+                    {
+                        <span class="text-danger">Username is already taken.</span>
+                    }
                 </div>
+
+                <!-- Email Field -->
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label">Email</label>
                     <div class="input-group">
@@ -39,6 +47,26 @@
                         <input asp-for="Email" class="form-control" id="Email" required>
                     </div>
                     <span asp-validation-for="Email" class="text-danger"></span>
+                    <!-- Add uniqueness error -->
+                    @if (ViewData.ModelState["Email"]?.Errors.Any(e => e.ErrorMessage == "Email is already registered.") == true)
+                    {
+                        <span class="text-danger">Email is already registered.</span>
+                    }
+                </div>
+
+                <!-- Phone Number Field -->
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        <input asp-for="PhoneNumber" class="form-control" id="PhoneNumber" required>
+                    </div>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    <!-- Add uniqueness error -->
+                    @if (ViewData.ModelState["PhoneNumber"]?.Errors.Any(e => e.ErrorMessage == "Phone number is already in use.") == true)
+                    {
+                        <span class="text-danger">Phone number is already in use.</span>
+                    }
                 </div>
 
                 <div class="mb-3">

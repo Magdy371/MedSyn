@@ -13,11 +13,19 @@
                             <i class="fa-solid fa-gauge"></i> Dashboard
                         </a>
                     </li>
-                    <li class="nav-item">
+                    @* <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "ManageUsers" ? "active" : "") text-white" href="@Url.Action("ManageUsers", "Admin")" aria-label="Manage Users">
                             <i class="fa-solid fa-users"></i> Manage Users
                         </a>
+                    </li> *@
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "") text-white"
+                           href="@Url.Action("Index", "User")"
+                           aria-label="Manage Users">
+                            <i class="fa-solid fa-users"></i> Manage Users
+                        </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Department" ? "active" : "") text-white" href="@Url.Action("Index", "Department")" aria-label="Departments">
                             <i class="fa-solid fa-building"></i> Departments

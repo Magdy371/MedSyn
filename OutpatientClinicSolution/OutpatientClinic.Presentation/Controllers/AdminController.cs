@@ -32,8 +32,8 @@ namespace OutpatientClinic.Presentation.Controllers
         // Dashboard view displaying summary statistics
         public async Task<IActionResult> Index()
         {
-            if (!await IsUserAdmin())
-                return Forbid();
+            //if (!await IsUserAdmin())
+            //    return Forbid();
             ViewBag.TotalUsers = await _adminService.GetTotalUsersAsync();
             ViewBag.PendingAppointments = await _adminService.GetPendingAppointmentsCountAsync();
             ViewBag.TotalRevenue = await _adminService.GetTotalRevenueAsync();

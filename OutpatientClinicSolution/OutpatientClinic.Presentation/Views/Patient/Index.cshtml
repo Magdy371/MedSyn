@@ -1,5 +1,40 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<OutpatientClinic.Presentation.Models.PatientViewModel>
 @{
+    ViewData["Title"] = "Patients";
 }
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Patient Directory</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Date of Birth</th>
+                    <th>Primary Doctor</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var patient in Model)
+                {
+                    <tr>
+                        <td>@patient.FullName</td>
+                        <td>@patient.Email</td>
+                        <td>@patient.PhoneNumber</td>
+                        <td>@(patient.Dob?.ToString("d") ?? "Not set")</td>
+                        <td>
+                            @(patient.PrimaryDoctorId.HasValue ? patient.PrimaryDoctorId.ToString() : "Not Assigned")
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-userId="@patient.UserId" class="btn btn-sm btn-info me-1">Details</a>
+                            <a asp-action="Edit" asp-route-userId="@patient.UserId" class="btn btn-sm btn-warning me-1">Edit</a>
+                            <a asp-action="Delete" asp-route-userId="@patient.UserId" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

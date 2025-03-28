@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using OutpatientClinic.Core.Repositories.Implementations;
 using OutpatientClinic.Core.Repositories.Interfaces;
 using OutpatientClinic.DataAccess.Context;
@@ -52,6 +53,8 @@ namespace OutpatientClinic.Core.UnitOfWorks
         public async Task<int> CompleteAsync() =>
             await _context.SaveChangesAsync();
 
+       
+
         /// <summary>
         /// Releases the unmanaged resources used by the <see cref="UnitOfWork"/> and optionally releases the managed resources.
         /// </summary>
@@ -76,5 +79,7 @@ namespace OutpatientClinic.Core.UnitOfWorks
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        public async Task<IDbContextTransaction> BeginTransactionAsync() =>
+        await _context.Database.BeginTransactionAsync();
     }
 }

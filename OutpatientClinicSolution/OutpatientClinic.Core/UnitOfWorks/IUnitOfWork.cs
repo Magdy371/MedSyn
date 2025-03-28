@@ -1,4 +1,6 @@
-﻿using OutpatientClinic.Core.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
+using OutpatientClinic.Core.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +13,6 @@ namespace OutpatientClinic.Core.UnitOfWorks
     {
         IRepository<T> Repository<T>() where T : class;
         Task<int> CompleteAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

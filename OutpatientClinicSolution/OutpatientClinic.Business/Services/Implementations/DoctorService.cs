@@ -2,6 +2,10 @@
 using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.UnitOfWorks;
 using OutpatientClinic.DataAccess.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 public class DoctorService : IDoctorService
 {
@@ -58,8 +62,9 @@ public class DoctorService : IDoctorService
     public async Task<Doctor?> GetDoctorByLicenseNumberAsync(string licenseNumber)
     {
         var doctors = await _unitOfWork.Repository<Doctor>().FindAsync(d => d.LicenseNumber == licenseNumber);
-        return doctors.FirstOrDefault() ?? throw new KeyNotFoundException($"Doctor with licenseNumber '{licenseNumber}' not found.");
+        return doctors.FirstOrDefault() ?? throw new KeyNotFoundException($"Doctor with license number '{licenseNumber}' not found.");
     }
+
     public async Task<IEnumerable<Doctor>> GetAllDoctorsWithDetailsAsync()
     {
         return await _unitOfWork.Repository<Doctor>()
@@ -67,5 +72,20 @@ public class DoctorService : IDoctorService
             .Include(d => d.DoctorNavigation)
             .Include(d => d.Department)
             .ToListAsync();
+    }
+
+    // NEW: Implementation of GetDoctorsByDepartmentAsync
+    public async Task<IEnumerable<Doctor>> GetDoctorsByDepartmentAsync(string? department)
+    {
+        var query = _unitOfWork.Repository<Doctor>()
+            .Query()
+            .Include(d => d.Department)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(department))
+        {
+            query = query.Where(d => d.Department.DepartmentName.Contains(department));
+        }
+        return await query.ToListAsync();
     }
 }

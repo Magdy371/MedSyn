@@ -27,6 +27,12 @@ namespace OutpatientClinic.Business.Services.Implementations
             await _unitOfWork.CompleteAsync();
             return patient;
         }
+        public async Task<Patient?> GetPatientByUserIdAsync(string userId)
+        {
+            return await _unitOfWork.Repository<Patient>()
+                .FindAsync(p => p.UserId == userId)
+                .ContinueWith(t => t.Result.FirstOrDefault());
+        }
 
         public async Task<bool> UpdatePatientAsync(Patient patient)
         {

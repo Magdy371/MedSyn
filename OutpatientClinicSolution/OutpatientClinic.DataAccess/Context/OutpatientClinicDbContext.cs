@@ -436,6 +436,7 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(e => e.PrimaryDoctorId, "IX_Patients_PrimaryDoctorID");
 
             entity.Property(e => e.PatientId).HasColumnName("PatientID");
+            entity.Property(e => e.UserId).IsRequired();
             entity.Property(e => e.ContactId).HasColumnName("ContactID");
             entity.Property(e => e.CreatedBy).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)

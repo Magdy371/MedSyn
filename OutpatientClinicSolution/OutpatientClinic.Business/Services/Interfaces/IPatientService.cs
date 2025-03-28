@@ -9,6 +9,7 @@ namespace OutpatientClinic.Business.Services.Interfaces
         Task<IEnumerable<Patient>> GetAllPatientsAsync();
         Task<Patient> GetPatientByIdAsync(int id);
         Task<Patient> CreatePatientAsync(Patient patient);
+        Task<Patient?> GetPatientByUserIdAsync(string userId);
         Task<bool> UpdatePatientAsync(Patient patient);
         Task<bool> DeletePatientAsync(int id);
         Task<IEnumerable<Patient>> FindPatientsAsync(string name);

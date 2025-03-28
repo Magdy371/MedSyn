@@ -1,0 +1,22 @@
+﻿@model OutpatientClinic.Presentation.Models.PatientViewModel
+@{
+    ViewData["Title"] = "Patient Details";
+}
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Patient Details</h2>
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4>@Model.FullName</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+            <p><strong>Date of Birth:</strong> @(Model.Dob?.ToString("d") ?? "Not set")</p>
+            <p><strong>Primary Doctor:</strong> @(Model.PrimaryDoctorId.HasValue ? Model.PrimaryDoctorId.ToString() : "Not Assigned")</p>
+        </div>
+        <div class="card-footer text-end">
+            <a asp-action="Edit" asp-route-userId="@Model.UserId" class="btn btn-warning me-2">Edit</a>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>

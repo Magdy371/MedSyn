@@ -6,6 +6,7 @@ namespace OutpatientClinic.DataAccess.Entities;
 public partial class Patient
 {
     public int PatientId { get; set; }
+    public string UserId { get; set; }
 
     public string FirstName { get; set; } = null!;
 

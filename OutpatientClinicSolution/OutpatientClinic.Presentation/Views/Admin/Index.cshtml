@@ -5,34 +5,30 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar Navigation -->
-        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse shadow-lg">
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active" : "") text-white" href="@Url.Action("Index", "Admin")" aria-label="Dashboard">
+                        <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active" : "")"
+                           href="@Url.Action("Index", "Admin")" aria-label="Dashboard">
                             <i class="fa-solid fa-gauge"></i> Dashboard
                         </a>
                     </li>
-                    @* <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "ManageUsers" ? "active" : "") text-white" href="@Url.Action("ManageUsers", "Admin")" aria-label="Manage Users">
-                            <i class="fa-solid fa-users"></i> Manage Users
-                        </a>
-                    </li> *@
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "") text-white"
-                           href="@Url.Action("Index", "User")"
-                           aria-label="Manage Users">
+                        <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")"
+                           href="@Url.Action("Index", "User")" aria-label="Manage Users">
                             <i class="fa-solid fa-users"></i> Manage Users
                         </a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Department" ? "active" : "") text-white" href="@Url.Action("Index", "Department")" aria-label="Departments">
+                        <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Department" ? "active" : "")"
+                           href="@Url.Action("Index", "Department")" aria-label="Departments">
                             <i class="fa-solid fa-building"></i> Departments
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctor" ? "active" : "") text-white" href="@Url.Action("Index", "Doctor")" aria-label="Doctors">
+                        <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctor" ? "active" : "")"
+                           href="@Url.Action("Index", "Doctor")" aria-label="Doctors">
                             <i class="fa-solid fa-user-doctor"></i> Doctors
                         </a>
                     </li>
@@ -43,64 +39,39 @@
         <!-- Main Content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Admin Dashboard</h1>
+                <h1 class="h2 text-primary fw-bold">Admin Dashboard</h1>
             </div>
 
             <!-- Quick Access Panels -->
             <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-primary text-white">
-                            <i class="fa-solid fa-building"></i> Department Management
-                        </div>
-                        <div class="card-body">
-                            <p>Manage all hospital departments, update, or delete them.</p>
-                            <a href="@Url.Action("Index", "Department")" class="btn btn-primary" data-bs-toggle="tooltip" title="Go to Department Management">Manage Departments</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-success text-white">
-                            <i class="fa-solid fa-user-doctor"></i> Doctor Management
-                        </div>
-                        <div class="card-body">
-                            <p>View, edit, or remove doctors and filter them by department or specialty.</p>
-                            <a href="@Url.Action("Index", "Doctor")" class="btn btn-success" data-bs-toggle="tooltip" title="Go to Doctor Management">Manage Doctors</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-info text-white">
-                            <i class="fa-solid fa-address-book"></i> Contact Info Management
-                        </div>
-                        <div class="card-body">
-                            <p>Manage contact information for users, staff, and facilities.</p>
-                            <a href="@Url.Action("Index", "ContactInfo")" class="btn btn-info" data-bs-toggle="tooltip" title="Go to Contact Info Management">Manage Contact Info</a>
+                @foreach (var panel in new[] {
+                new { Title = "Department Management", Icon = "fa-building", Description = "Manage all hospital departments, update, or delete them.", Controller = "Department", Color = "primary" },
+                new { Title = "Doctor Management", Icon = "fa-user-doctor", Description = "View, edit, or remove doctors and filter them by department or specialty.", Controller = "Doctor", Color = "success" },
+                new { Title = "Contact Info Management", Icon = "fa-address-book", Description = "Manage contact information for users, staff, and facilities.", Controller = "ContactInfo", Color = "info" },
+                new { Title = "Staff Management", Icon = "fa-users", Description = "Manage staff details, roles, and assignments.", Controller = "Staff", Color = "warning" },
+                new { Title = "Patient Management", Icon = "fa-hospital-user", Description = "Manage patient records, medical history, and appointments.", Controller = "Patient", Color = "danger" }
+                })
+                {
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-lg border-0 rounded-4">
+                            <div class="card-header bg-@panel.Color text-white text-center fw-bold">
+                                <i class="fa-solid @panel.Icon fa-2x"></i>
+                                <h5 class="mt-2">@panel.Title</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <p class="text-muted">@panel.Description</p>
+                                <a href="@Url.Action("Index", panel.Controller)" class="btn btn-outline-@panel.Color shadow-sm px-4 py-2 rounded-pill"
+                                   data-bs-toggle="tooltip" title="Go to @panel.Title">Manage @panel.Title</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-warning text-white">
-                            <i class="fa-solid fa-users"></i> Staff Management
-                        </div>
-                        <div class="card-body">
-                            <p>Manage staff details, roles, and assignments.</p>
-                            <a href="@Url.Action("Index", "Staff")" class="btn btn-warning" data-bs-toggle="tooltip" title="Go to Staff Management">Manage Staff</a>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
         </main>
     </div>
 
     <!-- Footer -->
-    <footer class="text-center mt-4">
-        <p>&copy; 2025 Outpatient Clinic. All rights reserved.</p>
+    <footer class="text-center mt-4 text-muted">
+        <p class="fw-light">&copy; @DateTime.Now.Year Outpatient Clinic. All rights reserved.</p>
     </footer>
 </div>

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.DTOs;
+using OutpatientClinic.DataAccess.Entities;
 using System.Threading.Tasks;
 
 namespace OutpatientClinic.Presentation.Controllers
@@ -12,17 +14,26 @@ namespace OutpatientClinic.Presentation.Controllers
         private readonly IAdminService _adminService;
         private readonly IAppointmentService _appointmentService;
         private readonly IBillingService _billingService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public AdminController(IAdminService adminService, IAppointmentService appointmentService, IBillingService billingService)
         {
             _adminService = adminService;
             _appointmentService = appointmentService;
             _billingService = billingService;
+            UserManager<ApplicationUser> userManager;
+        }
+        private async Task<bool> IsUserAdmin()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return user != null && await _userManager.IsInRoleAsync(user, "Admin");
         }
 
         // Dashboard view displaying summary statistics
         public async Task<IActionResult> Index()
         {
+            if (!await IsUserAdmin())
+                return Forbid();
             ViewBag.TotalUsers = await _adminService.GetTotalUsersAsync();
             ViewBag.PendingAppointments = await _adminService.GetPendingAppointmentsCountAsync();
             ViewBag.TotalRevenue = await _adminService.GetTotalRevenueAsync();

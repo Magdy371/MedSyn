@@ -75,11 +75,25 @@ public class DoctorService : IDoctorService
     }
 
     // NEW: Implementation of GetDoctorsByDepartmentAsync
+    //public async Task<IEnumerable<Doctor>> GetDoctorsByDepartmentAsync(string? department)
+    //{
+    //    var query = _unitOfWork.Repository<Doctor>()
+    //        .Query()
+    //        .Include(d => d.Department)
+    //        .AsQueryable();
+
+    //    if (!string.IsNullOrWhiteSpace(department))
+    //    {
+    //        query = query.Where(d => d.Department.DepartmentName.Contains(department));
+    //    }
+    //    return await query.ToListAsync();
+    //}
     public async Task<IEnumerable<Doctor>> GetDoctorsByDepartmentAsync(string? department)
     {
         var query = _unitOfWork.Repository<Doctor>()
             .Query()
             .Include(d => d.Department)
+            .Include(d => d.DoctorNavigation) // Add this to include the Staff navigation property
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(department))

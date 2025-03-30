@@ -115,6 +115,24 @@ namespace OutpatientClinic.Presentation.Controllers
                 return View(viewModel);
             }
 
+            // Update the ApplicationUser's FullName
+            var user = await _userManager.FindByIdAsync(viewModel.UserId);
+            if (user != null)
+            {
+                user.FullName = viewModel.FullName;
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    foreach (var error in updateResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    viewModel.AvailableDoctors = await GetDoctorsSelectListAsync(viewModel.WantedDepartment);
+                    return View(viewModel);
+                }
+            }
+
+            // Update the Patient record
             var patientRecord = await _patientService.GetPatientByUserIdAsync(viewModel.UserId);
             if (patientRecord == null)
             {
@@ -190,11 +208,15 @@ namespace OutpatientClinic.Presentation.Controllers
         private async Task<IEnumerable<SelectListItem>> GetDoctorsSelectListAsync(string? department)
         {
             var doctors = await _doctorService.GetDoctorsByDepartmentAsync(department);
-            return doctors.Select(d => new SelectListItem
-            {
-                Value = d.DoctorId.ToString(),
-                Text = d.DoctorNavigation.FullName // Use the FullName from the related Staff entity
-            });
+            return doctors
+                .Where(d => d.DoctorNavigation != null) // Filter out doctors without navigation
+                .Select(d => new SelectListItem
+                {
+                    Value = d.DoctorId.ToString(),
+                    Text = d.DoctorNavigation != null
+                        ? $"{d.DoctorNavigation.FirstName} {d.DoctorNavigation.LastName}"
+                        : $"Doctor ID: {d.DoctorId}"
+                });
         }
 
     }

@@ -1,40 +1,132 @@
 ﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Staff>
-
 @{
-    ViewData["Title"] = "Manage Staff";
+    ViewData["Title"] = "Staff Management";
 }
 
-<h2>Staff Members</h2>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4 text-indigo fw-bold">
+            <i class="fas fa-users-cog me-2"></i>Staff Members
+        </h1>
+        <a href="@Url.Action("Create")" class="btn btn-indigo btn-lg">
+            <i class="fas fa-user-plus me-2"></i>Add New Staff
+        </a>
+    </div>
 
-<a href="@Url.Action("Create")" class="btn btn-primary mb-3"><i class="fa-solid fa-plus"></i> Add Staff</a>
+    <div class="card shadow-lg">
+        <div class="card-header bg-indigo text-white py-3">
+            <h5 class="mb-0"><i class="fas fa-list-check me-2"></i>Staff Directory</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-indigo text-white">
+                        <tr>
+                            <th><i class="fas fa-user-tie me-2"></i>Name</th>
+                            <th><i class="fas fa-user-plus me-2"></i>Created By</th>
+                            <th><i class="fas fa-calendar-plus me-2"></i>Created Date</th>
+                            <th class="text-center"><i class="fas fa-circle-info me-2"></i>Status</th>
+                            <th class="text-center"><i class="fas fa-tools me-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var staff in Model)
+                        {
+                            <tr class="@(staff.IsDeleted == true ? "table-danger" : "") hover-shadow">
+                                <td class="fw-bold">
+                                    <i class="fas fa-user-shield me-2"></i>
+                                    @staff.FirstName @staff.LastName
+                                </td>
+                                <td>@staff.CreatedBy</td>
+                                <td class="text-nowrap">@staff.CreatedDate?.ToString("MMM dd, yyyy")</td>
+                                <td class="text-center">
+                                    @if (staff.IsDeleted == true)
+                                    {
+                                        <span class="badge bg-danger rounded-pill">
+                                            <i class="fas fa-user-slash me-1"></i>Deleted
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success rounded-pill">
+                                            <i class="fas fa-user-check me-1"></i>Active
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("Edit", new { id = staff.StaffId })"
+                                           class="btn btn-warning btn-sm rounded-pill me-1"
+                                           data-bs-toggle="tooltip" title="Edit Staff">
+                                            <i class="fas fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = staff.StaffId })"
+                                           class="btn btn-danger btn-sm rounded-pill"
+                                           data-bs-toggle="tooltip" title="Delete Staff">
+                                            <i class="fas fa-trash-can"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<table class="table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Name</th>
-            <th>Created By</th>
-            <th>Created Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var staff in Model)
-        {
-            <tr class="@(staff.IsDeleted == true ? "table-danger" : "")">
-                <td>@staff.FirstName @staff.LastName</td>
-                <td>@staff.CreatedBy</td>
-                <td>@staff.CreatedDate?.ToString("yyyy-MM-dd")</td>
-                <td>@(staff.IsDeleted == true ? "Deleted" : "Active")</td>
-                <td>
-                    <a href="@Url.Action("Edit", new { id = staff.StaffId })" class="btn btn-warning btn-sm">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </a>
-                    <a href="@Url.Action("Delete", new { id = staff.StaffId })" class="btn btn-danger btn-sm">
-                        <i class="fa-solid fa-trash"></i> Delete
-                    </a>
-                </td>
-            </tr>
+<style>
+    .bg-indigo {
+        background: linear-gradient(45deg, #4b0082, #6610f2) !important;
+    }
+
+    .btn-indigo {
+        background-color: #4b0082;
+        color: white;
+        border: none;
+    }
+
+        .btn-indigo:hover {
+            background-color: #3a0066;
+            color: white;
         }
-    </tbody>
-</table>
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(75, 0, 130, 0.05);
+        transform: translateX(5px);
+        transition: all 0.3s ease;
+    }
+
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+
+    .badge.rounded-pill {
+        padding: 0.6em 1.2em;
+        font-size: 0.9em;
+        min-width: 100px;
+    }
+
+    .btn-group .btn {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .text-nowrap {
+        white-space: nowrap;
+    }
+</style>
+
+<script>
+    // Initialize Bootstrap tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>

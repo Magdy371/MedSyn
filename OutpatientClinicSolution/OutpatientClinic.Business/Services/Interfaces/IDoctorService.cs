@@ -16,6 +16,7 @@ namespace OutpatientClinic.Business.Services.Interfaces
         Task<Doctor?> GetDoctorByLicenseNumberAsync(string licenseNumber);
         Task<IEnumerable<Doctor>> GetAllDoctorsWithDetailsAsync();
         Task<IEnumerable<Doctor>> GetDoctorsByDepartmentAsync(string? department);
+        Task<Doctor?> GetDoctorByUserIdAsync(string userId);
 
     }
 }

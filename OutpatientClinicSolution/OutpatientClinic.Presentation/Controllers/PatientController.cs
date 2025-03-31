@@ -195,14 +195,37 @@ namespace OutpatientClinic.Presentation.Controllers
             if (string.IsNullOrEmpty(userId))
                 return NotFound();
 
+            // Retrieve patient by userId
             var patientRecord = await _patientService.GetPatientByUserIdAsync(userId);
             if (patientRecord != null)
             {
+                // Delete the patient record
                 await _patientService.DeletePatientAsync(patientRecord.PatientId);
+            }
+
+            // Retrieve user from Identity system
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                // Check if the user is in the "Patient" role
+                var isPatient = await _userManager.IsInRoleAsync(user, "Patient");
+                if (isPatient)
+                {
+                    var result = await _userManager.DeleteAsync(user);
+                    if (!result.Succeeded)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return View("Delete", new PatientViewModel { UserId = userId });
+                    }
+                }
             }
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // Helper to build a doctor list for a given department
         private async Task<IEnumerable<SelectListItem>> GetDoctorsSelectListAsync(string? department)

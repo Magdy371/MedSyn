@@ -1,8 +1,69 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Outpatient Clinic System - Home";
+    Layout = null; // Use this if you want a standalone landing page without a shared layout
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap & Font Awesome CDN for quick styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Separated CSS File -->
+    <link rel="stylesheet" href="~/css/landing.css" />
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <!-- Brand Logo -->
+            <img src="~/images/clinic_logo.png" alt="Clinic Logo" class="brand-logo mb-3" />
+            <h1>Welcome to Outpatient Clinic System</h1>
+            <p>Your one-stop solution for seamless and efficient healthcare services.</p>
+            <a href="#features" class="btn cta-btn">Discover More</a>
+        </div>
+    </section>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-user-md"></i>
+                        <h3>Expert Doctors</h3>
+                        <p>Access to top-notch specialists to provide you with the best care.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <h3>Easy Appointments</h3>
+                        <p>Schedule your appointments effortlessly online.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-notes-medical"></i>
+                        <h3>Comprehensive Records</h3>
+                        <p>Securely store and access your health records anytime.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Outpatient Clinic System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

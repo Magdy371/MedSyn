@@ -1,69 +1,151 @@
 ﻿@{
-    ViewData["Title"] = "Outpatient Clinic System - Home";
-    Layout = null; // Use this if you want a standalone landing page without a shared layout
+    ViewData["Title"] = "Premium Patient Care | Cliniva";
+    Layout = "_Layout";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <!-- Bootstrap & Font Awesome CDN for quick styling -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Separated CSS File -->
-    <link rel="stylesheet" href="~/css/landing.css" />
-</head>
-<body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-content container">
-            <!-- Brand Logo -->
-            <img src="~/images/clinic_logo.png" alt="Clinic Logo" class="brand-logo mb-3" />
-            <h1>Welcome to Outpatient Clinic System</h1>
-            <p>Your one-stop solution for seamless and efficient healthcare services.</p>
-            <a href="#features" class="btn cta-btn">Discover More</a>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="feature-item">
-                        <i class="fas fa-user-md"></i>
-                        <h3>Expert Doctors</h3>
-                        <p>Access to top-notch specialists to provide you with the best care.</p>
-                    </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/patient-care.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+}
+
+<div class="medical-hero" role="banner">
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <h1 class="hero-title scroll-reveal">
+                    Exceptional Care<br>
+                    <span class="highlight">When You Need It Most</span>
+                </h1>
+                <div class="hero-actions scroll-reveal">
+                    <a href="@Url.Action("Register", "Auth")" class="btn btn-primary btn-lg" aria-label="Register as a new patient">
+                        <i class="fas fa-user-plus me-2"></i>New Patient
+                    </a>
+                    <a href="@Url.Action("Login", "Auth")" class="btn btn-outline-light btn-lg" aria-label="Login as a returning patient">
+                        <i class="fas fa-sign-in-alt me-2"></i>Returning Patient
+                    </a>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-item">
+                <div class="emergency-banner scroll-reveal" role="alert">
+                    <i class="fas fa-ambulance"></i>
+                    Emergency? Call: (555) 123-4567
+                </div>
+            </div>
+            <div class="col-lg-6 scroll-reveal">
+                <img src="~/images/doctor-patient.png"
+                     class="img-fluid medical-image"
+                     alt="Doctor consultation"
+                     loading="lazy">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="care-features" role="region" aria-labelledby="care-features-heading">
+    <div class="container">
+        <h2 id="care-features-heading" class="visually-hidden">Care Features</h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3 scroll-reveal">
+                <div class="feature-card">
+                    <div class="feature-icon bg-primary">
                         <i class="fas fa-calendar-check"></i>
-                        <h3>Easy Appointments</h3>
-                        <p>Schedule your appointments effortlessly online.</p>
                     </div>
+                    <h3>Easy Appointments</h3>
+                    <p>Book consultations 24/7 through our portal</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-item">
-                        <i class="fas fa-notes-medical"></i>
-                        <h3>Comprehensive Records</h3>
-                        <p>Securely store and access your health records anytime.</p>
+            </div>
+
+            <div class="col-md-6 col-lg-3 scroll-reveal">
+                <div class="feature-card">
+                    <div class="feature-icon bg-success">
+                        <i class="fas fa-file-medical"></i>
                     </div>
+                    <h3>Digital Records</h3>
+                    <p>Secure access to medical history</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 scroll-reveal">
+                <div class="feature-card">
+                    <div class="feature-icon bg-warning">
+                        <i class="fas fa-prescription-bottle"></i>
+                    </div>
+                    <h3>E-Prescriptions</h3>
+                    <p>Direct pharmacy delivery available</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 scroll-reveal">
+                <div class="feature-card">
+                    <div class="feature-icon bg-danger">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>24/7 Monitoring</h3>
+                    <p>Connected health tracking</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Outpatient Clinic System. All rights reserved.</p>
+<div class="stats-section" role="region" aria-labelledby="stats-section-heading">
+    <div class="container">
+        <h2 id="stats-section-heading" class="visually-hidden">Statistics</h2>
+        <div class="row g-4">
+            <div class="col-6 col-md-3 scroll-reveal">
+                <div class="stat-card">
+                    <div class="stat-value">150+</div>
+                    <div class="stat-label">Specialists</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 scroll-reveal">
+                <div class="stat-card">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Emergency Care</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 scroll-reveal">
+                <div class="stat-card">
+                    <div class="stat-value">98%</div>
+                    <div class="stat-label">Patient Satisfaction</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 scroll-reveal">
+                <div class="stat-card">
+                    <div class="stat-value">50k+</div>
+                    <div class="stat-label">Patients Yearly</div>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
+</div>
 
-    <!-- Bootstrap JS (Optional) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<div class="testimonials-section" role="region" aria-labelledby="testimonials-section-heading">
+    <div class="container">
+        <h2 id="testimonials-section-heading" class="text-center">What Our Patients Say</h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4 scroll-reveal">
+                <div class="testimonial-card">
+                    <p>"The care I received was exceptional. The staff was friendly and professional."</p>
+                    <div class="testimonial-author">- John Doe</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 scroll-reveal">
+                <div class="testimonial-card">
+                    <p>"I felt very comfortable and well taken care of during my visit. Highly recommend!"</p>
+                    <div class="testimonial-author">- Jane Smith</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 scroll-reveal">
+                <div class="testimonial-card">
+                    <p>"The online appointment booking was so convenient. Great service overall."</p>
+                    <div class="testimonial-author">- Michael Brown</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/medical.js" defer></script>
+}

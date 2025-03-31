@@ -1,0 +1,108 @@
+﻿:root {
+    --medical-blue: #A3C4DC; /* Softer blue */
+    --clean-white: #F0F4F8; /* Slightly off-white */
+    --alert-red: #E57373; /* Less intense red */
+    --success-green: #81C784; /* Softer green */
+}
+
+
+.medical-hero {
+    background: linear-gradient(rgba(33,118,174,0.9), rgba(33,118,174,0.9)), url('../images/medical-bg.jpg');
+    background-size: cover;
+    min-height: 90vh;
+    padding: 4rem 0;
+    color: var(--clean-white);
+}
+
+.hero-title {
+    font-weight: 700;
+    font-size: 3.5rem;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+}
+
+.highlight {
+    color: #FFD700;
+    font-weight: 500;
+}
+
+.medical-image {
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.care-features {
+    padding: 5rem 0;
+    background: var(--clean-white);
+}
+
+.feature-card {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 1.75rem;
+    color: white;
+}
+
+.emergency-banner {
+    background: var(--alert-red);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 500;
+}
+
+.stats-section {
+    background: #f1faee;
+    padding: 4rem 0;
+}
+
+.stat-card {
+    text-align: center;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--medical-blue);
+}
+
+.stat-label {
+    color: #457b9d;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}

@@ -1,0 +1,89 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Clinic
+
+@{
+    ViewData["Title"] = "Create Clinic";
+}
+
+<h1>Create Clinic</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="ClinicName" class="control-label"></label>
+                <input asp-for="ClinicName" class="form-control"
+                       list="departmentSuggestions"
+                       placeholder="Type clinic name or select department suggestion" />
+                <datalist id="departmentSuggestions">
+                    @foreach (var department in ViewBag.DepartmentSuggestions)
+                    {
+                        <option value="@department.DepartmentName"></option>
+                    }
+                </datalist>
+                <small class="form-text text-muted">
+                    Existing departments: @string.Join(", ", ((IEnumerable<OutpatientClinic.DataAccess.Entities.Department>)ViewBag.DepartmentSuggestions).Select(d => d.DepartmentName))
+                </small>
+                <span asp-validation-for="ClinicName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card suggestion-card">
+            <div class="card-header">
+                <h5>Department Name Suggestions</h5>
+            </div>
+            <div class="card-body">
+                @foreach (var department in ViewBag.DepartmentSuggestions)
+                {
+                    <span class="badge bg-primary me-1 mb-1 suggestion-tag">
+                        @department.DepartmentName
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .suggestion-card {
+        margin-top: 2rem;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    }
+
+    .suggestion-tag {
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+        .suggestion-tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.15);
+        }
+</style>
+<script>
+    document.querySelectorAll('.suggestion-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+            document.getElementById('ClinicName').value = tag.innerText;
+        });
+    });
+</script>

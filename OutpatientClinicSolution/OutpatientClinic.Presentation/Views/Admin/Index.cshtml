@@ -4,40 +4,47 @@
 
 <div class="container-fluid admin-dashboard">
     <div class="row">
-        <!-- Enhanced Sidebar Navigation -->
+        <!-- Sidebar Navigation -->
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
             <div class="position-sticky pt-3">
                 <div class="sidebar-header text-center py-4">
-                    <i class="fas fa-hospital fa-3x text-white mb-3"></i>
-                    <h4 class="text-white mb-0">Clinic Admin</h4>
+                    <i class="fas fa-hospital fa-3x text-gradient mb-3"></i>
+                    <h4 class="text-gradient mb-0">Clinic OS</h4>
                 </div>
                 <ul class="nav flex-column">
-                    <li class="nav-item">
+                    <li class="nav-item hover-glow">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active" : "")"
                            href="@Url.Action("Index", "Admin")">
                             <i class="fas fa-gauge-high me-2"></i> Dashboard
-                            <div class="active-indicator"></div>
+                            <div class="active-pulse"></div>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hover-glow">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")"
                            href="@Url.Action("Index", "User")">
                             <i class="fas fa-users-gear me-2"></i> Manage Users
-                            <div class="active-indicator"></div>
+                            <div class="active-pulse"></div>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hover-glow">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Department" ? "active" : "")"
                            href="@Url.Action("Index", "Department")">
                             <i class="fas fa-building-circle-check me-2"></i> Departments
-                            <div class="active-indicator"></div>
+                            <div class="active-pulse"></div>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hover-glow">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Clinic" ? "active" : "")"
+                           href="@Url.Action("Index", "Clinic")">
+                            <i class="fas fa-clinic-medical me-2"></i> Clinics
+                            <div class="active-pulse"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item hover-glow">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctor" ? "active" : "")"
                            href="@Url.Action("Index", "Doctor")">
                             <i class="fas fa-user-doctor me-2"></i> Doctors
-                            <div class="active-indicator"></div>
+                            <div class="active-pulse"></div>
                         </a>
                     </li>
                 </ul>
@@ -48,35 +55,32 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <!-- Dashboard Header -->
             <div class="dashboard-header py-4 mb-4">
-                <h1 class="display-5 fw-bold text-gradient">
-                    <i class="fas fa-shield-heart me-3"></i>Admin Dashboard
+                <h1 class="display-5 fw-bold text-gradient floating">
+                    <i class="fas fa-shield-heart me-3"></i>Admin Hub
                 </h1>
-            </div>
-
-            <!-- Statistics Cards -->
-            <div class="row mb-4">
-                <!-- Add statistics cards here if needed -->
             </div>
 
             <!-- Management Panels Grid -->
             <div class="row g-4">
                 @foreach (var panel in new[] {
                 new { Title = "Departments", Icon = "fa-building", Description = "Manage hospital departments", Controller = "Department", Color = "primary" },
+                new { Title = "Clinics", Icon = "fa-clinic-medical", Description = "Manage clinic locations", Controller = "Clinic", Color = "info" },
                 new { Title = "Doctors", Icon = "fa-user-doctor", Description = "Manage medical staff", Controller = "Doctor", Color = "success" },
                 new { Title = "Staff", Icon = "fa-users", Description = "Manage clinic staff", Controller = "Staff", Color = "warning" },
                 new { Title = "Patients", Icon = "fa-hospital-user", Description = "Manage patient records", Controller = "Patient", Color = "danger" }
                 })
                 {
                     <div class="col-xxl-3 col-lg-6">
-                        <div class="management-card card-@panel.Color hover-scale">
-                            <div class="card-icon">
+                        <div class="management-card hover-3d" data-color="@panel.Color">
+                            <div class="card-icon neon-icon">
                                 <i class="fa-solid @panel.Icon"></i>
                             </div>
                             <h3 class="card-title">@panel.Title</h3>
                             <p class="card-description">@panel.Description</p>
-                            <a href="@Url.Action("Index", panel.Controller)" class="card-link">
+                            <a href="@Url.Action("Index", panel.Controller)" class="cyber-link">
                                 Manage <i class="fas fa-arrow-right-long"></i>
                             </a>
+                            <div class="cyber-border"></div>
                         </div>
                     </div>
                 }
@@ -84,9 +88,9 @@
         </main>
     </div>
 
-    <!-- Dashboard Footer -->
+    <!-- Footer -->
     <footer class="dashboard-footer mt-5 py-3 text-center">
-        <p class="mb-0 text-muted">
+        <p class="mb-0 text-gradient">
             <i class="fas fa-shield-virus me-2"></i>
             Clinic Management System © @DateTime.Now.Year
         </p>
@@ -94,57 +98,60 @@
 </div>
 
 <style>
+    :root {
+        --neon-cyan: #00f3ff;
+        --neon-pink: #ff00ff;
+        --cyber-bg: #0a0a12;
+        --cyber-border: rgba(0,243,255,0.3);
+        --glass-bg: rgba(255,255,255,0.05);
+    }
+
     .admin-dashboard {
-        --sidebar-width: 280px;
-        --primary-gradient: linear-gradient(135deg, #2c3e50, #3498db);
-        --sidebar-bg: #1a2b3c;
+        background: var(--cyber-bg);
+        color: white;
+        min-height: 100vh;
     }
 
     .sidebar {
-        background: var(--sidebar-bg);
-        min-height: 100vh;
-        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-        width: var(--sidebar-width);
-    }
-
-    .sidebar-header {
-        background: rgba(255,255,255,0.1);
-        margin: -1rem;
-        padding: 2rem;
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid var(--cyber-border);
     }
 
     .nav-link {
-        color: #e0e0e0 !important;
+        color: #aaa !important;
         padding: 1rem 2rem;
-        position: relative;
+        margin: 0.5rem;
+        border-radius: 8px;
         transition: all 0.3s ease;
     }
 
         .nav-link:hover {
-            background: rgba(255,255,255,0.05);
-            transform: translateX(5px);
+            background: linear-gradient(90deg, rgba(0,243,255,0.1), transparent);
+            box-shadow: 0 0 15px rgba(0,243,255,0.2);
+            transform: translateX(10px);
         }
 
         .nav-link.active {
-            background: linear-gradient(90deg, rgba(52,152,219,0.2), transparent);
-            color: #fff !important;
-            border-left: 4px solid #3498db;
+            background: linear-gradient(90deg, rgba(0,243,255,0.2), transparent);
+            border-left: 3px solid var(--neon-cyan);
         }
 
     .management-card {
-        background: #fff;
+        background: var(--glass-bg);
+        border: 1px solid var(--cyber-border);
         border-radius: 15px;
         padding: 2rem;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-        border: none;
+        backdrop-filter: blur(5px);
     }
 
         .management-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0,243,255,0.2);
         }
 
-    .card-icon {
+    .neon-icon {
         width: 60px;
         height: 60px;
         border-radius: 12px;
@@ -153,54 +160,62 @@
         justify-content: center;
         font-size: 1.5rem;
         margin-bottom: 1.5rem;
+        background: rgba(0,243,255,0.1);
+        border: 1px solid var(--cyber-border);
+        color: var(--neon-cyan);
     }
-
-    .card-primary .card-icon {
-        background: #e3f2fd;
-        color: #2196f3;
-    }
-
-    .card-success .card-icon {
-        background: #e8f5e9;
-        color: #4caf50;
-    }
-
-    .card-warning .card-icon {
-        background: #fff3e0;
-        color: #ff9800;
-    }
-
-    .card-danger .card-icon {
-        background: #ffebee;
-        color: #f44336;
-    }
-
-    .card-title {
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .card-link {
-        color: #666;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-        .card-link:hover {
-            color: #333;
-            letter-spacing: 0.5px;
-        }
 
     .text-gradient {
-        background: linear-gradient(45deg, #2c3e50, #3498db);
+        background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
+    .cyber-link {
+        color: var(--neon-cyan);
+        text-decoration: none;
+        position: relative;
+        padding-right: 25px;
+        transition: all 0.3s ease;
+    }
+
+        .cyber-link:hover {
+            letter-spacing: 1px;
+            padding-right: 35px;
+        }
+
+        .cyber-link i {
+            transition: inherit;
+            position: absolute;
+            right: 0;
+        }
+
+        .cyber-link:hover i {
+            right: -10px;
+        }
+
     .dashboard-footer {
-        border-top: 1px solid rgba(0,0,0,0.1);
-        background: rgba(255,255,255,0.9);
+        border-top: 1px solid var(--cyber-border);
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .floating {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .hover-glow:hover {
+        filter: drop-shadow(0 0 10px rgba(0,243,255,0.5));
     }
 
     @@media (max-width: 768px) {
@@ -208,5 +223,42 @@
             width: 100%;
             min-height: auto;
         }
+
+        .management-card {
+            margin: 1rem;
+        }
     }
 </style>
+
+<script>
+    // Interactive card effects
+    document.querySelectorAll('.management-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const x = e.pageX - card.offsetLeft;
+            const y = e.pageY - card.offsetTop;
+            card.style.transform = `
+                perspective(1000px)
+                rotateX(${5 - (y/20)}deg)
+                rotateY(${5 - (x/20)}deg)
+                translateY(-5px)
+            `;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+    });
+
+    // Random glitch effect
+    setInterval(() => {
+        if(Math.random() < 0.1) {
+            document.querySelector('.sidebar-header').style.textShadow = `
+                0 0 10px rgba(0,243,255,0.5),
+                ${Math.random() * 5 - 2.5}px ${Math.random() * 5 - 2.5}px 0 rgba(255,0,255,0.3)
+            `;
+            setTimeout(() => {
+                document.querySelector('.sidebar-header').style.textShadow = 'none';
+            }, 50);
+        }
+    }, 1000);
+</script>

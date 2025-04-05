@@ -597,6 +597,9 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<IdentityRole>().HasData(
         new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
         new IdentityRole { Name = "Doctor", NormalizedName = "DOCTOR" },
+        new IdentityRole { Name = "Receptionist", NormalizedName = "RECEPTIONIST" },
+        new IdentityRole { Name = "Nurse", NormalizedName = "NURSE" },
+        new IdentityRole { Name = "Technical_Support", NormalizedName = "TECHNICAL_SUPPORT" },
         new IdentityRole { Name = "Patient", NormalizedName = "PATIENT" },
         new IdentityRole { Name = "Staff", NormalizedName = "STAFF" }
     );

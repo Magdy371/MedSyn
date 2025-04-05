@@ -187,6 +187,13 @@ namespace OutpatientClinic.Presentation.Controllers
                 return RedirectToAction("Index", "Patient");
             else if (roles.Contains("Staff"))
                 return RedirectToAction("Index", "Staff");
+            // Add new role redirects
+            else if (roles.Contains("Receptionist"))
+                return RedirectToAction("Index", "Receptionist");
+            else if (roles.Contains("Nurse"))
+                return RedirectToAction("Index", "Nurse");
+            else if (roles.Contains("Technical_Support"))
+                return RedirectToAction("Index", "TechnicalSupport");
 
             return RedirectToAction("Index", "Home"); // Default redirection
             //return Ok(new { message = "Registration successful", token });

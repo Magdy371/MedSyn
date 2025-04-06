@@ -99,6 +99,9 @@ namespace OutpatientClinic.Presentation
                 options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Patient"));
                 options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Staff"));
             });
+            builder.Services.AddHostedService<StatusBackgroundService>();
+            builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+
         }
 
         public static void ConfigurePipeline(WebApplication app)

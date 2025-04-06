@@ -14,5 +14,6 @@ namespace OutpatientClinic.Business.Services.Interfaces
         Task<IEnumerable<Clinic>> FindClinicsAsync(string name);
         Task<int> CountClinicsAsync();
         Task<Clinic> GetClinicByNameAsync(string name);
+        Task<Clinic> GetEmergencyClinicAsync();
     }
 }

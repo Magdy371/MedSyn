@@ -10,6 +10,7 @@ namespace OutpatientClinic.Business.Services.Interfaces
         Task<Appointment> GetAppointmentByIdAsync(int id);
         Task<Appointment> CreateAppointmentAsync(Appointment appointment);
         Task<bool> UpdateAppointmentAsync(Appointment appointment);
+        Task UpdateAppointmentStatusesAsync();
         Task<bool> DeleteAppointmentAsync(int id);
         Task<IEnumerable<Appointment>> FindAppointmentsAsync(string status);
         Task<int> CountAppointmentsAsync();

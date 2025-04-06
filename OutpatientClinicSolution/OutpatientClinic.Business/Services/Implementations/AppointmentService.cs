@@ -60,6 +60,26 @@ namespace OutpatientClinic.Business.Services.Implementations
             var pendingAppointments = await _unitOfWork.Repository<Appointment>().FindAsync(a => a.Status == "Pending");
             return pendingAppointments.Count();
         }
+        public async Task UpdateAppointmentStatusesAsync()
+        {
+            var appointments = await _unitOfWork.Repository<Appointment>()
+                .FindAsync(a => a.Status == "Pending" || a.Status == "Active");
 
+            foreach (var appointment in appointments)
+            {
+                if (appointment.AppointmentDateTime < DateTime.Now.AddHours(-24))
+                {
+                    appointment.Status = "Cancelled";
+                    appointment.UpdatedDate = DateTime.UtcNow;
+                    _unitOfWork.Repository<Appointment>().Update(appointment);
+                }
+                else if (appointment.AppointmentDateTime <= DateTime.Now)
+                {
+                    appointment.Status = "Active";
+                    _unitOfWork.Repository<Appointment>().Update(appointment);
+                }
+            }
+            await _unitOfWork.CompleteAsync();
+        }
     }
 }

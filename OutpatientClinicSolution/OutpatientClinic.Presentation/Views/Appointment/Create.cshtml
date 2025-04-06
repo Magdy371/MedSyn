@@ -1,0 +1,140 @@
+﻿@model OutpatientClinic.Presentation.Models.AppointmentViewModel
+
+@{
+    ViewData["Title"] = "Create Appointment";
+}
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+
+    <!-- Status Messages -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <form asp-action="Create" id="appointmentForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!-- Patient Search Section -->
+        <div class="card mb-4">
+            <div class="card-header">Patient Information</div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="control-label">Search Existing Patient</label>
+                    <input type="text" id="patientSearch" class="form-control"
+                           placeholder="Start typing patient name or email...">
+                    <div id="searchResults" class="list-group mt-2" style="display:none;"></div>
+                    <input type="hidden" asp-for="UserId" />
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                </div>
+
+                <!-- New Patient Fields -->
+                <div id="newPatientFields" style="display:none;">
+                    <div class="form-group">
+                        <label asp-for="PatientName" class="control-label"></label>
+                        <input asp-for="PatientName" class="form-control" />
+                        <span asp-validation-for="PatientName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment Details -->
+        <div class="card mb-4">
+            <div class="card-header">Appointment Details</div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label asp-for="AppointmentDateTime" class="control-label"></label>
+                    <input asp-for="AppointmentDateTime" class="form-control"
+                           type="datetime-local"
+                           min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                    <span asp-validation-for="AppointmentDateTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ClinicId" class="control-label"></label>
+                    <select asp-for="ClinicId" class="form-control"
+                            asp-items="ViewBag.Clinics">
+                        <option value="">-- Select Clinic (Optional) --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-calendar-plus"></i> Create Appointment
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            // AJAX Patient Search
+            $('#patientSearch').keyup(function() {
+                const term = $(this).val();
+                if (term.length < 2) {
+                    $('#searchResults').hide();
+                    return;
+                }
+
+                $.getJSON('@Url.Action("SearchPatients")', { term: term }, function(data) {
+                    const results = $('#searchResults');
+                    results.empty();
+
+                    if (data.length > 0) {
+                        data.forEach(patient => {
+                            results.append(
+                                `<a href="#" class="list-group-item list-group-item-action"
+                                   data-user-id="${patient.id}"
+                                   data-patient-name="${patient.name}">
+                                    ${patient.name} - ${patient.email}
+                                </a>`
+                            );
+                        });
+                        results.show();
+                    } else {
+                        results.hide();
+                        $('#newPatientFields').show();
+                    }
+                });
+            });
+
+            // Patient Selection
+            $(document).on('click', '#searchResults a', function() {
+                const userId = $(this).data('user-id');
+                const patientName = $(this).data('patient-name');
+
+                $('#UserId').val(userId);
+                $('#patientSearch').val(patientName);
+                $('#searchResults').hide();
+                $('#newPatientFields').hide();
+            });
+
+            // New Patient Detection
+            $('#patientSearch').on('input', function() {
+                if ($('#UserId').val() === '') {
+                    $('#newPatientFields').show();
+                }
+            });
+        });
+    </script>
+}

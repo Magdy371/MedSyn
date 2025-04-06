@@ -1,0 +1,66 @@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Appointment>
+
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2>
+
+    <!-- Status Messages -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Clinic</th>
+                <th>Date/Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Patient.FirstName @item.Patient.LastName</td>
+                    <td>Dr. @item.Doctor.DoctorNavigation.FullName</td>
+                    <td>@item.Clinic.ClinicName</td>
+                    <td>@item.AppointmentDateTime.ToString("g")</td>
+                    <td>
+                        <span class="badge
+                            @(item.Status == "Pending" ? "badge-warning" :
+                             item.Status == "Active" ? "badge-success" :
+                             "badge-danger")">
+                            @item.Status
+                        </span>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.AppointmentId"
+                           class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.AppointmentId"
+                           class="btn btn-sm btn-info">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No appointments found.</div>
+    }
+</div>

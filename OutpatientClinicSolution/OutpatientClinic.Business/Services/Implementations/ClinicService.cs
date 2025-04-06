@@ -14,7 +14,10 @@ namespace OutpatientClinic.Business.Services.Implementations
         {
             _unitOfWork = unitOfWork;
         }
-
+        public async Task<Clinic> GetEmergencyClinicAsync()
+        {
+            return await GetClinicByNameAsync("Emergency");
+        }
         public async Task<IEnumerable<Clinic>> GetAllClinicsAsync() =>
             await _unitOfWork.Repository<Clinic>().GetAllAsync();
 

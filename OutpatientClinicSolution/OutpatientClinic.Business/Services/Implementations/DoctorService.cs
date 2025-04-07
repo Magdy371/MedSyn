@@ -34,6 +34,14 @@ public class DoctorService : IDoctorService
             .Include(d => d.Department)
             .FirstOrDefaultAsync(d => d.DoctorNavigation.UserId == userId);
     }
+    public async Task<Doctor?> GetDoctorById(int id)
+    {
+        return await _unitOfWork.Repository<Doctor>()
+            .Query()
+            .Include(d => d.Department)      // Include the department
+            .Include(d => d.DoctorNavigation) // Optionally include the Staff details
+            .FirstOrDefaultAsync(d => d.DoctorId == id);
+    }
 
     public async Task<Doctor> CreateDoctorAsync(Doctor doctor)
     {

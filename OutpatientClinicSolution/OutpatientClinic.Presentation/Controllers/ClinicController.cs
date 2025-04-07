@@ -22,7 +22,7 @@ namespace OutpatientClinic.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var clinics = await _clinicService.GetAllClinicAsync();
+            var clinics = await _clinicService.GetAllClinicsAsync();
             return View(clinics);
         }
 

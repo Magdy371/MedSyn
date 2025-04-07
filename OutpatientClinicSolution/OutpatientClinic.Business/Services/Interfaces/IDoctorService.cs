@@ -8,6 +8,7 @@ namespace OutpatientClinic.Business.Services.Interfaces
     {
         Task<IEnumerable<Doctor>> GetAllDoctorsAsync();
         Task<Doctor?> GetDoctorByIdAsync(int id); // Change return type to Task<Doctor?>
+        Task<Doctor?> GetDoctorById(int id);
         Task<Doctor> CreateDoctorAsync(Doctor doctor);
         Task<bool> UpdateDoctorAsync(Doctor doctor);
         Task<bool> DeleteDoctorAsync(int id);

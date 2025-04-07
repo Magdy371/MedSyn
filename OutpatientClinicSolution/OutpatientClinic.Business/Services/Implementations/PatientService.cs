@@ -1,5 +1,8 @@
-﻿using OutpatientClinic.Business.Services.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.UnitOfWorks;
+using OutpatientClinic.DataAccess.Context;
 using OutpatientClinic.DataAccess.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +13,14 @@ namespace OutpatientClinic.Business.Services.Implementations
     public class PatientService : IPatientService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public PatientService(IUnitOfWork unitOfWork)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly OutpatientClinicDbContext _context;
+
+        public PatientService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, OutpatientClinicDbContext context)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
+            _context = context;
         }
 
         public async Task<IEnumerable<Patient>> GetAllPatientsAsync() =>
@@ -27,6 +35,7 @@ namespace OutpatientClinic.Business.Services.Implementations
             await _unitOfWork.CompleteAsync();
             return patient;
         }
+
         public async Task<Patient?> GetPatientByUserIdAsync(string userId)
         {
             return await _unitOfWork.Repository<Patient>()
@@ -57,5 +66,28 @@ namespace OutpatientClinic.Business.Services.Implementations
 
         public async Task<IEnumerable<Patient>> GetPatientsByPrimaryDoctorAsync(int doctorId) =>
             await _unitOfWork.Repository<Patient>().FindAsync(p => p.PrimaryDoctorId == doctorId);
+
+        public async Task<IEnumerable<PatientSearchResult>> SearchPatientsAsync(string term)
+        {
+            return await _userManager.Users
+                .Where(u => u.FullName.Contains(term) || u.Email.Contains(term))
+                .Join(_context.Patients,
+                    user => user.Id,
+                    patient => patient.UserId,
+                    (user, patient) => new PatientSearchResult
+                    {
+                        PatientId = patient.PatientId,
+                        FullName = user.FullName,
+                        Email = user.Email
+                    })
+                .ToListAsync();
+        }
+    }
+
+    public class PatientSearchResult
+    {
+        public int PatientId { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
     }
 }

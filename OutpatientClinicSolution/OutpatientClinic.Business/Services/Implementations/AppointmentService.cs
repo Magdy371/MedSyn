@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.UnitOfWorks;
 using OutpatientClinic.DataAccess.Entities;
@@ -15,8 +16,16 @@ namespace OutpatientClinic.Business.Services.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Appointment>> GetAllAppointmentsAsync() =>
-            await _unitOfWork.Repository<Appointment>().GetAllAsync();
+        public async Task<IEnumerable<Appointment>> GetAllAppointmentsAsync()
+        {
+            return await _unitOfWork.Repository<Appointment>()
+                .Query()
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.DoctorNavigation)
+                .Include(a => a.Clinic)
+                .ToListAsync();
+        }
 
         public async Task<Appointment> GetAppointmentByIdAsync(int id) =>
             await _unitOfWork.Repository<Appointment>().GetByIdAsync(id);
@@ -27,7 +36,11 @@ namespace OutpatientClinic.Business.Services.Implementations
             await _unitOfWork.CompleteAsync();
             return appointment;
         }
-
+        // AppointmentService.cs
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _unitOfWork.BeginTransactionAsync();
+        }
         public async Task<bool> UpdateAppointmentAsync(Appointment appointment)
         {
             _unitOfWork.Repository<Appointment>().Update(appointment);
@@ -49,8 +62,16 @@ namespace OutpatientClinic.Business.Services.Implementations
         public async Task<int> CountAppointmentsAsync() =>
             await _unitOfWork.Repository<Appointment>().CountAsync();
 
-        public async Task<IEnumerable<Appointment>> GetAppointmentsByPatientAsync(int patientId) =>
-            await _unitOfWork.Repository<Appointment>().FindAsync(a => a.PatientId == patientId);
+        public async Task<List<Appointment>> GetAppointmentsByPatientAsync(int patientId)
+        {
+            return await _unitOfWork.Repository<Appointment>()
+                .Query()
+                .Include(a => a.Doctor)          // Include the doctor
+                .ThenInclude(d => d.Department)  // Include the department of the doctor
+                .Where(a => a.PatientId == patientId && !a.IsDeleted.GetValueOrDefault())
+                .ToListAsync();
+        }
+
 
         public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorAsync(int doctorId) =>
             await _unitOfWork.Repository<Appointment>().FindAsync(a => a.DoctorId == doctorId);

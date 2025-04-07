@@ -57,7 +57,7 @@ namespace OutpatientClinic.Business.Services.Implementations
             return clinics.FirstOrDefault() ?? throw new KeyNotFoundException($"Clinic with name '{name}' not found.");
         }
 
-        async Task<IEnumerable<Clinic>> IClinicService.GetAllClinicAsync()=>
+        async Task<IEnumerable<Clinic>> IClinicService.GetAllClinicsAsync()=>
             await _unitOfWork.Repository<Clinic>().GetAllAsync();
     }
 }

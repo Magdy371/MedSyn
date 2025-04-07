@@ -47,6 +47,13 @@
                             <div class="active-pulse"></div>
                         </a>
                     </li>
+                    <li class="nav-item hover-glow">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Appointment" ? "active" : "")"
+                           href="@Url.Action("Index", "Appointment")">
+                            <i class="fas fa-appointment-medical me-2"></i> Clinics
+                            <div class="active-pulse"></div>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -67,7 +74,8 @@
                 new { Title = "Clinics", Icon = "fa-clinic-medical", Description = "Manage clinic locations", Controller = "Clinic", Color = "info" },
                 new { Title = "Doctors", Icon = "fa-user-doctor", Description = "Manage medical staff", Controller = "Doctor", Color = "success" },
                 new { Title = "Staff", Icon = "fa-users", Description = "Manage clinic staff", Controller = "Staff", Color = "warning" },
-                new { Title = "Patients", Icon = "fa-hospital-user", Description = "Manage patient records", Controller = "Patient", Color = "danger" }
+                new { Title = "Patients", Icon = "fa-hospital-user", Description = "Manage patient records", Controller = "Patient", Color = "danger" },
+                new { Title = "Appointment", Icon = "fa-appointment-medical", Description = "Manage patients appointments", Controller = "Appointment", Color = "Primary" }
                 })
                 {
                     <div class="col-xxl-3 col-lg-6">

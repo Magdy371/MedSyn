@@ -6,201 +6,169 @@ using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.DataAccess.Entities;
 using OutpatientClinic.Presentation.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OutpatientClinic.Presentation.Controllers
+namespace OutpatientClinic.Web.Controllers
 {
-    [Authorize(Roles = "Admin,Doctor,Receptionist")]
+    [Authorize(Roles = "Receptionist,Doctor,Admin")]
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService _appointmentService;
         private readonly IPatientService _patientService;
-        private readonly IDoctorService _doctorService;
         private readonly IClinicService _clinicService;
+        private readonly IDoctorService _doctorService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IBackgroundTaskQueue _taskQueue;
+        private readonly IAdminService _adminService;
 
         public AppointmentController(
             IAppointmentService appointmentService,
             IPatientService patientService,
-            IDoctorService doctorService,
             IClinicService clinicService,
+            IDoctorService doctorService,
             UserManager<ApplicationUser> userManager,
-            IBackgroundTaskQueue taskQueue)
+            IAdminService adminService)
         {
             _appointmentService = appointmentService;
             _patientService = patientService;
-            _doctorService = doctorService;
             _clinicService = clinicService;
+            _doctorService = doctorService;
             _userManager = userManager;
-            _taskQueue = taskQueue;
+            _adminService = adminService;
         }
 
+        // GET: Appointment
         public async Task<IActionResult> Index()
         {
             var appointments = await _appointmentService.GetAllAppointmentsAsync();
             return View(appointments);
         }
 
+        // GET: Appointment/Create
         public async Task<IActionResult> Create()
         {
-            await PopulateDropdowns();
-            return View(new AppointmentViewModel
-            {
-                AppointmentDateTime = DateTime.Now.AddHours(1)
-            });
+            await LoadDropdownsAsync();
+            var viewModel = new AppointmentCreateViewModel();
+            return View(viewModel);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AppointmentViewModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    await PopulateDropdowns();
-                    return View(model);
-                }
-
-                ApplicationUser? user = null;
-                Patient? patient = null;
-
-                // Existing patient flow
-                if (!string.IsNullOrEmpty(model.UserId))
-                {
-                    user = await _userManager.FindByIdAsync(model.UserId);
-                    if (user != null)
-                    {
-                        patient = await _patientService.GetPatientByUserIdAsync(model.UserId);
-                    }
-                }
-
-                // New patient registration
-                if (patient == null)
-                {
-                    user = new ApplicationUser
-                    {
-                        UserName = model.Email,
-                        Email = model.Email,
-                        FullName = model.PatientName
-                    };
-
-                    var createResult = await _userManager.CreateAsync(user, "TempPass123!");
-                    if (!createResult.Succeeded)
-                    {
-                        AddIdentityErrors(createResult);
-                        await PopulateDropdowns();
-                        return View(model);
-                    }
-
-                    await _userManager.AddToRoleAsync(user, "Patient");
-
-                    patient = new Patient
-                    {
-                        UserId = user.Id,
-                        FirstName = model.PatientName.Split(' ')[0],
-                        LastName = model.PatientName.Split(' ')[1],
-                        Dob = DateOnly.FromDateTime(DateTime.Now)
-                    };
-                    await _patientService.CreatePatientAsync(patient);
-                }
-
-                // Clinic and doctor assignment
-                var (clinic, doctor) = await DetermineClinicAndDoctor(patient.PatientId, model.ClinicId);
-
-                if (clinic == null || doctor == null)
-                {
-                    TempData["Error"] = "Could not find suitable clinic/doctor assignment";
-                    return RedirectToAction(nameof(Index));
-                }
-
-                var appointment = new Appointment
-                {
-                    PatientId = patient.PatientId,
-                    DoctorId = doctor.DoctorId,
-                    ClinicId = clinic.ClinicId,
-                    AppointmentDateTime = model.AppointmentDateTime,
-                    Status = "Pending",
-                    CreatedDate = DateTime.UtcNow
-                };
-
-                await _appointmentService.CreateAppointmentAsync(appointment);
-
-                // Queue background status check
-                _taskQueue.QueueBackgroundWorkItem(async token =>
-                {
-                    await _appointmentService.UpdateAppointmentStatusesAsync();
-                });
-
-                TempData["Success"] = "Appointment created successfully!";
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Error creating appointment: {ex.Message}";
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
+        // Patient search endpoint
         [HttpGet]
         public async Task<IActionResult> SearchPatients(string term)
         {
-            var patients = await _patientService.FindPatientsAsync(term);
-            return Json(patients.Select(p => new
-            {
-                id = p.UserId,
-                name = $"{p.FirstName} {p.LastName}",
-                email = p.Contact?.Email
+            var patients = await _patientService.SearchPatientsAsync(term);
+            return Json(patients.Select(p => new {
+                id = p.PatientId,
+                label = $"{p.FullName} ({p.Email})",
+                email = p.Email
             }));
         }
 
-        private async Task<(Clinic clinic, Doctor doctor)> DetermineClinicAndDoctor(int patientId, int? clinicId)
+        // POST: Appointment/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(AppointmentCreateViewModel model)
         {
-            var existingAppointments = await _appointmentService.GetAppointmentsByPatientAsync(patientId);
-            Clinic? clinic = null;
-            Doctor? doctor = null;
-
-            if (existingAppointments.Any())
+            using var transaction = await _appointmentService.BeginTransactionAsync();
+            try
             {
-                var lastAppointment = existingAppointments.MaxBy(a => a.AppointmentDateTime);
-                var department = (await _doctorService.GetDoctorByIdAsync(lastAppointment.DoctorId))?.Department;
-
-                clinic = await _clinicService.GetClinicByIdAsync(lastAppointment.ClinicId);
-                doctor = (await _doctorService.GetDoctorsByDepartmentAsync(department?.DepartmentName))
-                    .FirstOrDefault();
-            }
-            else
-            {
-                clinic = clinicId.HasValue
-                    ? await _clinicService.GetClinicByIdAsync(clinicId.Value)
-                    : await _clinicService.GetClinicByNameAsync("Emergency");
-
-                doctor = (await _doctorService.GetDoctorsByDepartmentAsync("Emergency"))
-                    .FirstOrDefault();
-
-                if (doctor == null)
+                if (ModelState.IsValid)
                 {
-                    doctor = (await _doctorService.GetAllDoctorsAsync()).FirstOrDefault();
+                    Patient patient = null;
+
+                    // Existing Patient Flow
+                    if (model.SelectedPatientId.HasValue)
+                    {
+                        // Retrieve existing patient
+                        patient = await _patientService.GetPatientByIdAsync(model.SelectedPatientId.Value);
+
+                        // If a doctor is selected, perform department validation
+                        if (model.Appointment.DoctorId != 0)
+                        {
+                            var doctor = await _doctorService.GetDoctorById(model.Appointment.DoctorId);
+                            var existingAppointments = await _appointmentService.GetAppointmentsByPatientAsync(patient.PatientId);
+
+                            var doctorDeptId = doctor?.Department?.DepartmentId;
+                            if (doctorDeptId != null && existingAppointments.Any(a =>
+                                    a.Doctor?.Department?.DepartmentId == doctorDeptId))
+                            {
+                                return RedirectToAction("ExistingAppointments", new { patientId = patient.PatientId });
+                            }
+                        }
+                    }
+                    // New Patient Flow
+                    else
+                    {
+                        // Create new user
+                        var newUser = new ApplicationUser
+                        {
+                            Email = model.NewPatientEmail,
+                            UserName = model.NewPatientEmail,
+                            FullName = $"{model.NewPatientFirstName} {model.NewPatientLastName}"
+                        };
+
+                        var result = await _userManager.CreateAsync(newUser, "TempPassword123!");
+                        if (!result.Succeeded)
+                            throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                        await _adminService.AssignRoleAsync(newUser.Id, "Patient");
+
+                        // Create patient record
+                        patient = new Patient
+                        {
+                            UserId = newUser.Id,
+                            FirstName = model.NewPatientFirstName,
+                            LastName = model.NewPatientLastName,
+                            Dob = model.NewPatientDob
+                        };
+
+                        await _patientService.CreatePatientAsync(patient);
+                    }
+
+                    // Create appointment
+                    model.Appointment.PatientId = patient.PatientId;
+                    model.Appointment.ClinicId = model.ClinicId ?? (await _clinicService.GetEmergencyClinicAsync()).ClinicId;
+
+                    await _appointmentService.CreateAppointmentAsync(model.Appointment);
+                    await transaction.CommitAsync();
+                    return RedirectToAction(nameof(Index));
                 }
+
+                await LoadDropdownsAsync();
+                return View(model);
             }
-
-            return (clinic, doctor);
-        }
-
-        private async Task PopulateDropdowns()
-        {
-            ViewBag.Clinics = await _clinicService.GetAllClinicAsync();
-            ViewBag.Doctors = await _doctorService.GetAllDoctorsWithDetailsAsync();
-        }
-
-        private void AddIdentityErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
+            catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                await transaction.RollbackAsync();
+                ModelState.AddModelError("", $"Error creating appointment: {ex.Message}");
+                await LoadDropdownsAsync();
+                return View(model);
             }
+        }
+
+        // Existing appointments view
+        public async Task<IActionResult> ExistingAppointments(int patientId)
+        {
+            var appointments = await _appointmentService.GetAppointmentsByPatientAsync(patientId);
+            return View(appointments);
+        }
+
+        // Helper method to load dropdown lists
+        private async Task LoadDropdownsAsync()
+        {
+            var clinics = await _clinicService.GetAllClinicsAsync();
+            var doctors = await _doctorService.GetAllDoctorsAsync();
+
+            ViewBag.Clinics = clinics;
+
+            ViewBag.Doctors = doctors.Select(d => new
+            {
+                DoctorId = d.DoctorId,
+                FullName = d.DoctorNavigation != null
+                    ? $"{d.DoctorNavigation.FirstName} {d.DoctorNavigation.LastName}"
+                    : $"Doctor #{d.DoctorId}"
+            }).ToList();
         }
     }
 }

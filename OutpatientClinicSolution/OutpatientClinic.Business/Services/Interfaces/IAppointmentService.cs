@@ -9,6 +9,7 @@ namespace OutpatientClinic.Business.Services.Interfaces
     {
         Task<IEnumerable<Appointment>> GetAllAppointmentsAsync();
         Task<Appointment> GetAppointmentByIdAsync(int id);
+        Task<Appointment> GetAppointmentById(int id);
         Task<IDbContextTransaction> BeginTransactionAsync();
 
         Task<Appointment> CreateAppointmentAsync(Appointment appointment);

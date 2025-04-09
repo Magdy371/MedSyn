@@ -1,0 +1,43 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Appointment
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<h2>Appointment Details</h2>
+
+<div>
+    <h4>Appointment Information</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Patient</dt>
+        <dd class="col-sm-10">@Model.Patient.FirstName @Model.Patient.LastName</dd>
+
+        <dt class="col-sm-2">Doctor</dt>
+        <dd class="col-sm-10">
+            @if (Model.Doctor?.DoctorNavigation != null)
+            {
+                @($"Dr. {Model.Doctor.DoctorNavigation.FirstName} {Model.Doctor.DoctorNavigation.LastName}")
+            }
+        </dd>
+
+        <dt class="col-sm-2">Department</dt>
+        <dd class="col-sm-10">@Model.Department?.DepartmentName</dd>
+
+        <dt class="col-sm-2">Clinic</dt>
+        <dd class="col-sm-10">@Model.Clinic?.ClinicName</dd>
+
+        <dt class="col-sm-2">Date &amp; Time</dt>
+        <dd class="col-sm-10">@Model.AppointmentDateTime.ToString("g")</dd>
+
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">@Model.Status</dd>
+
+        <dt class="col-sm-2">Notes</dt>
+        <dd class="col-sm-10">@Model.Notes</dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.AppointmentId" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

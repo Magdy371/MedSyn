@@ -6,9 +6,14 @@
             <h3 class="m-0 text-white">
                 <i class="fas fa-users-cog me-2"></i>User Management
             </h3>
-            <a asp-action="Create" class="btn btn-light btn-lg rounded-pill">
+            @* <a asp-action="Create" class="btn btn-light btn-lg rounded-pill">
+                <i class="fas fa-user-plus me-2"></i>Add User
+            </a> *@
+
+            <a asp-action="Register" asp-controller="Auth" class="btn btn-light btn-lg rounded-pill">
                 <i class="fas fa-user-plus me-2"></i>Add User
             </a>
+
         </div>
         <div class="card-body p-0">
             <div class="table-responsive rounded-3">

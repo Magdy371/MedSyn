@@ -6,7 +6,7 @@ using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.DataAccess.Entities;
 using OutpatientClinic.Presentation.Models;
 
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 public class DoctorController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -63,6 +63,113 @@ public class DoctorController : Controller
         ViewBag.Departments = new SelectList(departments, "DepartmentName", "DepartmentName");
 
         return View(doctorViewModels);
+    }
+    // GET: Doctor/Create
+    public async Task<IActionResult> Create()
+    {
+        var departments = await _departmentService.GetAllDepartmentsAsync();
+        var model = new CreateDoctorViewModel
+        {
+            Departments = new SelectList(departments, "DepartmentId", "DepartmentName")
+        };
+        return View(model);
+    }
+
+    // POST: Doctor/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(CreateDoctorViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Departments = new SelectList(await _departmentService.GetAllDepartmentsAsync(), "DepartmentId", "DepartmentName");
+            return View(model);
+        }
+
+        // Check department exists
+        var department = await _departmentService.GetDepartmentByIdAsync(model.DepartmentId);
+        if (department == null)
+        {
+            ModelState.AddModelError("DepartmentId", "Department not found.");
+            model.Departments = new SelectList(await _departmentService.GetAllDepartmentsAsync(), "DepartmentId", "DepartmentName");
+            return View(model);
+        }
+
+        // Check username uniqueness
+        var existingUser = await _userManager.FindByNameAsync(model.Username);
+        if (existingUser != null)
+        {
+            ModelState.AddModelError("Username", "Username is taken.");
+            model.Departments = new SelectList(await _departmentService.GetAllDepartmentsAsync(), "DepartmentId", "DepartmentName");
+            return View(model);
+        }
+
+        // Check email uniqueness
+        existingUser = await _userManager.FindByEmailAsync(model.Email);
+        if (existingUser != null)
+        {
+            ModelState.AddModelError("Email", "Email is registered.");
+            model.Departments = new SelectList(await _departmentService.GetAllDepartmentsAsync(), "DepartmentId", "DepartmentName");
+            return View(model);
+        }
+
+        // Create user
+        var user = new ApplicationUser
+        {
+            UserName = model.Username,
+            Email = model.Email,
+            FullName = model.FullName,
+            PhoneNumber = model.PhoneNumber
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+            model.Departments = new SelectList(await _departmentService.GetAllDepartmentsAsync(), "DepartmentId", "DepartmentName");
+            return View(model);
+        }
+
+        // Assign Doctor role
+        var roleResult = await _userManager.AddToRoleAsync(user, "Doctor");
+        if (!roleResult.Succeeded)
+        {
+            await _userManager.DeleteAsync(user);
+            foreach (var error in roleResult.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+            model.Departments = new SelectList(await _departmentService.GetAllDepartmentsAsync(), "DepartmentId", "DepartmentName");
+            return View(model);
+        }
+
+        // Create Staff and Doctor
+        var nameParts = user.FullName.Split(' ', 2);
+        var doctor = new Doctor
+        {
+            DoctorNavigation = new Staff
+            {
+                UserId = user.Id,
+                FirstName = nameParts.Length > 0 ? nameParts[0] : "Unknown",
+                LastName = nameParts.Length > 1 ? nameParts[1] : "Unknown"
+            },
+            Specialty = model.Specialty,
+            LicenseNumber = model.LicenseNumber,
+            DepartmentId = model.DepartmentId
+        };
+
+        try
+        {
+            await _doctorService.CreateDoctorAsync(doctor);
+        }
+        catch
+        {
+            await _userManager.DeleteAsync(user);
+            ModelState.AddModelError(string.Empty, "Failed to create doctor record.");
+            model.Departments = new SelectList(await _departmentService.GetAllDepartmentsAsync(), "DepartmentId", "DepartmentName");
+            return View(model);
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Edit(string userId)

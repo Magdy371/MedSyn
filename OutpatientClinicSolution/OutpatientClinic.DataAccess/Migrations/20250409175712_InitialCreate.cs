@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OutpatientClinic.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -265,6 +265,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                 {
                     StaffID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ContactID = table.Column<int>(type: "int", nullable: true),
@@ -437,6 +438,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                 {
                     PatientID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DOB = table.Column<DateOnly>(type: "date", nullable: false),
@@ -500,7 +502,8 @@ namespace OutpatientClinic.DataAccess.Migrations
                     AppointmentID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientID = table.Column<int>(type: "int", nullable: false),
-                    DoctorID = table.Column<int>(type: "int", nullable: false),
+                    DoctorID = table.Column<int>(type: "int", nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
                     ClinicID = table.Column<int>(type: "int", nullable: false),
                     AppointmentDateTime = table.Column<DateTime>(type: "datetime", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
@@ -514,6 +517,12 @@ namespace OutpatientClinic.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Appointm__8ECDFCA2E6C3C030", x => x.AppointmentID);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK__Appointme__Clini__4AB81AF0",
                         column: x => x.ClinicID,
@@ -678,10 +687,13 @@ namespace OutpatientClinic.DataAccess.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "07fa03b7-dfa8-4922-8c59-6ca84d0fcc4f", null, "Admin", "ADMIN" },
-                    { "59ad1d61-6db7-49d6-98f6-9e53c44ae022", null, "Patient", "PATIENT" },
-                    { "928b52b7-4884-4365-92f2-cbecdd3e5938", null, "Staff", "STAFF" },
-                    { "d1b81762-1cd7-4779-8a24-7bbbee3acc85", null, "Doctor", "DOCTOR" }
+                    { "3343f39a-3faf-4b42-ad80-e978229d57e1", null, "Patient", "PATIENT" },
+                    { "380c2017-1989-45f1-a87d-00d85ca6a182", null, "Admin", "ADMIN" },
+                    { "3fde6ca3-bb78-44d1-9aaf-5f11acb6d923", null, "Receptionist", "RECEPTIONIST" },
+                    { "56dce52e-61b1-471a-a289-ac957bbaa8e2", null, "Technical_Support", "TECHNICAL_SUPPORT" },
+                    { "652851bf-b069-4a81-b939-3b629cd1a5eb", null, "Nurse", "NURSE" },
+                    { "c20f7cea-5409-4225-8adb-7d086da01aaf", null, "Doctor", "DOCTOR" },
+                    { "f63bc467-2c60-4c4f-9d28-9898a7179eb2", null, "Staff", "STAFF" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -693,6 +705,11 @@ namespace OutpatientClinic.DataAccess.Migrations
                 name: "IX_Appointments_DateTime",
                 table: "Appointments",
                 column: "AppointmentDateTime");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_DepartmentId",
+                table: "Appointments",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_DoctorID",

@@ -16,13 +16,14 @@ namespace OutpatientClinic.Presentation.Controllers
         private readonly IBillingService _billingService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminController(IAdminService adminService, IAppointmentService appointmentService, IBillingService billingService)
+        public AdminController(IAdminService adminService, IAppointmentService appointmentService, IBillingService billingService, UserManager<ApplicationUser> userManager)
         {
             _adminService = adminService;
             _appointmentService = appointmentService;
             _billingService = billingService;
-            UserManager<ApplicationUser> userManager;
+            _userManager = userManager;
         }
+
         private async Task<bool> IsUserAdmin()
         {
             var user = await _userManager.GetUserAsync(User);

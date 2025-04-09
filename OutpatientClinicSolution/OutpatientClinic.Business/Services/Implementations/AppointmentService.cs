@@ -29,11 +29,25 @@ namespace OutpatientClinic.Business.Services.Implementations
 
         public async Task<Appointment> GetAppointmentByIdAsync(int id) =>
             await _unitOfWork.Repository<Appointment>().GetByIdAsync(id);
+        public async Task<Appointment> GetAppointmentById(int id)
+        {
+            return await _unitOfWork.Repository<Appointment>()
+                .Query()
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor).ThenInclude(d => d.DoctorNavigation)
+                .Include(a => a.Clinic)
+                .FirstOrDefaultAsync(a => a.AppointmentId == id);
+        }
+
 
         public async Task<Appointment> CreateAppointmentAsync(Appointment appointment)
         {
             await _unitOfWork.Repository<Appointment>().AddAsync(appointment);
-            await _unitOfWork.CompleteAsync();
+            var result = await _unitOfWork.CompleteAsync();
+            if (result <= 0)
+            {
+                throw new Exception("Failed to save the appointment.");
+            }
             return appointment;
         }
         // AppointmentService.cs

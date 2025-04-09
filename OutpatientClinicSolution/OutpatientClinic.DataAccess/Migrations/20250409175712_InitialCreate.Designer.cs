@@ -12,8 +12,8 @@ using OutpatientClinic.DataAccess.Context;
 namespace OutpatientClinic.DataAccess.Migrations
 {
     [DbContext(typeof(OutpatientClinicDbContext))]
-    [Migration("20250328153927_AddUserId")]
-    partial class AddUserId
+    [Migration("20250409175712_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,25 +54,43 @@ namespace OutpatientClinic.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2be4b4e2-0c49-4c5c-803c-200043f826d2",
+                            Id = "380c2017-1989-45f1-a87d-00d85ca6a182",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "60e7e77e-c9c8-47a4-82f3-bc12d3fe54cb",
+                            Id = "c20f7cea-5409-4225-8adb-7d086da01aaf",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "3bf64e3e-e446-4669-8c41-47dae4259340",
+                            Id = "3fde6ca3-bb78-44d1-9aaf-5f11acb6d923",
+                            Name = "Receptionist",
+                            NormalizedName = "RECEPTIONIST"
+                        },
+                        new
+                        {
+                            Id = "652851bf-b069-4a81-b939-3b629cd1a5eb",
+                            Name = "Nurse",
+                            NormalizedName = "NURSE"
+                        },
+                        new
+                        {
+                            Id = "56dce52e-61b1-471a-a289-ac957bbaa8e2",
+                            Name = "Technical_Support",
+                            NormalizedName = "TECHNICAL_SUPPORT"
+                        },
+                        new
+                        {
+                            Id = "3343f39a-3faf-4b42-ad80-e978229d57e1",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "8db636e5-1382-4ad2-a7a7-573d56eca16a",
+                            Id = "f63bc467-2c60-4c4f-9d28-9898a7179eb2",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });
@@ -277,7 +295,10 @@ namespace OutpatientClinic.DataAccess.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<int>("DoctorId")
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DoctorId")
                         .HasColumnType("int")
                         .HasColumnName("DoctorID");
 
@@ -310,6 +331,8 @@ namespace OutpatientClinic.DataAccess.Migrations
                         .HasName("PK__Appointm__8ECDFCA2E6C3C030");
 
                     b.HasIndex("ClinicId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("DoctorId");
 
@@ -1136,6 +1159,9 @@ namespace OutpatientClinic.DataAccess.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("StaffId")
                         .HasName("PK__Staff__96D4AAF719817DB0");
 
@@ -1368,10 +1394,15 @@ namespace OutpatientClinic.DataAccess.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__Appointme__Clini__4AB81AF0");
 
+                    b.HasOne("OutpatientClinic.DataAccess.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OutpatientClinic.DataAccess.Entities.Doctor", "Doctor")
                         .WithMany("Appointments")
                         .HasForeignKey("DoctorId")
-                        .IsRequired()
                         .HasConstraintName("FK__Appointme__Docto__49C3F6B7");
 
                     b.HasOne("OutpatientClinic.DataAccess.Entities.Patient", "Patient")
@@ -1382,6 +1413,8 @@ namespace OutpatientClinic.DataAccess.Migrations
                         .HasConstraintName("FK__Appointme__Patie__48CFD27E");
 
                     b.Navigation("Clinic");
+
+                    b.Navigation("Department");
 
                     b.Navigation("Doctor");
 

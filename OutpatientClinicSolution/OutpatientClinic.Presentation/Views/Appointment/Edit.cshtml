@@ -1,0 +1,59 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Appointment
+@{
+    ViewData["Title"] = "Edit Appointment";
+}
+
+<h2>Edit Appointment</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="AppointmentId" />
+    <div class="form-group">
+        <label asp-for="PatientId"></label>
+        <input asp-for="PatientId" class="form-control" readonly />
+        <span asp-validation-for="PatientId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DepartmentId"></label>
+        <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.Departments">
+            <option value="">Select Department</option>
+        </select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DoctorId"></label>
+        <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.Doctors">
+            <option value="">Select Doctor</option>
+        </select>
+        <span asp-validation-for="DoctorId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ClinicId"></label>
+        <select asp-for="ClinicId" class="form-control" asp-items="ViewBag.Clinics">
+            <option value="">Select Clinic</option>
+        </select>
+        <span asp-validation-for="ClinicId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AppointmentDateTime"></label>
+        <input asp-for="AppointmentDateTime" class="form-control" type="datetime-local" />
+        <span asp-validation-for="AppointmentDateTime" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Status"></label>
+        <input asp-for="Status" class="form-control" />
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

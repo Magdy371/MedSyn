@@ -1,150 +1,85 @@
-﻿@using OutpatientClinic.DataAccess.Entities
-<!-- Views/Appointment/Create.cshtml -->
-@model OutpatientClinic.Presentation.Models.AppointmentCreateViewModel
+﻿@model OutpatientClinic.Presentation.Models.AppointmentViewModel
 
-@{
-    ViewData["Title"] = "Create Appointment";
-}
+<h2>Create Appointment</h2>
 
-<h1>Create New Appointment</h1>
-
-<div class="row">
-    <div class="col-md-8">
-        <form asp-action="Create" id="appointmentForm">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <!-- Patient Search -->
-            <div class="form-group">
-                <label class="control-label">Search Patient</label>
-                <input type="text" class="form-control" id="patientSearch"
-                       placeholder="Start typing patient name or email...">
-                <input type="hidden" asp-for="SelectedPatientId" id="selectedPatientId" />
-                <small class="form-text text-muted">Select existing patient or fill new patient details below</small>
-            </div>
-
-            <!-- New Patient Section -->
-            <div id="newPatientSection" class="border p-3 mt-3" style="display: none;">
-                <h4>New Patient Details</h4>
-                <div class="form-group">
-                    <label asp-for="NewPatientEmail" class="control-label"></label>
-                    <input asp-for="NewPatientEmail" class="form-control" />
-                    <span asp-validation-for="NewPatientEmail" class="text-danger"></span>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="NewPatientFirstName" class="control-label"></label>
-                            <input asp-for="NewPatientFirstName" class="form-control" />
-                            <span asp-validation-for="NewPatientFirstName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="NewPatientLastName" class="control-label"></label>
-                            <input asp-for="NewPatientLastName" class="form-control" />
-                            <span asp-validation-for="NewPatientLastName" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label asp-for="NewPatientDob" class="control-label"></label>
-                    <input asp-for="NewPatientDob" class="form-control" type="date" />
-                    <span asp-validation-for="NewPatientDob" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- Appointment Details -->
-            <div class="border p-3 mt-3">
-                <h4>Appointment Details</h4>
-                <div class="form-group">
-                    <label asp-for="Appointment.AppointmentDateTime" class="control-label"></label>
-                    <input asp-for="Appointment.AppointmentDateTime" class="form-control" />
-                    <span asp-validation-for="Appointment.AppointmentDateTime" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label">Clinic</label>
-                    <select asp-for="ClinicId" class="form-control"
-                            asp-items="@(new SelectList(ViewBag.Clinics, "ClinicId", "ClinicName"))">
-                        <option value="">-- Select Clinic --</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label">Doctor (Optional)</label>
-                    <select asp-for="Appointment.DoctorId" class="form-control"
-                            asp-items="@(new SelectList(ViewBag.Doctors, "DoctorId", "FullName"))">
-                        <option value="">-- No Specific Doctor --</option>
-                    </select>
-                    <span asp-validation-for="Appointment.DoctorId" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="form-group mt-3">
-                <button type="submit" class="btn btn-primary">Create Appointment</button>
-            </div>
-        </form>
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="PatientSearch" class="control-label"></label>
+        <input asp-for="PatientSearch" class="form-control" id="patientSearch" />
+        <input type="hidden" asp-for="PatientId" />
+        <div id="patientResults" class="list-group"></div>
+        <span asp-validation-for="PatientId" class="text-danger"></span>
     </div>
-</div>
 
-@section Styles {
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-}
+    <div class="form-group">
+        <label asp-for="DepartmentId" class="control-label"></label>
+        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-control" id="departmentSelect">
+            <option value="">-- Select Department --</option>
+        </select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DoctorId" class="control-label"></label>
+        <select asp-for="DoctorId" asp-items="ViewBag.Doctors" class="form-control" id="doctorSelect">
+            <option value="">-- Optional --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ClinicId" class="control-label"></label>
+        <select asp-for="ClinicId" asp-items="ViewBag.Clinics" class="form-control">
+            <option value="">-- Optional (Default: Emergency) --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AppointmentDateTime" class="control-label"></label>
+        <input asp-for="AppointmentDateTime" class="form-control" />
+        <span asp-validation-for="AppointmentDateTime" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Notes" class="control-label"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
 
 @section Scripts {
-    <script src="//code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script>
-        $(function() {
-            // Patient Autocomplete
-            $("#patientSearch").autocomplete({
-                source: function(request, response) {
-                    $.getJSON('@Url.Action("SearchPatients")', { term: request.term }, function(data) {
-                        response(data);
+        $(document).ready(function () {
+            $('#patientSearch').on('input', function () {
+                var searchTerm = $(this).val();
+                if (searchTerm.length > 2) {
+                    $.getJSON('/Appointment/SearchPatients', { term: searchTerm }, function (data) {
+                        $('#patientResults').empty();
+                        $.each(data, function (i, item) {
+                            $('#patientResults').append(
+                                $('<div class="list-group-item">')
+                                    .text(item.fullName + ' (' + item.email + ')')
+                                    .attr('data-id', item.patientId)
+                                    .click(function () {
+                                        $('#PatientId').val(item.patientId);
+                                        $('#patientSearch').val(item.fullName);
+                                        $('#patientResults').empty();
+                                    })
+                            );
+                        });
                     });
-                },
-                select: function(event, ui) {
-                    $("#selectedPatientId").val(ui.item.id);
-                    $("#patientSearch").val(ui.item.label);
-                    $("#newPatientSection").hide();
-                    $("#newPatientSection input").val(''); // Clear new patient fields
-                    return false;
                 }
             });
 
-            // Toggle new patient section
-            $("#patientSearch").on('input', function() {
-                if ($(this).val().length === 0) {
-                    $("#selectedPatientId").val('');
-                    $("#newPatientSection").show();
-                }
-            });
-
-            // Form validation
-            $("#appointmentForm").validate({
-                rules: {
-                    SelectedPatientId: {
-                        required: function() {
-                            return $("#newPatientSection input").filter(function() {
-                                return $(this).val().length > 0;
-                            }).length === 0;
-                        }
-                    },
-                    NewPatientEmail: {
-                        required: "#newPatientSection:visible"
-                    },
-                    NewPatientFirstName: {
-                        required: "#newPatientSection:visible"
-                    },
-                    NewPatientLastName: {
-                        required: "#newPatientSection:visible"
-                    }
-                },
-                messages: {
-                    SelectedPatientId: "Please select an existing patient or fill new patient details",
-                    NewPatientEmail: "Email is required for new patients",
-                    NewPatientFirstName: "First name is required for new patients",
-                    NewPatientLastName: "Last name is required for new patients"
-                }
+            $('#departmentSelect').change(function () {
+                var departmentId = $(this).val();
+                $.getJSON('/Appointment/GetDoctorsByDepartment', { departmentId: departmentId }, function (data) {
+                    var items = '<option value="">-- Optional --</option>';
+                    $.each(data, function (i, doctor) {
+                        items += `<option value="${doctor.doctorId}">${doctor.name}</option>`;
+                    });
+                    $('#doctorSelect').html(items);
+                });
             });
         });
     </script>

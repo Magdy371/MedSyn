@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OutpatientClinic.DataAccess.Entities;
 
@@ -7,9 +8,11 @@ public partial class Appointment
 {
     public int AppointmentId { get; set; }
 
+    [ForeignKey("Patient")]
     public int PatientId { get; set; }
 
-    public int DoctorId { get; set; }
+    public int? DoctorId { get; set; }
+    public int DepartmentId { get; set; }
 
     public int ClinicId { get; set; }
 
@@ -33,7 +36,8 @@ public partial class Appointment
 
     public virtual Clinic Clinic { get; set; } = null!;
 
-    public virtual Doctor Doctor { get; set; } = null!;
+    public virtual Doctor? Doctor { get; set; } = null!;
+    public virtual Department Department { get; set; } = null!;
 
     public virtual ICollection<LabTest> LabTests { get; set; } = new List<LabTest>();
 

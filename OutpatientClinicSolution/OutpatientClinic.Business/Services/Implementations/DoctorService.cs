@@ -34,6 +34,7 @@ public class DoctorService : IDoctorService
             .Include(d => d.Department)
             .FirstOrDefaultAsync(d => d.DoctorNavigation.UserId == userId);
     }
+
     public async Task<Doctor?> GetDoctorById(int id)
     {
         return await _unitOfWork.Repository<Doctor>()

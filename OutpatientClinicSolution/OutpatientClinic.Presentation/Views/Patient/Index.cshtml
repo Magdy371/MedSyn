@@ -10,9 +10,13 @@
         <h1 class="display-4 text-purple fw-bold">
             <i class="fas fa-user-injured me-2"></i>Patients
         </h1>
-        <a asp-action="Create" class="btn btn-purple btn-lg">
+        @* <a asp-action="Create" class="btn btn-purple btn-lg">
+            <i class="fas fa-plus-circle me-2"></i>New Patient
+        </a> *@
+        <a asp-action="Register" asp-controller="Auth" class=" btn btn-purple btn-lg">
             <i class="fas fa-plus-circle me-2"></i>New Patient
         </a>
+
     </div>
 
     <div class="card shadow-lg">

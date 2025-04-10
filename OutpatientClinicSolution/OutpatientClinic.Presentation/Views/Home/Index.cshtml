@@ -1,151 +1,97 @@
-﻿@{
-    ViewData["Title"] = "Premium Patient Care | Cliniva";
-    Layout = "_Layout";
+﻿@model OutpatientClinic.Presentation.Models.LandingPageViewModel
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_generatedView.cshtml";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/patient-care.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="~/css/generatedLayout.css">
+<link rel="stylesheet" href="~/css/home.css">
 
-<div class="medical-hero" role="banner">
-    <div class="hero-overlay" aria-hidden="true"></div>
-
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 hero-content">
-                <h1 class="hero-title scroll-reveal">
-                    Exceptional Care<br>
-                    <span class="highlight">When You Need It Most</span>
-                </h1>
-                <div class="hero-actions scroll-reveal">
-                    <a href="@Url.Action("Register", "Auth")" class="btn btn-primary btn-lg" aria-label="Register as a new patient">
-                        <i class="fas fa-user-plus me-2"></i>New Patient
-                    </a>
-                    <a href="@Url.Action("Login", "Auth")" class="btn btn-outline-light btn-lg" aria-label="Login as a returning patient">
-                        <i class="fas fa-sign-in-alt me-2"></i>Returning Patient
-                    </a>
-                </div>
-                <div class="emergency-banner scroll-reveal" role="alert">
-                    <i class="fas fa-ambulance"></i>
-                    Emergency? Call: (555) 123-4567
-                </div>
-            </div>
-            <div class="col-lg-6 scroll-reveal">
-                <img src="~/images/doctor-patient.png"
-                     class="img-fluid medical-image"
-                     alt="Doctor consultation"
-                     loading="lazy">
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="care-features" role="region" aria-labelledby="care-features-heading">
-    <div class="container">
-        <h2 id="care-features-heading" class="visually-hidden">Care Features</h2>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-3 scroll-reveal">
-                <div class="feature-card">
-                    <div class="feature-icon bg-primary">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <h3>Easy Appointments</h3>
-                    <p>Book consultations 24/7 through our portal</p>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 scroll-reveal">
-                <div class="feature-card">
-                    <div class="feature-icon bg-success">
-                        <i class="fas fa-file-medical"></i>
-                    </div>
-                    <h3>Digital Records</h3>
-                    <p>Secure access to medical history</p>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 scroll-reveal">
-                <div class="feature-card">
-                    <div class="feature-icon bg-warning">
-                        <i class="fas fa-prescription-bottle"></i>
-                    </div>
-                    <h3>E-Prescriptions</h3>
-                    <p>Direct pharmacy delivery available</p>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 scroll-reveal">
-                <div class="feature-card">
-                    <div class="feature-icon bg-danger">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <h3>24/7 Monitoring</h3>
-                    <p>Connected health tracking</p>
+<div class="container py-5">
+    <h1 class="text-center mb-5" style="color: #2c3e50; font-weight: bold;">Welcome to Our Outpatient Clinic</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Login Card -->
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-sign-in-alt icon"></i>
+                    <h5 class="card-title">Login</h5>
+                    <a href="@Url.Action("Login", "Auth")" class="btn btn-primary">Login</a>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="stats-section" role="region" aria-labelledby="stats-section-heading">
-    <div class="container">
-        <h2 id="stats-section-heading" class="visually-hidden">Statistics</h2>
-        <div class="row g-4">
-            <div class="col-6 col-md-3 scroll-reveal">
-                <div class="stat-card">
-                    <div class="stat-value">150+</div>
-                    <div class="stat-label">Specialists</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 scroll-reveal">
-                <div class="stat-card">
-                    <div class="stat-value">24/7</div>
-                    <div class="stat-label">Emergency Care</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 scroll-reveal">
-                <div class="stat-card">
-                    <div class="stat-value">98%</div>
-                    <div class="stat-label">Patient Satisfaction</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 scroll-reveal">
-                <div class="stat-card">
-                    <div class="stat-value">50k+</div>
-                    <div class="stat-label">Patients Yearly</div>
+        <!-- Signup Card -->
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-plus icon"></i>
+                    <h5 class="card-title">Signup</h5>
+                    <a href="@Url.Action("Signup", "Auth")" class="btn btn-primary">Signup</a>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="testimonials-section" role="region" aria-labelledby="testimonials-section-heading">
-    <div class="container">
-        <h2 id="testimonials-section-heading" class="text-center">What Our Patients Say</h2>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4 scroll-reveal">
-                <div class="testimonial-card">
-                    <p>"The care I received was exceptional. The staff was friendly and professional."</p>
-                    <div class="testimonial-author">- John Doe</div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 scroll-reveal">
-                <div class="testimonial-card">
-                    <p>"I felt very comfortable and well taken care of during my visit. Highly recommend!"</p>
-                    <div class="testimonial-author">- Jane Smith</div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 scroll-reveal">
-                <div class="testimonial-card">
-                    <p>"The online appointment booking was so convenient. Great service overall."</p>
-                    <div class="testimonial-author">- Michael Brown</div>
+        <!-- Patients Card -->
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-users icon"></i>
+                    <h5 class="card-title">Patients</h5>
+                    <p class="card-text">@Model.PatientCount</p>
                 </div>
             </div>
         </div>
+        <!-- Staff Card -->
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-tie icon"></i>
+                    <h5 class="card-title">Staff</h5>
+                    <p class="card-text">@Model.StaffCount</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <a href="@Url.Action("Index", "ClinicView")" class="card h-100 text-center text-decoration-none">
+                <div class="card-body">
+                    <i class="fas fa-clinic-medical me-2"></i>
+                    <h5 class="card-title">Clinics</h5>
+                    <p class="card-text">@Model.ClinicCount</p>
+                </div>
+            </a>
+        </div>
+        <!-- Appointments Card -->
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-calendar-check"></i>
+                    <h5 class="card-title">Appointments</h5>
+                    <p class="card-text">@Model.AppointmentCount</p>
+                </div>
+            </div>
+        </div>
+        <!-- Departments Card (Clickable) -->
+        <!-- Doctors Card (Clickable) -->
+        <div class="col">
+            <a href="@Url.Action("Index", "DepartmentView")" class="card h-100 text-center text-decoration-none">
+                <div class="card-body">
+                    <i class="fas fa-building-circle-check me-2"></i>
+                    <h5 class="card-title">Departments</h5>
+                    <p class="card-text">@Model.DepartmentCount</p>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Doctors Card (Clickable) -->
+        <div class="col">
+            <a href="@Url.Action("Index", "DoctorView")" class="card h-100 text-center text-decoration-none">
+                <div class="card-body">
+                    <i class="fas fa-user-doctor me-2"></i>
+                    <h5 class="card-title">Doctors</h5>
+                    <p class="card-text">@Model.DoctorCount</p>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    <script src="~/js/medical.js" defer></script>
-}

@@ -1,0 +1,52 @@
+﻿<!-- Views/Doctors/Index.cshtml -->
+@model List<OutpatientClinic.Presentation.Models.DoctorCardModel>
+<link href="~/css/DoctorView.css" rel="stylesheet" />
+<div class="container py-5">
+    <h1 class="text-center mb-4 display-5 fw-semibold" style="color: #2c3e50; letter-spacing: -0.5px;">
+        Our Doctors
+        <i class="fas fa-heartbeat ms-2" style="color: #FF7F5C;"></i>
+    </h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var doctor in Model)
+        {
+            <div class="col">
+                <div class="card h-100 text-center doctor-card">
+                    <div class="card-body px-4 py-4">
+                        <div class="mb-3">
+                            <div class="avatar-placeholder rounded-circle mx-auto bg-primary bg-opacity-10 d-flex align-items-center justify-content-center"
+                                 style="width: 80px; height: 80px;">
+                                <i class="fas fa-user-md text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                        <h5 class="card-title">@doctor.FullName</h5>
+                        <p class="card-text">
+                            <span class="department-label">
+                                @doctor.DepartmentName
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Add subtle hover effect
+            $('.doctor-card').hover(
+                function() {
+                    $(this).css('transform', 'translateY(-5px)');
+                },
+                function() {
+                    $(this).css('transform', 'translateY(0)');
+                }
+            );
+
+            // Add smooth scroll to top
+            $('html, body').animate({ scrollTop: 0 }, 'smooth');
+        });
+    </script>
+}

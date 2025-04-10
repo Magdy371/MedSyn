@@ -1,47 +1,99 @@
 ﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Appointment>
+
 @{
     ViewData["Title"] = "Appointments";
 }
 
-<h2>Appointments</h2>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@ViewData["Title"]</h1>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">Create New Appointment</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Patient</th>
-            <th>Doctor</th>
-            <th>Department</th>
-            <th>Clinic</th>
-            <th>Date &amp; Time</th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+        @if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Receptionist"))
         {
-            <tr>
-                <td>@item.Patient.FirstName @item.Patient.LastName</td>
-                <td>
-                    @if (item.Doctor?.DoctorNavigation != null)
-                    {
-                        @($"Dr. {item.Doctor.DoctorNavigation.FirstName} {item.Doctor.DoctorNavigation.LastName}")
-                    }
-                </td>
-                <td>@item.Department?.DepartmentName</td>
-                <td>@item.Clinic?.ClinicName</td>
-                <td>@item.AppointmentDateTime.ToString("g")</td>
-                <td>@item.Status</td>
-                <td>
-                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
-                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.AppointmentId">Delete</a>
-                </td>
-            </tr>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New
+            </a>
         }
-    </tbody>
-</table>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="appointmentsTable">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Clinic</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@($"{item.Patient?.FirstName} {item.Patient?.LastName}")</td>
+                                <td>@(item.Doctor?.DoctorNavigation != null ? $"{item.Doctor.DoctorNavigation.FirstName} {item.Doctor.DoctorNavigation.LastName}" : "Not Assigned")</td>
+                                <td>@item.Department?.DepartmentName</td>
+                                <td>@item.Clinic?.ClinicName</td>
+                                <td>@item.AppointmentDateTime.ToString("MMM dd, yyyy h:mm tt")</td>
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(item.Status)">
+                                        @(string.IsNullOrEmpty(item.Status) ? "Pending" : item.Status)
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Receptionist"))
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        }
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#appointmentsTable').DataTable({
+                "order": [[4, "desc"]] // Order by date column
+            });
+        });
+    </script>
+}
+
+@functions {
+    public string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Scheduled" => "bg-primary",
+            "Confirmed" => "bg-info",
+            "Completed" => "bg-success",
+            "Cancelled" => "bg-danger",
+            "No-Show" => "bg-warning",
+            _ => "bg-secondary"
+        };
+    }
+}

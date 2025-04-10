@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OutpatientClinic.DataAccess.Entities;
@@ -9,13 +10,18 @@ public partial class Appointment
     public int AppointmentId { get; set; }
 
     [ForeignKey("Patient")]
+    [Required]
     public int PatientId { get; set; }
 
     public int? DoctorId { get; set; }
+
+    [Required]
     public int DepartmentId { get; set; }
 
+    [Required]
     public int ClinicId { get; set; }
 
+    [Required]
     public DateTime AppointmentDateTime { get; set; }
 
     public string? Status { get; set; }

@@ -1,43 +1,157 @@
 ﻿@model OutpatientClinic.DataAccess.Entities.Appointment
+
 @{
     ViewData["Title"] = "Appointment Details";
 }
 
-<h2>Appointment Details</h2>
-
-<div>
-    <h4>Appointment Information</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Patient</dt>
-        <dd class="col-sm-10">@Model.Patient.FirstName @Model.Patient.LastName</dd>
-
-        <dt class="col-sm-2">Doctor</dt>
-        <dd class="col-sm-10">
-            @if (Model.Doctor?.DoctorNavigation != null)
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@ViewData["Title"]</h1>
+        <div>
+            @if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Receptionist"))
             {
-                @($"Dr. {Model.Doctor.DoctorNavigation.FirstName} {Model.Doctor.DoctorNavigation.LastName}")
+                <a asp-action="Edit" asp-route-id="@Model.AppointmentId" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
             }
-        </dd>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
 
-        <dt class="col-sm-2">Department</dt>
-        <dd class="col-sm-10">@Model.Department?.DepartmentName</dd>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calendar-event"></i> Appointment Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>Date & Time</dt>
+                                <dd>@Model.AppointmentDateTime.ToString("dddd, MMMM d, yyyy h:mm tt")</dd>
 
-        <dt class="col-sm-2">Clinic</dt>
-        <dd class="col-sm-10">@Model.Clinic?.ClinicName</dd>
+                                <dt>Status</dt>
+                                <dd>
+                                    <span class="badge @GetStatusBadgeClass(Model.Status)">
+                                        @(string.IsNullOrEmpty(Model.Status) ? "Pending" : Model.Status)
+                                    </span>
+                                </dd>
 
-        <dt class="col-sm-2">Date &amp; Time</dt>
-        <dd class="col-sm-10">@Model.AppointmentDateTime.ToString("g")</dd>
+                                <dt>Clinic</dt>
+                                <dd>@Model.Clinic?.ClinicName</dd>
 
-        <dt class="col-sm-2">Status</dt>
-        <dd class="col-sm-10">@Model.Status</dd>
+                                <dt>Department</dt>
+                                <dd>@Model.Department?.DepartmentName</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>Patient</dt>
+                                <dd>@($"{Model.Patient?.FirstName} {Model.Patient?.LastName}")</dd>
 
-        <dt class="col-sm-2">Notes</dt>
-        <dd class="col-sm-10">@Model.Notes</dd>
-    </dl>
+                                <dt>Doctor</dt>
+                                <dd>@(Model.Doctor?.DoctorNavigation != null ? $"{Model.Doctor.DoctorNavigation.FirstName} {Model.Doctor.DoctorNavigation.LastName}" : "Not Assigned")</dd>
+
+                                <dt>Doctor Specialty</dt>
+                                <dd>@(Model.Doctor?.Specialty ?? "N/A")</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="mt-4">
+                            <h6 class="fw-bold">Notes:</h6>
+                            <div class="p-3 bg-light rounded">
+                                @Model.Notes
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.MedicalRecord != null)
+            {
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-journal-medical"></i> Medical Record
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p>@Model.MedicalRecord.Diagnosis</p>
+                        <p>@Model.MedicalRecord.Treatment</p>
+
+                        <!-- Additional medical record information can be displayed here -->
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history"></i> System Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl>
+                        <dt>Created By</dt>
+                        <dd>@Model.CreatedBy</dd>
+
+                        <dt>Created Date</dt>
+                        <dd>@(Model.CreatedDate?.ToString("MMM dd, yyyy h:mm tt") ?? "N/A")</dd>
+
+                        <dt>Last Updated By</dt>
+                        <dd>@(Model.UpdatedBy ?? "N/A")</dd>
+
+                        <dt>Last Updated Date</dt>
+                        <dd>@(Model.UpdatedDate?.ToString("MMM dd, yyyy h:mm tt") ?? "N/A")</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Related information like lab tests can be displayed here -->
+            @if (Model.LabTests != null && Model.LabTests.Any())
+            {
+                <div class="card shadow">
+                    <div class="card-header bg-warning">
+                        <h5 class="mb-0">
+                            <i class="bi bi-flask"></i> Lab Tests
+                        </h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var test in Model.LabTests)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @test.TestName
+                                <span class="badge bg-info">@test.Appointment.Status</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.AppointmentId" class="btn btn-warning">Edit</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</div>
+@functions {
+    public string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Scheduled" => "bg-primary",
+            "Confirmed" => "bg-info",
+            "Completed" => "bg-success",
+            "Cancelled" => "bg-danger",
+            "No-Show" => "bg-warning",
+            _ => "bg-secondary"
+        };
+    }
+}

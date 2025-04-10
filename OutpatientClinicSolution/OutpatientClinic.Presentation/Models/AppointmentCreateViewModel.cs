@@ -5,16 +5,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace OutpatientClinic.Presentation.Models
 {
-    public class AppointmentViewModel
+    public class AppointmentCreateViewModel
     {
-        public int AppointmentId { get; set; }
+        [Required]
         public int PatientId { get; set; }
-        public int? DoctorId { get; set; }
+
+        [Required]
         public int DepartmentId { get; set; }
-        public int? ClinicId { get; set; }
+
+        [Required]
+        public int ClinicId { get; set; }
+
+        [Required]
         public DateTime AppointmentDateTime { get; set; }
+
         public string? Notes { get; set; }
-        public string? Status { get; set; }
-        public string? PatientSearch { get; set; }
     }
+
 }

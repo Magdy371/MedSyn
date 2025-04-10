@@ -101,6 +101,11 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Patient).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.PatientId)
                 .HasConstraintName("FK__Appointme__Patie__48CFD27E");
+
+            entity.HasOne(d => d.Department).WithMany()
+                .HasForeignKey(d => d.DepartmentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Appointme__Depar__4BC73F29");
         });
 
         modelBuilder.Entity<Billing>(entity =>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OutpatientClinic.DataAccess.Context;
 
@@ -11,9 +12,11 @@ using OutpatientClinic.DataAccess.Context;
 namespace OutpatientClinic.DataAccess.Migrations
 {
     [DbContext(typeof(OutpatientClinicDbContext))]
-    partial class OutpatientClinicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250410134159_Appointment_issueFixed")]
+    partial class Appointment_issueFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

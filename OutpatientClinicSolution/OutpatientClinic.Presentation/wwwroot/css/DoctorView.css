@@ -1,0 +1,45 @@
+﻿.doctor-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+    .doctor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(79, 150, 255, 0.15);
+    }
+
+.card-title {
+    color: #2c3e50;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+    .card-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background: #6CD9D3;
+    }
+
+.card-text {
+    color: #5a6b7c;
+    font-size: 0.95rem;
+}
+
+.department-label {
+    background: rgba(108, 217, 211, 0.15);
+    color: #2c3e50;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 0.85rem;
+}

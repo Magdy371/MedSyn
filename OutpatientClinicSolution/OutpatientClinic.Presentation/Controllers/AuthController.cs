@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Common;
 using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.DTOS;
+using OutpatientClinic.DataAccess.Context;
 using OutpatientClinic.DataAccess.Entities;
+using OutpatientClinic.Presentation.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,17 +17,22 @@ namespace OutpatientClinic.Presentation.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IAuthService _authService;
+        private readonly OutpatientClinicDbContext _context;
 
-        public AuthController(UserManager<ApplicationUser> userManager,
-                              SignInManager<ApplicationUser> signInManager,
-                              IAuthService authService)
+        public AuthController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IAuthService authService,
+            OutpatientClinicDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _authService = authService;
+            _context = context;
         }
 
         // GET: /Auth/Login
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
@@ -32,6 +40,7 @@ namespace OutpatientClinic.Presentation.Controllers
         }
 
         // POST: /Auth/Login
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
@@ -198,6 +207,71 @@ namespace OutpatientClinic.Presentation.Controllers
             return RedirectToAction("Index", "Home"); // Default redirection
             //return Ok(new { message = "Registration successful", token });
         }
+        //this signup method is for NormalUser
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Signup()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Signup(PatientRegisterModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            // Create the user
+            var user = new ApplicationUser
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                FullName = $"{model.FirstName} {model.LastName}",
+                PhoneNumber = model.PhoneNumber
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+                return View(model);
+            }
+
+            // Assign the "Patient" role
+            var roleResult = await _userManager.AddToRoleAsync(user, "Patient");
+            if (!roleResult.Succeeded)
+            {
+                foreach (var error in roleResult.Errors)
+                    ModelState.AddModelError("", error.Description);
+                // Optionally, delete the user if role assignment fails
+                await _userManager.DeleteAsync(user);
+                return View(model);
+            }
+
+            // Create the Patient entity
+            var patient = new Patient
+            {
+                UserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Dob = model.Dob
+                // Other fields like ContactId, PrimaryDoctorId can be null or set later
+            };
+
+            _context.Patients.Add(patient);
+            await _context.SaveChangesAsync();
+
+            // Sign in the user
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            // Redirect to patient dashboard
+            return RedirectToAction("Index", "Patient");
+        }
+
+
 
         // POST: /Auth/Logout
         [HttpPost]

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.LabTest>
+
+@{
+    ViewData["Title"] = "Lab Tests";
+}
+
+<h1>Lab Tests</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Test ID</th>
+            <th>Patient Name</th>
+            <th>Test Name</th>
+            <th>Test Date</th>
+            <th>Created By</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TestId</td>
+                <td>@(item.Patient.FirstName + " " + item.Patient.LastName)</td>
+                <td>@item.TestName</td>
+                <td>@item.TestDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.CreatedBy</td> <!-- Display the username of the creator -->
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.TestId" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.TestId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.TestId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

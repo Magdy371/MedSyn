@@ -13,7 +13,7 @@ public partial class LabTest
 
     public string TestName { get; set; } = null!;
 
-    public DateOnly TestDate { get; set; }
+    public DateTime TestDate { get; set; }
 
     public string? Results { get; set; }
 

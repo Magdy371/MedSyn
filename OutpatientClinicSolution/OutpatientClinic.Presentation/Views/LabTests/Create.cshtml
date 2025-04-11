@@ -1,0 +1,92 @@
+﻿@model OutpatientClinic.DataAccess.Entities.LabTest
+
+@{
+    ViewData["Title"] = "Create Lab Test";
+}
+
+<h1>Create Lab Test</h1>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label for="PatientId">Patient</label>
+        <select asp-for="PatientId" class="form-control" id="PatientId">
+            <option value="">Select Patient</option>
+            @foreach (var patient in ViewBag.Patients)
+            {
+                <option value="@patient.Value">@patient.Text</option>
+            }
+        </select>
+        <span asp-validation-for="PatientId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="TestDate">Test Date</label>
+        <input asp-for="TestDate" class="form-control" type="date" id="TestDate" />
+        <span asp-validation-for="TestDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="AppointmentId">Appointment</label>
+        <select asp-for="AppointmentId" class="form-control" id="AppointmentId">
+            <option value="">Select Appointment</option>
+        </select>
+        <span asp-validation-for="AppointmentId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TestName" class="control-label"></label>
+        <input asp-for="TestName" class="form-control" />
+        <span asp-validation-for="TestName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Results" class="control-label"></label>
+        <textarea asp-for="Results" class="form-control"></textarea>
+        <span asp-validation-for="Results" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+                $(document).ready(function () {
+            $('#PatientId, #TestDate').change(function () {
+                var patientId = $('#PatientId').val();
+                var testDate = $('#TestDate').val();
+
+                // Validate both fields are filled
+                if (patientId && testDate) {
+                    var selectedDate = new Date(testDate);
+                    // Check if date is valid (not default min date)
+                    if (selectedDate.getFullYear() < 1753) {
+                        $('#AppointmentId').empty();
+                        $('#AppointmentId').append('<option value="">Invalid Date</option>');
+                        return;
+                    }
+
+                    // Proceed with AJAX only if date is valid
+                    $.ajax({
+                        url: '@Url.Action("GetAppointments", "LabTests")',
+                        type: 'GET',
+                        data: { patientId: patientId, testDate: testDate },
+                        success: function (data) {
+                            var appointmentSelect = $('#AppointmentId');
+                            appointmentSelect.empty();
+                            appointmentSelect.append('<option value="">Select Appointment</option>');
+                            $.each(data, function (index, appointment) {
+                                appointmentSelect.append('<option value="' + appointment.appointmentId + '">' +
+                                    new Date(appointment.appointmentDateTime).toLocaleString() + '</option>');
+                            });
+                            if (data.length > 0) {
+                                appointmentSelect.val(data[0].appointmentId);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

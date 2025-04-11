@@ -1,4 +1,5 @@
-﻿using OutpatientClinic.Business.Services.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.Core.UnitOfWorks;
 using OutpatientClinic.DataAccess.Entities;
 using System.Collections.Generic;
@@ -15,11 +16,28 @@ namespace OutpatientClinic.Business.Services.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<LabTest>> GetAllLabTestsAsync() =>
-            await _unitOfWork.Repository<LabTest>().GetAllAsync();
+        //public async Task<IEnumerable<LabTest>> GetAllLabTestsAsync() =>
+        //    await _unitOfWork.Repository<LabTest>().GetAllAsync();
+        // In LabTestService.cs
+        public async Task<IEnumerable<LabTest>> GetAllLabTestsAsync()
+        {
+            return await _unitOfWork.Repository<LabTest>()
+                .Query()
+                .Include(lt => lt.Patient)
+                .Where(lt => lt.IsDeleted == null || lt.IsDeleted == false)
+                .ToListAsync() ?? new List<LabTest>(); // Added null-coalescing operator to handle null
+        }
 
-        public async Task<LabTest> GetLabTestByIdAsync(int id) =>
-            await _unitOfWork.Repository<LabTest>().GetByIdAsync(id);
+        //public async Task<LabTest> GetLabTestByIdAsync(int id) =>
+        //    await _unitOfWork.Repository<LabTest>().GetByIdAsync(id);
+        // In LabTestService.cs
+        public async Task<LabTest?> GetLabTestByIdAsync(int id) // Updated return type to LabTest?
+        {
+            return await _unitOfWork.Repository<LabTest>()
+                .Query()
+                .Include(lt => lt.Patient)
+                .FirstOrDefaultAsync(lt => lt.TestId == id);
+        }
 
         public async Task<LabTest> CreateLabTestAsync(LabTest labTest)
         {

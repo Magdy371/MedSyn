@@ -29,5 +29,5 @@ public partial class LabTest
 
     public virtual Appointment? Appointment { get; set; }
 
-    public virtual Patient Patient { get; set; } = null!;
+    public virtual Patient? Patient { get; set; }
 }

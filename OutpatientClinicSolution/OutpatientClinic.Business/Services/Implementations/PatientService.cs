@@ -24,7 +24,15 @@ namespace OutpatientClinic.Business.Services.Implementations
         }
 
         public async Task<IEnumerable<Patient>> GetAllPatientsAsync() =>
-            await _unitOfWork.Repository<Patient>().GetAllAsync();
+            (await _unitOfWork.Repository<Patient>().GetAllAsync()) ?? new List<Patient>();
+        //await _unitOfWork.Repository<Patient>().GetAllAsync();
+
+        // Inside PatientService.cs
+        public async Task<IEnumerable<Patient>> GetActivePatientsAsync()
+        {
+            var patients = await _unitOfWork.Repository<Patient>().GetAllAsync();
+            return patients.Where(p => !(p.IsDeleted ?? false));
+        }
 
         public async Task<Patient> GetPatientByIdAsync(int id) =>
             await _unitOfWork.Repository<Patient>().GetByIdAsync(id);

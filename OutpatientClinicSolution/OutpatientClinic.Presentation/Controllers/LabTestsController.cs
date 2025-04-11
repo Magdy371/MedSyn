@@ -2,226 +2,211 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using OutpatientClinic.Core.UnitOfWorks;
+using OutpatientClinic.Business.Services.Interfaces;
 using OutpatientClinic.DataAccess.Entities;
-using System.Linq;
-using System.Security.Claims;
+using OutpatientClinic.Presentation.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace OutpatientClinic.Presentation.Controllers
 {
-    [Authorize] // Requires authentication for all actions
+    [Authorize]
     public class LabTestsController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILabTestService _labTestService;
+        private readonly IPatientService _patientService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public LabTestsController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public LabTestsController(
+            ILabTestService labTestService,
+            IPatientService patientService,
+            UserManager<ApplicationUser> userManager)
         {
-            _unitOfWork = unitOfWork;
+            _labTestService = labTestService;
+            _patientService = patientService;
             _userManager = userManager;
         }
 
-        // GET: LabTests (Index) - Doctors and Admins only
-        [Authorize(Roles = "Doctor,Admin")]
-        public async Task<IActionResult> Index(string testNameFilter)
+        // GET: LabTests
+        [Authorize(Roles = "Admin,Doctor,Receptionist")]
+        public async Task<IActionResult> Index()
         {
-            //var labTests = _unitOfWork.Repository<LabTest>().Query()
-            //    .Include(lt => lt.Patient)
-            //    .Where(lt => !lt.IsDeleted.HasValue || !lt.IsDeleted.Value);
+            var labTests = await _labTestService.GetAllLabTestsAsync();
+            var viewModel = labTests.Select(lt => new LabTestIndexViewModel
+            {
+                TestId = lt.TestId,
+                TestName = lt.TestName,
+                TestDate = lt.TestDate,
+                PatientName = lt.Patient != null
+        ? $"{lt.Patient.FirstName} {lt.Patient.LastName}"
+        : "Unknown", 
+                AppointmentId = lt.AppointmentId,
+                CreatedBy = lt.CreatedBy ?? "Unknown"
+            }).ToList();
 
-            //if (!string.IsNullOrEmpty(testNameFilter))
-            //{
-            //    labTests = labTests.Where(lt => lt.TestName == testNameFilter);
-            //}
-
-            //var testNames = await _unitOfWork.Repository<LabTest>().Query()
-            //    .Select(lt => lt.TestName)
-            //    .Distinct()
-            //    .ToListAsync();
-
-            //ViewBag.TestNames = testNames;
-            //return View(await labTests.ToListAsync());
-            var labTests = await _unitOfWork.Repository<LabTest>().Query()
-            .Include(lt => lt.Patient)
-            .Where(lt => !lt.IsDeleted.HasValue || !lt.IsDeleted.Value)
-            .ToListAsync();
-
-            return View(labTests);
+            return View(viewModel);
         }
 
         // GET: LabTests/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int? id)
         {
-            var labTest = await _unitOfWork.Repository<LabTest>().Query()
-                .Include(lt => lt.Patient)
-                .FirstOrDefaultAsync(lt => lt.TestId == id && (!lt.IsDeleted.HasValue || !lt.IsDeleted.Value));
-
-            if (labTest == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(User);
-            var roles = await _userManager.GetRolesAsync(user);
+            // Fetch the lab test with Patient and Appointment included
+            var labTest = await _labTestService.GetLabTestByIdAsync(id.Value);
 
-            // Patients can only view their own lab tests
-            if (roles.Contains("Patient") && labTest.PatientId.ToString() != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            if (labTest == null || (labTest.IsDeleted ?? false))
             {
-                return Forbid();
+                return NotFound();
             }
 
-            // Doctors, Admins, Receptionists, and Patients (if authorized) can view
-            if (!roles.Contains("Doctor") && !roles.Contains("Admin") && !roles.Contains("Receptionist") && !roles.Contains("Patient"))
+            // Security check for patients (restrict access to their own records)
+            var user = await _userManager.GetUserAsync(User);
+            if (await _userManager.IsInRoleAsync(user, "Patient"))
             {
-                return Forbid();
+                var patient = await _patientService.GetPatientByUserIdAsync(user.Id);
+                if (patient == null || labTest.PatientId != patient.PatientId)
+                {
+                    return Forbid();
+                }
             }
 
             return View(labTest);
         }
 
-        // GET: LabTests/Create - Doctors and Admins only
-        [Authorize(Roles = "Doctor,Admin")]
+        // GET: LabTests/Create
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> Create()
         {
-            var patients = await _unitOfWork.Repository<Patient>().Query()
-                .Select(p => new { p.PatientId, FullName = p.FirstName + " " + p.LastName })
-                .ToListAsync();
-            ViewBag.Patients = new SelectList(patients, "PatientId", "FullName");
-            return View();
+            await PopulatePatientsDropdown();
+            return View(new LabTest { TestDate = DateTime.Now });
         }
+
         // POST: LabTests/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Doctor,Admin")]
-        public async Task<IActionResult> Create(LabTest labTest)
+        [Authorize(Roles = "Admin,Doctor")]
+        public async Task<IActionResult> Create([Bind("TestName,TestDate,PatientId,Results")] LabTest labTest)
         {
-            // Explicitly validate TestDate range
-            if (labTest.TestDate < new DateTime(1753, 1, 1))
-            {
-                ModelState.AddModelError("TestDate", "Test date must be after 1753-01-01.");
-            }
-
             if (ModelState.IsValid)
             {
-                labTest.CreatedBy = User.Identity.Name;
-                labTest.CreatedDate = DateTime.Now;
-                await _unitOfWork.Repository<LabTest>().AddAsync(labTest);
-                await _unitOfWork.CompleteAsync();
-                return RedirectToAction(nameof(Index));
+                var errors = ModelState
+                  .Where(e => e.Value.Errors.Count > 0)
+                  .Select(e => new { e.Key, e.Value.Errors })
+                  .ToList();
+                var patient = await _patientService.GetPatientByIdAsync(labTest.PatientId);
+                if (patient == null || (patient.IsDeleted ?? false))
+                {
+                    ModelState.AddModelError("PatientId", "Selected patient does not exist.");
+                }
+                else
+                {
+                    labTest.CreatedBy = User.Identity?.Name ?? "System";
+                    labTest.CreatedDate = DateTime.Now;
+                    labTest.IsDeleted = false;
+
+                    await _labTestService.CreateLabTestAsync(labTest);
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
-            // Repopulate ViewBag.Patients if validation fails
-            var patients = await _unitOfWork.Repository<Patient>().Query()
-                .Select(p => new { p.PatientId, FullName = p.FirstName + " " + p.LastName })
-                .ToListAsync();
-            ViewBag.Patients = new SelectList(patients, "PatientId", "FullName", labTest.PatientId);
+            await PopulatePatientsDropdown();
             return View(labTest);
         }
 
-        // AJAX action to get appointments for a patient on a specific date or the day before
-        [HttpGet]
-        public async Task<IActionResult> GetAppointments(int patientId, DateTime testDate)
+        // GET: LabTests/Edit/5
+        [Authorize(Roles = "Admin,Doctor")]
+        public async Task<IActionResult> Edit(int? id)
         {
-            // Validate testDate to ensure it's within SQL Server's datetime range
-            if (testDate < new DateTime(1753, 1, 1))
-            {
-                return Json(new List<object>()); // Return empty list to avoid SQL error
-            }
+            if (id == null) return NotFound();
 
-            var appointments = await _unitOfWork.Repository<Appointment>().Query()
-                .Where(a => a.PatientId == patientId &&
-                            (a.AppointmentDateTime.Date == testDate.Date ||
-                             a.AppointmentDateTime.Date == testDate.Date.AddDays(-1)))
-                .OrderByDescending(a => a.AppointmentDateTime)
-                .Select(a => new { a.AppointmentId, a.AppointmentDateTime })
-                .ToListAsync();
+            var labTest = await _labTestService.GetLabTestByIdAsync(id.Value);
+            if (labTest == null || (labTest.IsDeleted ?? false)) return NotFound();
 
-            return Json(appointments);
-        }
-
-        // GET: LabTests/Edit/5 - Doctors and Admins only
-        [Authorize(Roles = "Doctor,Admin")]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var labTest = await _unitOfWork.Repository<LabTest>().GetByIdAsync(id);
-            if (labTest == null || labTest.IsDeleted == true)
-            {
-                return NotFound();
-            }
+            await PopulatePatientsDropdown();
             return View(labTest);
         }
 
         // POST: LabTests/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Doctor,Admin")]
-        public async Task<IActionResult> Edit(int id, LabTest labTest)
+        [Authorize(Roles = "Admin,Doctor")]
+        public async Task<IActionResult> Edit(int id, [Bind("TestId,TestName,TestDate,PatientId,Results,AppointmentId")] LabTest labTest)
         {
-            if (id != labTest.TestId)
-            {
-                return NotFound();
-            }
+            if (id != labTest.TestId) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    labTest.UpdatedBy = User.Identity.Name;
+                    labTest.UpdatedBy = User.Identity?.Name ?? "System";
                     labTest.UpdatedDate = DateTime.Now;
-                    _unitOfWork.Repository<LabTest>().Update(labTest);
-                    await _unitOfWork.CompleteAsync();
+                    await _labTestService.UpdateLabTestAsync(labTest);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!await LabTestExists(id))
-                    {
+                    if (!await LabTestExists(labTest.TestId))
                         return NotFound();
-                    }
                     throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            await PopulatePatientsDropdown();
             return View(labTest);
         }
 
-        // GET: LabTests/Delete/5 - Doctors and Admins only
-        [Authorize(Roles = "Doctor,Admin")]
-        public async Task<IActionResult> Delete(int id)
+        // GET: LabTests/Delete/5
+        [Authorize(Roles = "Admin,Doctor")]
+        public async Task<IActionResult> Delete(int? id)
         {
-            var labTest = await _unitOfWork.Repository<LabTest>().Query()
-                .Include(lt => lt.Patient)
-                .FirstOrDefaultAsync(lt => lt.TestId == id && (!lt.IsDeleted.HasValue || !lt.IsDeleted.Value));
+            if (id == null) return NotFound();
 
-            if (labTest == null)
-            {
-                return NotFound();
-            }
+            var labTest = await _labTestService.GetLabTestByIdAsync(id.Value);
+            if (labTest == null || (labTest.IsDeleted ?? false)) return NotFound();
+
             return View(labTest);
         }
 
         // POST: LabTests/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Doctor,Admin")]
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var labTest = await _unitOfWork.Repository<LabTest>().GetByIdAsync(id);
+            var labTest = await _labTestService.GetLabTestByIdAsync(id);
             if (labTest != null)
             {
                 labTest.IsDeleted = true;
-                labTest.UpdatedBy = User.Identity.Name;
+                labTest.UpdatedBy = User.Identity?.Name ?? "System";
                 labTest.UpdatedDate = DateTime.Now;
-                _unitOfWork.Repository<LabTest>().Update(labTest);
-                await _unitOfWork.CompleteAsync();
+                await _labTestService.UpdateLabTestAsync(labTest);
             }
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> LabTestExists(int id)
         {
-            return await _unitOfWork.Repository<LabTest>().ExistsAsync(lt => lt.TestId == id && (!lt.IsDeleted.HasValue || !lt.IsDeleted.Value));
+            var labTest = await _labTestService.GetLabTestByIdAsync(id);
+            return labTest != null;
+        }
+
+        private async Task PopulatePatientsDropdown()
+        {
+            var patients = await _patientService.GetAllPatientsAsync();
+            var activePatients = patients
+                .Where(p => !(p.IsDeleted ?? false)) // Explicit check for soft-delete
+                .Select(p => new
+                {
+                    p.PatientId,
+                    Text = $"{p.FirstName} {p.LastName}"
+                })
+                .ToList();
+
+            ViewData["Patients"] = new SelectList(activePatients, "PatientId", "Text");
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OutpatientClinic.DataAccess.Context;
 
@@ -11,9 +12,11 @@ using OutpatientClinic.DataAccess.Context;
 namespace OutpatientClinic.DataAccess.Migrations
 {
     [DbContext(typeof(OutpatientClinicDbContext))]
-    partial class OutpatientClinicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250411223627_PationNavigationProbertyInLabTestNoRequired")]
+    partial class PationNavigationProbertyInLabTestNoRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,43 +54,43 @@ namespace OutpatientClinic.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "670d2989-6b5a-4418-94de-72ba11c2b3c2",
+                            Id = "5e616808-6f4e-4abd-8ff9-e973cc1d28a7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bbb7ca62-fb2b-4bcd-bb94-c02c3e2a27c7",
+                            Id = "c2c16abf-3ad3-45e8-bf31-8cc99b3f8261",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "1faed417-1ef1-42e3-931b-300bf7220fee",
+                            Id = "41917002-6444-4a5a-b1d3-d5051343ccd8",
                             Name = "Receptionist",
                             NormalizedName = "RECEPTIONIST"
                         },
                         new
                         {
-                            Id = "d9a44cf3-ccb9-46d6-997b-7e2fdde547dc",
+                            Id = "820cc16f-b1be-4cfc-a5c5-be5a19593b73",
                             Name = "Nurse",
                             NormalizedName = "NURSE"
                         },
                         new
                         {
-                            Id = "876c211e-4ab8-4c2b-8fb5-b3ce4dbbdd20",
+                            Id = "9139b282-4dbd-4923-bb9b-bb3fa814e5f1",
                             Name = "Technical_Support",
                             NormalizedName = "TECHNICAL_SUPPORT"
                         },
                         new
                         {
-                            Id = "63a99620-2480-4ded-b5a8-05885d03c892",
+                            Id = "606dbfbb-bd1c-4d1e-8efd-13639cbd0595",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "6a74bc51-b0e2-4ca5-a8de-7b96e9a3da48",
+                            Id = "3d99e4dc-681d-4afc-8f05-debc44df9905",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });

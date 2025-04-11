@@ -8,6 +8,7 @@ namespace OutpatientClinic.Business.Services.Interfaces
     public interface IPatientService
     {
         Task<IEnumerable<Patient>> GetAllPatientsAsync();
+        Task<IEnumerable<Patient>> GetActivePatientsAsync();
         Task<IEnumerable<PatientSearchResult>> SearchPatientsAsync(string term);
         Task<Patient> GetPatientByIdAsync(int id);
         Task<Patient> CreatePatientAsync(Patient patient);

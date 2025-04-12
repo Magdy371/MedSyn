@@ -25,5 +25,5 @@ public partial class Prescription
 
     public bool? IsDeleted { get; set; }
 
-    public virtual MedicalRecord Record { get; set; } = null!;
+    public virtual MedicalRecord? Record { get; set; }
 }

@@ -55,7 +55,7 @@
                 <dd class="col-sm-9">@(Model.Notes ?? "No notes available")</dd>
             </dl>
 
-            <form asp-action="DeleteConfirmed">
+            <form asp-action="Delete">
                 <input type="hidden" asp-for="AppointmentId" />
                 <div class="text-end mt-4">
                     <button type="submit" class="btn btn-danger">

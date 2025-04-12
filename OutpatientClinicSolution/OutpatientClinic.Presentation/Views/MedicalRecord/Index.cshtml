@@ -1,0 +1,225 @@
+﻿@model List<OutpatientClinic.Presentation.Models.MedicalRecordIndexViewModel>
+
+@{
+    ViewData["Title"] = "Medical Records";
+}
+
+<div class="records-container">
+    <div class="header-bar">
+        <h2 class="page-title">📁 Medical Records</h2>
+        <a class="new-record-btn" asp-action="Create">
+            <i class="fas fa-plus-circle"></i> New Record
+        </a>
+    </div>
+
+    <div class="records-table">
+        <div class="table-header">
+            <div class="th">ID</div>
+            <div class="th">Patient</div>
+            <div class="th">Diagnosis</div>
+            <div class="th">Treatment</div>
+            <div class="th">Created By</div>
+            <div class="th">Date</div>
+            <div class="th">Actions</div>
+        </div>
+
+        @foreach (var record in Model)
+        {
+            <div class="table-row">
+                <div class="td">#@record.RecordId</div>
+                <div class="td patient-cell">
+                    <span class="patient-avatar">👤</span>
+                    @record.PatientName
+                </div>
+                <div class="td diagnosis-cell">
+                    <span class="diagnosis-tag">@record.Diagnosis</span>
+                </div>
+                <div class="td treatment-cell">@record.Treatment</div>
+                <div class="td creator-cell">
+                    <span class="role-badge @record.CreatorRole.ToLower()">@record.CreatorRole</span>
+                    @record.CreatorName
+                </div>
+                <div class="td date-cell">
+                    <i class="far fa-calendar"></i>
+                    @record.CreatedDate.ToString("d MMM yyyy")
+                </div>
+                <div class="td actions-cell">
+                    <a class="action-btn details" asp-action="Details" asp-route-id="@record.RecordId">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a class="action-btn edit" asp-action="Edit" asp-route-id="@record.RecordId">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a class="action-btn delete" asp-action="Delete" asp-route-id="@record.RecordId">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Base Styles */
+    :root {
+        --primary: #6366f1;
+        --secondary: #8b5cf6;
+        --background: #f8fafc;
+        --text: #1e293b;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: var(--background);
+        color: var(--text);
+    }
+
+    .records-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    /* Header Styles */
+    .header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0;
+    }
+
+    .new-record-btn {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: transform 0.2s;
+    }
+
+        .new-record-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    /* Table Styles */
+    .records-table {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .table-header {
+        display: grid;
+        grid-template-columns: 80px 1fr 1fr 1fr 1fr 120px 120px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 1rem;
+        font-weight: 600;
+    }
+
+    .table-row {
+        display: grid;
+        grid-template-columns: 80px 1fr 1fr 1fr 1fr 120px 120px;
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        transition: background 0.2s;
+    }
+
+        .table-row:hover {
+            background: #f8fafc;
+        }
+
+    .td {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+    }
+
+    /* Custom Cell Styles */
+    .patient-avatar {
+        margin-right: 0.75rem;
+    }
+
+    .diagnosis-tag {
+        background: #f0fdf4;
+        color: #16a34a;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+    }
+
+    .role-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        margin-right: 0.5rem;
+    }
+
+        .role-badge.doctor {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .role-badge.nurse {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+    .actions-cell {
+        gap: 0.5rem;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        padding: 0.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .details {
+        color: #3b82f6;
+    }
+
+    .edit {
+        color: #eab308;
+    }
+
+    .delete {
+        color: #ef4444;
+    }
+
+    .action-btn:hover {
+        transform: scale(1.1);
+        background: #f1f5f9;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .records-table {
+            overflow-x: auto;
+        }
+
+        .table-header,
+        .table-row {
+            width: 1000px;
+        }
+    }
+</style>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Add Poppins Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">

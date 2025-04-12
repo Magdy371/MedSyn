@@ -1,0 +1,24 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Prescription
+
+<h2>Edit Prescription</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="PrescriptionId" />
+    <input type="hidden" asp-for="RecordId" />
+    <div class="form-group">
+        <label asp-for="MedicalName">Medical Name</label>
+        <input asp-for="MedicalName" class="form-control" />
+        <span asp-validation-for="MedicalName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Dosage">Dosage</label>
+        <input asp-for="Dosage" class="form-control" />
+        <span asp-validation-for="Dosage" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Instructions">Instructions</label>
+        <textarea asp-for="Instructions" class="form-control"></textarea>
+        <span asp-validation-for="Instructions" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

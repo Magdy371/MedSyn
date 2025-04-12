@@ -4,80 +4,279 @@
     ViewData["Title"] = "Appointments";
 }
 
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>@ViewData["Title"]</h1>
-
+<div class="appointments-container">
+    <div class="header-bar">
+        <h1 class="page-title">🗓️ @ViewData["Title"]</h1>
         @if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Receptionist"))
         {
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Create New
+            <a asp-action="Create" class="new-appointment-btn">
+                <i class="fas fa-plus"></i> New Appointment
             </a>
         }
     </div>
 
-    <div class="card shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover" id="appointmentsTable">
-                    <thead>
-                        <tr>
-                            <th>Patient</th>
-                            <th>Doctor</th>
-                            <th>Department</th>
-                            <th>Clinic</th>
-                            <th>Date & Time</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@($"{item.Patient?.FirstName} {item.Patient?.LastName}")</td>
-                                <td>@(item.Doctor?.DoctorNavigation != null ? $"{item.Doctor.DoctorNavigation.FirstName} {item.Doctor.DoctorNavigation.LastName}" : "Not Assigned")</td>
-                                <td>@item.Department?.DepartmentName</td>
-                                <td>@item.Clinic?.ClinicName</td>
-                                <td>@item.AppointmentDateTime.ToString("MMM dd, yyyy h:mm tt")</td>
-                                <td>
-                                    <span class="badge @GetStatusBadgeClass(item.Status)">
-                                        @(string.IsNullOrEmpty(item.Status) ? "Pending" : item.Status)
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a asp-action="Details" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-outline-info">
-                                            <i class="bi bi-info-circle"></i>
-                                        </a>
-                                        @if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Receptionist"))
-                                        {
-                                            <a asp-action="Edit" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                        }
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <a asp-action="Delete" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+    <div class="modern-table">
+        <div class="table-header">
+            <div class="th">Patient</div>
+            <div class="th">Doctor</div>
+            <div class="th">Department</div>
+            <div class="th">Clinic</div>
+            <div class="th">Date & Time</div>
+            <div class="th">Status</div>
+            <div class="th">Actions</div>
         </div>
+
+        @foreach (var item in Model)
+        {
+            <div class="table-row">
+                <div class="td">
+                    <span class="patient-avatar">👤</span>
+                    @($"{item.Patient?.FirstName} {item.Patient?.LastName}")
+                </div>
+                <div class="td">
+                    @if (item.Doctor?.DoctorNavigation != null)
+                    {
+                        <span class="doctor-icon">🩺</span>
+                        @($"{item.Doctor.DoctorNavigation.FirstName} {item.Doctor.DoctorNavigation.LastName}")
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not Assigned</span>
+                    }
+                </div>
+                <div class="td">@item.Department?.DepartmentName</div>
+                <div class="td">@item.Clinic?.ClinicName</div>
+                <div class="td">
+                    <i class="far fa-calendar-alt"></i>
+                    @item.AppointmentDateTime.ToString("MMM dd, yyyy h:mm tt")
+                </div>
+                <div class="td">
+                    <span class="status-pill @GetStatusBadgeClass(item.Status)">
+                        @(string.IsNullOrEmpty(item.Status) ? "Pending" : item.Status)
+                    </span>
+                </div>
+                <div class="td">
+                    <div class="action-buttons">
+                        <a asp-action="Details" asp-route-id="@item.AppointmentId" class="action-btn info">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Receptionist"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.AppointmentId" class="action-btn edit">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.AppointmentId" class="action-btn delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
+
+@section Styles {
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        .appointments-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .new-appointment-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.75rem 1.75rem;
+            border-radius: 30px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 500;
+        }
+
+            .new-appointment-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            }
+
+        .modern-table {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.25rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+
+            .table-row:hover {
+                background: #f8fafc;
+            }
+
+        .td {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .patient-avatar, .doctor-icon {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+            .status-pill.bg-primary {
+                background: #e0e7ff;
+                color: #4f46e5;
+            }
+
+            .status-pill.bg-info {
+                background: #dbeafe;
+                color: #1d4ed8;
+            }
+
+            .status-pill.bg-success {
+                background: #dcfce7;
+                color: #15803d;
+            }
+
+            .status-pill.bg-danger {
+                background: #fee2e2;
+                color: #b91c1c;
+            }
+
+            .status-pill.bg-warning {
+                background: #fef3c7;
+                color: #b45309;
+            }
+
+            .status-pill.bg-secondary {
+                background: #f1f5f9;
+                color: #64748b;
+            }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+            .action-btn.info {
+                color: var(--info);
+            }
+
+            .action-btn.edit {
+                color: var(--warning);
+            }
+
+            .action-btn.delete {
+                color: var(--danger);
+            }
+
+            .action-btn:hover {
+                transform: scale(1.1);
+                background: rgba(241, 245, 249, 0.5);
+            }
+
+        @@media (max-width: 768px) {
+            .modern-table {
+                overflow-x: auto;
+            }
+
+            .table-header,
+            .table-row {
+                min-width: 1000px;
+            }
+
+            .appointments-container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+}
 
 @section Scripts {
     <script>
         $(document).ready(function () {
             $('#appointmentsTable').DataTable({
-                "order": [[4, "desc"]] // Order by date column
+                "order": [[4, "desc"]],
+                "language": {
+                    "search": "🔍 Search:",
+                    "paginate": {
+                        "previous": "⬅️",
+                        "next": "➡️"
+                    }
+                },
+                "dom": "<'table-controls'lf>rtip"
             });
         });
     </script>
@@ -97,3 +296,6 @@
         };
     }
 }
+
+<!-- Add Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

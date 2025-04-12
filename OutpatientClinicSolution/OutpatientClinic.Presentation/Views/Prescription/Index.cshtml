@@ -1,0 +1,39 @@
+﻿@model List<OutpatientClinic.Presentation.Models.PrescriptionIndexViewModel>
+
+<h2>Prescriptions</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Prescription ID</th>
+            <th>Patient Name</th>
+            <th>Medical Name</th>
+            <th>Dosage</th>
+            <th>Instructions</th>
+            <th>Created By</th>
+            <th>Creator Role</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var prescription in Model)
+        {
+            <tr>
+                <td>@prescription.PrescriptionId</td>
+                <td>@prescription.PatientName</td>
+                <td>@prescription.MedicalName</td>
+                <td>@prescription.Dosage</td>
+                <td>@prescription.Instructions</td>
+                <td>@prescription.CreatorName</td>
+                <td>@prescription.CreatorRole</td>
+                <td>@prescription.CreatedDate.ToString("g")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@prescription.PrescriptionId">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@prescription.PrescriptionId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@prescription.PrescriptionId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

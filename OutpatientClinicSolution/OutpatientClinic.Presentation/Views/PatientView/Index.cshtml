@@ -1,0 +1,148 @@
+﻿@model OutpatientClinic.Presentation.Models.PatientDashboardViewModel
+<!-- Add Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    .card-hover {
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+    .card-title {
+        font-family: 'Segoe UI', sans-serif;
+        font-weight: 700;
+        color: #2d3436;
+    }
+
+    .stat-number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #2d3436;
+    }
+
+    .icon-wrapper {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .gradient-btn {
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(45deg, #6c5ce7, #a66efa);
+        color: white;
+        padding: 8px 20px;
+        transition: transform 0.2s;
+    }
+
+        .gradient-btn:hover {
+            color: white;
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4" style="font-family: 'Segoe UI', sans-serif; font-weight: 800; color: #2d3436;">
+        👋 Welcome, @Model.User.FullName
+    </h2>
+
+    <div class="row g-4">
+        <!-- Appointments Card -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100 card-hover" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <div class="card-body">
+                    <div class="icon-wrapper" style="background: linear-gradient(45deg, #4a90e2, #6c5ce7);">
+                        <i class="fas fa-calendar-check fa-2x text-white"></i>
+                    </div>
+                    <h5 class="card-title mb-3">Appointments</h5>
+                    <p class="stat-number">@Model.AppointmentsCount</p>
+                    <a asp-action="Appointments" class="gradient-btn">
+                        Details <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lab Tests Card -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100 card-hover" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <div class="card-body">
+                    <div class="icon-wrapper" style="background: linear-gradient(45deg, #00b894, #00cec9);">
+                        <i class="fas fa-flask fa-2x text-white"></i>
+                    </div>
+                    <h5 class="card-title mb-3">Lab Tests</h5>
+                    <p class="stat-number">@Model.LabTestsCount</p>
+                    <a asp-action="LabTests" class="gradient-btn">
+                        Results <i class="fas fa-vial ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prescriptions Card -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100 card-hover" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <div class="card-body">
+                    <div class="icon-wrapper" style="background: linear-gradient(45deg, #e84393, #fd79a8);">
+                        <i class="fas fa-prescription-bottle fa-2x text-white"></i>
+                    </div>
+                    <h5 class="card-title mb-3">Prescriptions</h5>
+                    <p class="stat-number">@Model.PrescriptionsCount</p>
+                    <a asp-action="Prescriptions" class="gradient-btn">
+                        View All <i class="fas fa-pills ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Card -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100 card-hover" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <div class="card-body">
+                    <div class="icon-wrapper" style="background: linear-gradient(45deg, #0984e3, #74b9ff);">
+                        <i class="fas fa-user-md fa-2x text-white"></i>
+                    </div>
+                    <h5 class="card-title mb-3">My Doctor</h5>
+                    @if (Model.Doctor != null)
+                    {
+                        <div class="mb-3">
+                            <p class="mb-1 fw-bold">👨⚕️ @Model.Doctor.DoctorNavigation?.FullName</p>
+                            <span class="badge bg-primary">@Model.Doctor.Specialty</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">🚫 No primary doctor</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100 card-hover" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <div class="card-body">
+                    <div class="icon-wrapper" style="background: linear-gradient(45deg, #fdcb6e, #ffeaa7);">
+                        <i class="fas fa-user-circle fa-2x text-white"></i>
+                    </div>
+                    <h5 class="card-title mb-3">My Profile</h5>
+                    <p class="text-muted mb-4">Keep your info fresh 😎</p>
+                    <a asp-action="Details" class="gradient-btn">
+                        Edit Profile <i class="fas fa-edit ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

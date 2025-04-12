@@ -1,0 +1,33 @@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Prescription>
+<!-- Views/PatientView/Prescriptions.cshtml -->
+<div class="container mt-4">
+    <h3>Your Prescriptions</h3>
+    <div class="row">
+        @foreach (var prescription in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        @prescription.MedicalName
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Dosage:</strong> @prescription.Dosage
+                        </p>
+                        <p class="card-text">
+                            <strong>Instructions:</strong> @prescription.Instructions
+                        </p>
+                        @if (prescription.Record?.Appointment != null)
+                        {
+                            <p class="card-text">
+                                <strong>Appointment Date:</strong>
+                                @prescription.Record.Appointment.AppointmentDateTime.ToString("dd MMM yyyy")
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+</div>

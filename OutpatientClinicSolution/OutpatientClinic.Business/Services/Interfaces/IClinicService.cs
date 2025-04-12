@@ -7,7 +7,7 @@ namespace OutpatientClinic.Business.Services.Interfaces
     public interface IClinicService
     {
         Task<IEnumerable<Clinic>> GetAllClinicsAsync();
-        Task<Clinic> GetClinicByIdAsync(int id);
+        Task<Clinic?> GetClinicByIdAsync(int id);
         Task<Clinic> CreateClinicAsync(Clinic clinic);
         Task<bool> UpdateClinicAsync(Clinic clinic);
         Task<bool> DeleteClinicAsync(int id);

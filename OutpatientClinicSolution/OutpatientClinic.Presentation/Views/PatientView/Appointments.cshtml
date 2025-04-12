@@ -1,0 +1,38 @@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Appointment>
+<!-- Views/PatientView/Appointments.cshtml -->
+<div class="container mt-4">
+    <h3>Your Appointments</h3>
+    <div class="row">
+        @foreach (var appointment in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        @appointment.AppointmentDateTime.ToString("dd MMM yyyy, hh:mm tt")
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Status:</strong>
+                            <span class="badge @(appointment.Status == "Completed" ? "bg-success" : "bg-warning")">
+                                @appointment.Status
+                            </span>
+                        </p>
+                        <p class="card-text">
+                            <strong>Clinic:</strong> @appointment.Clinic?.ClinicName
+                        </p>
+                        <p class="card-text">
+                            <strong>Department:</strong> @appointment.Department?.DepartmentName
+                        </p>
+                        @if (appointment.Doctor != null)
+                        {
+                            <p class="card-text">
+                                <strong>Doctor:</strong> @appointment.Doctor.DoctorNavigation?.FullName
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+</div>

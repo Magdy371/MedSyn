@@ -1,0 +1,19 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Patient
+<!-- Views/PatientView/Details.cshtml -->
+<div class="container mt-4">
+    <h2>Patient Details</h2>
+    <dl class="row">
+        <dt class="col-sm-3">First Name</dt>
+        <dd class="col-sm-9">@Model.FirstName</dd>
+
+        <dt class="col-sm-3">Last Name</dt>
+        <dd class="col-sm-9">@Model.LastName</dd>
+
+        <dt class="col-sm-3">Date of Birth</dt>
+        <dd class="col-sm-9">@Model.Dob.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Age</dt>
+        <dd class="col-sm-9">@(DateTime.Now.Year - Model.Dob.Year)</dd>
+    </dl>
+    <a asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+</div>

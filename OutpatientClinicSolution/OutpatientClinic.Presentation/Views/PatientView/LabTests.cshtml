@@ -1,0 +1,34 @@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.LabTest>
+<!-- Views/PatientView/LabTests.cshtml -->
+<div class="container mt-4">
+    <h3>Your Lab Tests</h3>
+    <div class="row">
+        @foreach (var test in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        @test.TestName
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Date:</strong> @test.TestDate.ToString("dd MMM yyyy")
+                        </p>
+                        <p class="card-text">
+                            <strong>Results:</strong>
+                            @(string.IsNullOrEmpty(test.Results) ? "Pending" : test.Results)
+                        </p>
+                        @if (test.Appointment != null)
+                        {
+                            <p class="card-text">
+                                <strong>Appointment:</strong>
+                                @test.Appointment.AppointmentDateTime.ToString("dd MMM yyyy")
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+</div>

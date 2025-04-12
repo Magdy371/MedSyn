@@ -21,7 +21,7 @@ namespace OutpatientClinic.Business.Services.Implementations
         public async Task<IEnumerable<Clinic>> GetAllClinicsAsync() =>
             await _unitOfWork.Repository<Clinic>().GetAllAsync();
 
-        public async Task<Clinic> GetClinicByIdAsync(int id) =>
+        public async Task<Clinic?> GetClinicByIdAsync(int id) =>
             await _unitOfWork.Repository<Clinic>().GetByIdAsync(id);
 
         public async Task<Clinic> CreateClinicAsync(Clinic clinic)

@@ -20,8 +20,8 @@ namespace OutpatientClinic.Core.Repositories.Implementations
         public async Task<IEnumerable<T>> GetAllAsync() =>
             await _dbSet.AsNoTracking().ToListAsync() ?? new List<T>();
 
-        public async Task<T> GetByIdAsync(int id) =>
-            await _dbSet.FindAsync(id) ?? throw new InvalidOperationException($"Entity with id {id} not found.");
+        public async Task<T?> GetByIdAsync(int id) =>
+            await _dbSet.FindAsync(id);
 
 
         public async Task AddAsync(T entity) =>

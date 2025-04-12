@@ -10,7 +10,7 @@ namespace OutpatientClinic.Core.Repositories.Interfaces
     {
         //Basic CRUD Operations
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetByIdAsync(int id);
+        Task<T?> GetByIdAsync(int id);
         Task AddAsync(T entity);
         void Update(T entity);
         void Delete(T entity);

@@ -95,7 +95,7 @@ namespace OutpatientClinic.Presentation.Controllers
             if (roles.Contains("Admin"))
                 return RedirectToAction("Index", "Admin");
             else if (roles.Contains("Doctor"))
-                return RedirectToAction("Index", "Doctor");
+                return RedirectToAction("Index", "DoctorIndex");
             else if (roles.Contains("Patient"))
                 return RedirectToAction("Index", "PatientView");
             else if (roles.Contains("Staff"))

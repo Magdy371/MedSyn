@@ -1,0 +1,65 @@
+﻿@* Views/DoctorView/Appointments.cshtml *@
+@model IEnumerable<OutpatientClinic.DataAccess.Entities.Appointment>
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Your Appointments</h2>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                    id="filterDropdown" data-toggle="dropdown">
+                Filter: @(ViewBag.Filter?.ToString() ?? "All")
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" asp-action="Appointments">All Appointments</a>
+                <a class="dropdown-item" asp-action="Appointments" asp-route-filter="current">
+                    Today's Appointments
+                </a>
+                <a class="dropdown-item" asp-action="Appointments" asp-route-filter="previous">
+                    Previous Appointments
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var appointment in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header @GetStatusColor(appointment.Status)">
+                        @appointment.AppointmentDateTime.ToString("dd MMM yyyy HH:mm")
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@appointment.Patient?.FirstName @appointment.Patient?.LastName</h5>
+                        <p class="card-text">
+                            Status: <span class="badge @GetStatusBadgeColor(appointment.Status)">
+                                @appointment.Status
+                            </span>
+                        </p>
+                        <a href="@Url.Action("Details", "Appointment", new { id = appointment.AppointmentId })"
+                           class="btn btn-info">Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(string status) => status switch
+    {
+        "Completed" => "bg-success text-white",
+        "Cancelled" => "bg-danger text-white",
+        _ => "bg-primary text-white"
+    };
+
+    private string GetStatusBadgeColor(string status) => status switch
+    {
+        "Completed" => "badge-success",
+        "Cancelled" => "badge-danger",
+        _ => "badge-primary"
+    };
+}

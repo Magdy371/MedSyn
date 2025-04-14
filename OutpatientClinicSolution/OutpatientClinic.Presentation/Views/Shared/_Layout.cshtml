@@ -11,6 +11,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     @RenderSection("Styles", required: false)
     <link rel="stylesheet" href="~/OutpatientClinic.Presentation.styles.css" asp-append-version="true" />
 
@@ -45,6 +48,14 @@
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("Index", "PatientView")">
+                                        <i class="fa-solid fa-gauge"></i> Dashboard
+                                    </a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Doctor"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index", "DoctorIndex")">
                                         <i class="fa-solid fa-gauge"></i> Dashboard
                                     </a>
                                 </li>
@@ -109,7 +120,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
-
+    <!-- In your _Layout.cshtml head section -->
 </body>
 </html>
 @RenderSection("Scripts", required: false)

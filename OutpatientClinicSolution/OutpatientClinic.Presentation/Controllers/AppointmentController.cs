@@ -13,9 +13,10 @@ using System.Threading.Tasks;
 
 namespace OutpatientClinic.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = S_R)]
     public class AppointmentController : Controller
     {
+        private const string S_R = "Admin,Doctor,Receptionist";
         private readonly OutpatientClinicDbContext _context;
 
         public AppointmentController(OutpatientClinicDbContext context)

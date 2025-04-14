@@ -8,7 +8,7 @@ using OutpatientClinic.DataAccess.Entities;
 
 namespace OutpatientClinic.Presentation.Controllers
 {
-    [Authorize(Roles = "Admin,Doctor,Pharmacist")]
+    [Authorize(Roles = "Admin,Doctor")]
     public class MedicineController : Controller
     {
         private readonly OutpatientClinicDbContext _context;

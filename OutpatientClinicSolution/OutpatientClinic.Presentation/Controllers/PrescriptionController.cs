@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OutpatientClinic.Presentation.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     public class PrescriptionController : Controller
     {
         private readonly OutpatientClinicDbContext _context;
@@ -51,8 +51,12 @@ namespace OutpatientClinic.Presentation.Controllers
                 Dosage = p.Dosage,
                 Instructions = p.Instructions ?? "N/A",
                 CreatedBy = p.CreatedBy,
-                CreatorName = creators[p.CreatedBy].UserName,
-                CreatorRole = creatorRoles[p.CreatedBy],
+                CreatorName = (!string.IsNullOrEmpty(p.CreatedBy) && creators.ContainsKey(p.CreatedBy))
+                    ? creators[p.CreatedBy].UserName
+                    : "Unknown",
+                CreatorRole = (!string.IsNullOrEmpty(p.CreatedBy) && creatorRoles.ContainsKey(p.CreatedBy))
+                    ? creatorRoles[p.CreatedBy]
+                    : "Unknown",
                 CreatedDate = p.CreatedDate ?? DateTime.Now
             }).ToList();
 

@@ -1,0 +1,117 @@
+﻿.doctor-dashboard {
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.curved-shape {
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    border: none;
+    position: relative;
+}
+
+.card-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 500 40" xmlns="http://www.w3.org/2000/svg"><path d="M0 40 Q 250 20 500 40 L 500 0 L 0 0 Z" fill="%23fff"></path></svg>');
+    opacity: 0.15;
+}
+
+.icon-container {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.4rem;
+}
+
+.card-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    z-index: 2;
+}
+
+    .card-link i {
+        transition: transform 0.3s ease;
+    }
+
+    .card-link:hover i {
+        transform: translateX(3px);
+    }
+
+/* Color Schemes */
+.medical-card {
+    background: linear-gradient(135deg, #e3f8ff 0%, #f1fcff 100%);
+}
+
+.prescription-card {
+    background: linear-gradient(135deg, #e8f1ff 0%, #f4f8ff 100%);
+}
+
+.lab-card {
+    background: linear-gradient(135deg, #f3e8ff 0%, #f9f4ff 100%);
+}
+
+.appointment-card {
+    background: linear-gradient(135deg, #ffe8f1 0%, #fff4f8 100%);
+}
+
+.bg-cyan {
+    background-color: #00C1D4 !important;
+}
+
+.bg-blue {
+    background-color: #2F80ED !important;
+}
+
+.bg-purple {
+    background-color: #9B51E0 !important;
+}
+
+.bg-pink {
+    background-color: #EB5757 !important;
+}
+
+/* Hover Effects */
+.curved-shape:hover {
+    transform: translateY(-8px) rotate(1deg);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+.avatar-container {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.avatar-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .curved-shape {
+        border-radius: 15px;
+    }
+
+    .icon-container {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+}

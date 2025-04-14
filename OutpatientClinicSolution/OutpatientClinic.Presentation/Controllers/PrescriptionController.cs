@@ -72,6 +72,62 @@ namespace OutpatientClinic.Presentation.Controllers
             return View(prescription);
         }
 
+        //// GET: Prescription/Create
+        //[Authorize(Roles = "Doctor,Admin")]
+        //public async Task<IActionResult> Create()
+        //{
+        //    var now = DateTime.Now;
+        //    var windowStart = now.AddHours(-24);
+        //    var windowEnd = now.AddHours(24);
+
+        //    var records = await _context.MedicalRecords
+        //        .Include(r => r.Appointment).ThenInclude(a => a.Patient)
+        //        .Where(r => r.IsDeleted != true &&
+        //                    r.CreatedDate >= windowStart && r.CreatedDate <= windowEnd)
+        //        .OrderByDescending(r => r.CreatedDate)
+        //        .Select(r => new
+        //        {
+        //            r.RecordId,
+        //            DisplayText = $"{r.Appointment.AppointmentDateTime} - {r.Appointment.Patient.FirstName} {r.Appointment.Patient.LastName}"
+        //        })
+        //        .ToListAsync();
+
+        //    ViewBag.MedicalRecords = new SelectList(records, "RecordId", "DisplayText");
+        //    return View(new Prescription());
+        //}
+
+        //// POST: Prescription/Create
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Doctor,Admin")]
+        //public async Task<IActionResult> Create([Bind("RecordId,MedicineId,MedicalName,Dosage,Instructions")] Prescription prescription)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        prescription.CreatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //        prescription.CreatedDate = DateTime.Now;
+        //        prescription.IsDeleted = false;
+
+        //        _context.Add(prescription);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    var now = DateTime.Now;
+        //    var records = await _context.MedicalRecords
+        //        .Include(r => r.Appointment).ThenInclude(a => a.Patient)
+        //        .Where(r => r.IsDeleted != true &&
+        //                    r.CreatedDate >= now.AddHours(-24) && r.CreatedDate <= now.AddHours(24))
+        //        .OrderByDescending(r => r.CreatedDate)
+        //        .Select(r => new { r.RecordId, DisplayText = $"{r.Appointment.AppointmentDateTime} - {r.Appointment.Patient.FirstName} {r.Appointment.Patient.LastName}" })
+        //        .ToListAsync();
+        //    ViewBag.MedicalRecords = new SelectList(records, "RecordId", "DisplayText", prescription.RecordId);
+
+        //    return View(prescription);
+        //}
+
+        // PrescriptionController.cs
+
         // GET: Prescription/Create
         [Authorize(Roles = "Doctor,Admin")]
         public async Task<IActionResult> Create()
@@ -80,19 +136,27 @@ namespace OutpatientClinic.Presentation.Controllers
             var windowStart = now.AddHours(-24);
             var windowEnd = now.AddHours(24);
 
+            // Existing medical records query
             var records = await _context.MedicalRecords
                 .Include(r => r.Appointment).ThenInclude(a => a.Patient)
                 .Where(r => r.IsDeleted != true &&
                             r.CreatedDate >= windowStart && r.CreatedDate <= windowEnd)
                 .OrderByDescending(r => r.CreatedDate)
-                .Select(r => new
-                {
+                .Select(r => new {
                     r.RecordId,
                     DisplayText = $"{r.Appointment.AppointmentDateTime} - {r.Appointment.Patient.FirstName} {r.Appointment.Patient.LastName}"
                 })
                 .ToListAsync();
 
+            // Add medicines dropdown data
+            var medicines = await _context.Medicines
+                .Where(m => m.IsDeleted != true)
+                .OrderBy(m => m.Name)
+                .ToListAsync();
+
             ViewBag.MedicalRecords = new SelectList(records, "RecordId", "DisplayText");
+            ViewBag.Medicines = new SelectList(medicines, "MedicineId", "Name");
+
             return View(new Prescription());
         }
 
@@ -100,10 +164,37 @@ namespace OutpatientClinic.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Doctor,Admin")]
-        public async Task<IActionResult> Create([Bind("RecordId,MedicalName,Dosage,Instructions")] Prescription prescription)
+        public async Task<IActionResult> Create([Bind("RecordId,MedicineId,MedicalName,Dosage,Instructions")] Prescription prescription)
         {
             if (ModelState.IsValid)
             {
+                // Handle medicine relationship
+                if (prescription.MedicineId.HasValue)
+                {
+                    var medicine = await _context.Medicines.FindAsync(prescription.MedicineId);
+                    if (medicine != null)
+                    {
+                        prescription.MedicalName = medicine.Name;
+                        prescription.Dosage = medicine.DefaultDosage;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(prescription.MedicalName))
+                {
+                    // Create new medicine entry
+                    var newMedicine = new Medicine
+                    {
+                        Name = prescription.MedicalName,
+                        Type = "Other",
+                        DefaultDosage = prescription.Dosage ?? "N/A",
+                        CreatedDate = DateTime.Now,
+                        IsDeleted = false
+                    };
+
+                    _context.Add(newMedicine);
+                    await _context.SaveChangesAsync();
+                    prescription.MedicineId = newMedicine.MedicineId;
+                }
+
                 prescription.CreatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 prescription.CreatedDate = DateTime.Now;
                 prescription.IsDeleted = false;
@@ -113,15 +204,24 @@ namespace OutpatientClinic.Presentation.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var now = DateTime.Now;
+            // Reload data on validation error
+            var medicines = await _context.Medicines
+                .Where(m => m.IsDeleted != true)
+                .OrderBy(m => m.Name)
+                .ToListAsync();
+
             var records = await _context.MedicalRecords
                 .Include(r => r.Appointment).ThenInclude(a => a.Patient)
-                .Where(r => r.IsDeleted != true &&
-                            r.CreatedDate >= now.AddHours(-24) && r.CreatedDate <= now.AddHours(24))
+                .Where(r => r.IsDeleted != true)
                 .OrderByDescending(r => r.CreatedDate)
-                .Select(r => new { r.RecordId, DisplayText = $"{r.Appointment.AppointmentDateTime} - {r.Appointment.Patient.FirstName} {r.Appointment.Patient.LastName}" })
+                .Select(r => new {
+                    r.RecordId,
+                    DisplayText = $"{r.Appointment.AppointmentDateTime} - {r.Appointment.Patient.FirstName} {r.Appointment.Patient.LastName}"
+                })
                 .ToListAsync();
+
             ViewBag.MedicalRecords = new SelectList(records, "RecordId", "DisplayText", prescription.RecordId);
+            ViewBag.Medicines = new SelectList(medicines, "MedicineId", "Name");
 
             return View(prescription);
         }
@@ -196,5 +296,24 @@ namespace OutpatientClinic.Presentation.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        // PrescriptionController.cs
+        [HttpGet]
+        public async Task<IActionResult> GetMedicineDetails(int id)
+        {
+            var medicine = await _context.Medicines.FindAsync(id);
+            if (medicine == null) return NotFound();
+
+            return Json(new
+            {
+                name = medicine.Name,
+                type = medicine.Type,
+                defaultDosage = medicine.DefaultDosage,
+                forAdult = medicine.ForAdult,
+                forChildren = medicine.ForChildren,
+                description = medicine.Description
+            });
+        }
+
     }
 }

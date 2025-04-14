@@ -29,6 +29,7 @@ namespace OutpatientClinic.Web.Controllers
             var appointments = await _context.Appointments
                 .Include(a => a.Patient)
                 .Include(a => a.Doctor)
+                    .ThenInclude(d => d.DoctorNavigation)
                 .Include(a => a.Clinic)
                 .Include(a => a.Department)
                 .Where(a => a.IsDeleted != true)
@@ -83,9 +84,9 @@ namespace OutpatientClinic.Web.Controllers
                     PatientId = model.PatientId,
                     DepartmentId = model.DepartmentId,
                     ClinicId = model.ClinicId,
+                    DoctorId = model.DoctorId, // Added DoctorId
                     AppointmentDateTime = model.AppointmentDateTime,
                     Notes = model.Notes,
-                    // Set computed fields here
                     CreatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier),
                     CreatedDate = DateTime.Now,
                     IsDeleted = false,
@@ -267,16 +268,23 @@ namespace OutpatientClinic.Web.Controllers
             ViewData["ClinicId"] = new SelectList(clinics, "ClinicId", "ClinicName", appointment?.ClinicId);
 
             // Doctors (active staff only)
-            var doctors = await _context.Doctors
-                .Include(d => d.DoctorNavigation)
-                .Where(d => d.DoctorNavigation.IsDeleted != true)
-                .Select(d => new {
-                    d.DoctorId,
-                    FullName = $"{d.DoctorNavigation.FirstName} {d.DoctorNavigation.LastName} ({d.Specialty})"
-                })
-                .ToListAsync();
-            ViewData["DoctorId"] = new SelectList(doctors, "DoctorId", "FullName", appointment?.DoctorId);
+            var doctors = new List<object>();
+            if (appointment != null && appointment.DepartmentId > 0)
+            {
+                doctors = await _context.Doctors
+                    .Include(d => d.DoctorNavigation)
+                    .Where(d => d.DepartmentId == appointment.DepartmentId && d.DoctorNavigation.IsDeleted != true)
+                    .Select(d => new {
+                        d.DoctorId,
+                        FullName = $"{d.DoctorNavigation.FirstName} {d.DoctorNavigation.LastName} ({d.Specialty})"
+                    })
+                    .ToListAsync<object>();
+            }
 
+            // Add "Not Assigned" as the first option
+            doctors.Insert(0, new { DoctorId = (int?)null, FullName = "-- Not Assigned --" });
+
+            ViewData["DoctorId"] = new SelectList(doctors, "DoctorId", "FullName", appointment?.DoctorId);
             // Status (default to "Scheduled")
             ViewData["Status"] = new SelectList(new List<string> { "Scheduled" });
         }

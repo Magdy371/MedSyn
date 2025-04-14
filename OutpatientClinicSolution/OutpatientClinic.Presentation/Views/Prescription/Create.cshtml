@@ -1,4 +1,4 @@
-﻿@model OutpatientClinic.DataAccess.Entities.Prescription
+﻿@* @model OutpatientClinic.DataAccess.Entities.Prescription
 
 <h2>Create Prescription</h2>
 
@@ -24,4 +24,125 @@
         <span asp-validation-for="Instructions" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Create</button>
+</form> *@
+
+@model OutpatientClinic.DataAccess.Entities.Prescription
+
+<h2>Create Prescription</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="RecordId">Medical Record</label>
+        <select asp-for="RecordId" class="form-control" asp-items="ViewBag.MedicalRecords"></select>
+        <span asp-validation-for="RecordId" class="text-danger"></span>
+    </div>
+
+    <!-- Medicine Search Section -->
+    <div class="form-group">
+        <label>Search Medicine</label>
+        <select id="MedicineSearch" class="form-control select2-medicine"
+                data-placeholder="Type to search or add new medicine">
+            <option></option>
+            @foreach (var medicine in ViewBag.Medicines as SelectList)
+            {
+                <option value="@medicine.Value">@medicine.Text</option>
+            }
+        </select>
+        <input type="hidden" asp-for="MedicineId" id="selectedMedicineId" />
+        <input type="hidden" asp-for="MedicalName" id="selectedMedicineName" />
+    </div>
+
+    <!-- Medicine Details Card -->
+    <div id="medicineCard" class="card mb-3" style="display:none;">
+        <div class="card-body">
+            <h5 class="card-title" id="cardName"></h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Type:</strong> <span id="cardType"></span></p>
+                    <p class="mb-1"><strong>Default Dosage:</strong> <span id="cardDosage"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>For Adults:</strong> <span id="cardAdult"></span></p>
+                    <p class="mb-1"><strong>For Children:</strong> <span id="cardChild"></span></p>
+                </div>
+            </div>
+            <p class="mb-0"><strong>Description:</strong> <span id="cardDesc"></span></p>
+        </div>
+    </div>
+
+    <!-- Dosage Field -->
+    <div class="form-group">
+        <label asp-for="Dosage">Dosage</label>
+        <input asp-for="Dosage" class="form-control" id="dosageInput" />
+        <span asp-validation-for="Dosage" class="text-danger"></span>
+    </div>
+
+    <!-- Instructions Field -->
+    <div class="form-group">
+        <label asp-for="Instructions">Instructions</label>
+        <textarea asp-for="Instructions" class="form-control"></textarea>
+        <span asp-validation-for="Instructions" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
 </form>
+
+@section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2-medicine').select2({
+                tags: true,
+                createTag: function(params) {
+                    return {
+                        id: params.term,
+                        text: params.term + ' (New)',
+                        new: true
+                    }
+                }
+            });
+
+            // Handle medicine selection
+            $('#MedicineSearch').on('change', function() {
+                const selected = $(this).select2('data')[0];
+
+                if (selected.new) {
+                    // New medicine
+                    $('#medicineCard').hide();
+                    $('#selectedMedicineId').val('');
+                    $('#selectedMedicineName').val(selected.text.replace(' (New)', ''));
+                    $('#dosageInput').prop('readonly', false);
+                } else {
+                    // Existing medicine
+                    $('#selectedMedicineId').val(selected.id);
+                    $('#selectedMedicineName').val(selected.text);
+                    loadMedicineDetails(selected.id);
+                    $('#dosageInput').prop('readonly', true);
+                }
+            });
+
+            async function loadMedicineDetails(medicineId) {
+                try {
+                    const response = await fetch(`/Prescription/GetMedicineDetails?id=${medicineId}`);
+                    const data = await response.json();
+
+                    $('#cardName').text(data.name);
+                    $('#cardType').text(data.type);
+                    $('#cardDosage').text(data.defaultDosage);
+                    $('#cardAdult').text(data.forAdult ? 'Yes' : 'No');
+                    $('#cardChild').text(data.forChildren ? 'Yes' : 'No');
+                    $('#cardDesc').text(data.description);
+                    $('#medicineCard').show();
+
+                    // Auto-fill dosage
+                    $('#dosageInput').val(data.defaultDosage);
+                } catch (error) {
+                    console.error('Error loading medicine details:', error);
+                }
+            }
+        });
+    </script>
+}

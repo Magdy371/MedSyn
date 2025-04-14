@@ -1,0 +1,52 @@
+﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Medicine>
+
+@{
+    ViewData["Title"] = "Medicines";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Medicine
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Type</th>
+                    <th>Dosage</th>
+                    <th>For Adults</th>
+                    <th>For Children</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Type</td>
+                        <td>@item.DefaultDosage</td>
+                        <td>@(item.ForAdult ? "Yes" : "No")</td>
+                        <td>@(item.ForChildren ? "Yes" : "No")</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.MedicineId" class="btn btn-sm btn-info">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.MedicineId" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.MedicineId" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

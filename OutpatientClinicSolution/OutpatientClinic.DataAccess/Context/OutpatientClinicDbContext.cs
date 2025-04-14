@@ -44,6 +44,8 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<MedicalRecord> MedicalRecords { get; set; }
 
+    public virtual DbSet<Medicine> Medicines { get; set; }
+
     public virtual DbSet<Patient> Patients { get; set; }
 
     public virtual DbSet<Prescription> Prescriptions { get; set; }
@@ -406,7 +408,67 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__LabTests__Patien__09A971A2");
         });
+        //==============================================================================
+        modelBuilder.Entity<Medicine>(entity =>
+        {
+            entity.HasKey(e => e.MedicineId).HasName("PK__Medicines__1234567890ABCDEF");
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Type).HasMaxLength(50);
+            entity.Property(e => e.DefaultDosage).HasMaxLength(20);
+            entity.HasIndex(e => e.Name).IsUnique(); // Ensure medicine names are unique
+        });
+        // Add this to OutpatientClinicDbContext.cs > OnModelCreating()
+        modelBuilder.Entity<Medicine>().HasData(
+            // ======= ANALGESICS ======= (Pain Relievers)
+            new Medicine { MedicineId = 1, Name = "Paracetamol", Type = "Tablet", DefaultDosage = "500mg", ForAdult = true, ForChildren = true, Description = "For mild to moderate pain and fever", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 2, Name = "Ibuprofen", Type = "Tablet", DefaultDosage = "400mg", ForAdult = true, ForChildren = true, Description = "NSAID for pain/inflammation", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 3, Name = "Aspirin", Type = "Tablet", DefaultDosage = "81mg", ForAdult = true, ForChildren = false, Description = "Pain relief and antiplatelet", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 4, Name = "Naproxen", Type = "Tablet", DefaultDosage = "220mg", ForAdult = true, ForChildren = false, Description = "Long-lasting NSAID", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 5, Name = "Tramadol", Type = "Capsule", DefaultDosage = "50mg", ForAdult = true, ForChildren = false, Description = "Opioid for moderate-severe pain", CreatedDate = DateTime.Now, IsDeleted = false },
 
+            // ======= ANTIBIOTICS =======
+            new Medicine { MedicineId = 6, Name = "Amoxicillin", Type = "Capsule", DefaultDosage = "500mg", ForAdult = true, ForChildren = true, Description = "Penicillin-type antibiotic", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 7, Name = "Azithromycin", Type = "Tablet", DefaultDosage = "250mg", ForAdult = true, ForChildren = true, Description = "Macrolide antibiotic", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 8, Name = "Ciprofloxacin", Type = "Tablet", DefaultDosage = "500mg", ForAdult = true, ForChildren = false, Description = "Fluoroquinolone antibiotic", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 9, Name = "Doxycycline", Type = "Capsule", DefaultDosage = "100mg", ForAdult = true, ForChildren = false, Description = "Tetracycline antibiotic", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 10, Name = "Metronidazole", Type = "Tablet", DefaultDosage = "400mg", ForAdult = true, ForChildren = true, Description = "For anaerobic infections", CreatedDate = DateTime.Now, IsDeleted = false },
+
+            // ======= ANTIHISTAMINES =======
+            new Medicine { MedicineId = 11, Name = "Loratadine", Type = "Tablet", DefaultDosage = "10mg", ForAdult = true, ForChildren = true, Description = "Non-drowsy allergy relief", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 12, Name = "Cetirizine", Type = "Tablet", DefaultDosage = "10mg", ForAdult = true, ForChildren = true, Description = "24-hour allergy relief", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 13, Name = "Fexofenadine", Type = "Tablet", DefaultDosage = "180mg", ForAdult = true, ForChildren = false, Description = "Non-sedating antihistamine", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 14, Name = "Diphenhydramine", Type = "Capsule", DefaultDosage = "25mg", ForAdult = true, ForChildren = true, Description = "For allergies and sleep aid", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 15, Name = "Chlorpheniramine", Type = "Syrup", DefaultDosage = "4mg/5ml", ForAdult = true, ForChildren = true, Description = "Liquid antihistamine", CreatedDate = DateTime.Now, IsDeleted = false },
+
+            // ======= ANTACIDS =======
+            new Medicine { MedicineId = 16, Name = "Omeprazole", Type = "Capsule", DefaultDosage = "20mg", ForAdult = true, ForChildren = true, Description = "Proton pump inhibitor", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 17, Name = "Ranitidine", Type = "Tablet", DefaultDosage = "150mg", ForAdult = true, ForChildren = true, Description = "H2 blocker for heartburn", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 18, Name = "Calcium Carbonate", Type = "Chewable", DefaultDosage = "500mg", ForAdult = true, ForChildren = true, Description = "Fast-acting antacid", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 19, Name = "Magnesium Hydroxide", Type = "Liquid", DefaultDosage = "400mg/5ml", ForAdult = true, ForChildren = true, Description = "Liquid antacid", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 20, Name = "Famotidine", Type = "Tablet", DefaultDosage = "20mg", ForAdult = true, ForChildren = true, Description = "Acid reducer", CreatedDate = DateTime.Now, IsDeleted = false },
+
+            // ======= ANTIDEPRESSANTS =======
+            new Medicine { MedicineId = 21, Name = "Sertraline", Type = "Tablet", DefaultDosage = "50mg", ForAdult = true, ForChildren = false, Description = "SSRI antidepressant", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 22, Name = "Fluoxetine", Type = "Capsule", DefaultDosage = "20mg", ForAdult = true, ForChildren = true, Description = "SSRI for depression/OCD", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 23, Name = "Venlafaxine", Type = "Tablet", DefaultDosage = "75mg", ForAdult = true, ForChildren = false, Description = "SNRI antidepressant", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 24, Name = "Bupropion", Type = "Tablet", DefaultDosage = "150mg", ForAdult = true, ForChildren = false, Description = "Atypical antidepressant", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 25, Name = "Escitalopram", Type = "Tablet", DefaultDosage = "10mg", ForAdult = true, ForChildren = false, Description = "SSRI for anxiety/depression", CreatedDate = DateTime.Now, IsDeleted = false },
+
+            // ======= ANTIDIABETICS =======
+            new Medicine { MedicineId = 26, Name = "Metformin", Type = "Tablet", DefaultDosage = "500mg", ForAdult = true, ForChildren = false, Description = "Type 2 diabetes management", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 27, Name = "Insulin Glargine", Type = "Injection", DefaultDosage = "100 units/ml", ForAdult = true, ForChildren = true, Description = "Long-acting insulin", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 28, Name = "Gliclazide", Type = "Tablet", DefaultDosage = "80mg", ForAdult = true, ForChildren = false, Description = "Sulfonylurea for diabetes", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 29, Name = "Empagliflozin", Type = "Tablet", DefaultDosage = "10mg", ForAdult = true, ForChildren = false, Description = "SGLT2 inhibitor", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 30, Name = "Liraglutide", Type = "Injection", DefaultDosage = "1.2mg", ForAdult = true, ForChildren = false, Description = "GLP-1 receptor agonist", CreatedDate = DateTime.Now, IsDeleted = false },
+
+            // ======= BRONCHODILATORS =======
+            new Medicine { MedicineId = 31, Name = "Salbutamol", Type = "Inhaler", DefaultDosage = "100mcg/dose", ForAdult = true, ForChildren = true, Description = "Relief of asthma symptoms", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 32, Name = "Ipratropium", Type = "Nebulizer", DefaultDosage = "0.5mg/ml", ForAdult = true, ForChildren = true, Description = "For COPD", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 33, Name = "Formoterol", Type = "Inhaler", DefaultDosage = "12mcg/dose", ForAdult = true, ForChildren = false, Description = "Long-acting bronchodilator", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 34, Name = "Theophylline", Type = "Tablet", DefaultDosage = "200mg", ForAdult = true, ForChildren = false, Description = "For chronic asthma", CreatedDate = DateTime.Now, IsDeleted = false },
+            new Medicine { MedicineId = 35, Name = "Montelukast", Type = "Chewable", DefaultDosage = "5mg", ForAdult = true, ForChildren = true, Description = "Leukotriene receptor antagonist", CreatedDate = DateTime.Now, IsDeleted = false }
+        );
+        //==================================================================================
         modelBuilder.Entity<MedicalRecord>(entity =>
         {
             entity.HasKey(e => e.RecordId).HasName("PK__MedicalR__FBDF78C9408CB1F9");

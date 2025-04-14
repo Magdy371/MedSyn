@@ -7,7 +7,7 @@
         <tr>
             <th>Prescription ID</th>
             <th>Patient Name</th>
-            <th>Medical Name</th>
+            <th>Medicine</th>
             <th>Dosage</th>
             <th>Instructions</th>
             <th>Created By</th>
@@ -22,7 +22,17 @@
             <tr>
                 <td>@prescription.PrescriptionId</td>
                 <td>@prescription.PatientName</td>
-                <td>@prescription.MedicalName</td>
+                <td>
+                    @prescription.MedicalName
+                    @if (prescription.MedicalName != null)
+                    {
+                        <span class="badge bg-info">Standard</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Custom</span>
+                    }
+                </td>
                 <td>@prescription.Dosage</td>
                 <td>@prescription.Instructions</td>
                 <td>@prescription.CreatorName</td>

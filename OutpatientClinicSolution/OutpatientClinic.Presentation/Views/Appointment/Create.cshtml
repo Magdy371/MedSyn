@@ -40,6 +40,14 @@
                             <span asp-validation-for="DepartmentId" class="text-danger"></span>
                         </div>
 
+                        <div class="mb-3">
+                            <label asp-for="DoctorId" class="form-label">Doctor</label>
+                            <select asp-for="DoctorId" class="form-select">
+                                <option value="">-- Not Assigned --</option> <!-- Default option -->
+                            </select>
+                            <span asp-validation-for="DoctorId" class="text-danger"></span>
+                        </div>
+
                         <!-- Clinic Dropdown -->
                         <div class="mb-3">
                             <label asp-for="ClinicId" class="form-label">Clinic</label>
@@ -82,5 +90,23 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).ready(function() {
+                $('#DepartmentId').change(function() {
+                    var departmentId = $(this).val();
+                    if (departmentId) {
+                        $.getJSON('/Appointment/GetDoctorsByDepartment', { departmentId: departmentId }, function(data) {
+                            var items = '<option value="">-- Not Assigned --</option>'; // Keep this option
+                            $.each(data, function(i, doctor) {
+                                items += '<option value="' + doctor.value + '">' + doctor.text + '</option>';
+                            });
+                            $('#DoctorId').html(items);
+                        });
+                    } else {
+                        $('#DoctorId').html('<option value="">-- Not Assigned --</option>');
+                    }
+                });
+            });
+        </script>
     }
 }

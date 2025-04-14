@@ -40,14 +40,14 @@ public partial class Appointment
 
     public virtual ICollection<Billing> Billings { get; set; } = new List<Billing>();
 
-    public virtual Clinic Clinic { get; set; } = null!;
+    public virtual Clinic? Clinic { get; set; } = null!;
 
     public virtual Doctor? Doctor { get; set; } = null!;
-    public virtual Department Department { get; set; } = null!;
+    public virtual Department? Department { get; set; } = null!;
 
     public virtual ICollection<LabTest> LabTests { get; set; } = new List<LabTest>();
 
     public virtual MedicalRecord? MedicalRecord { get; set; }
 
-    public virtual Patient Patient { get; set; } = null!;
+    public virtual Patient? Patient { get; set; } = null!;
 }

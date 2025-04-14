@@ -2,6 +2,7 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
+<link href="~/css/AdminStyle.css" rel="stylesheet" />
 <div class="container-fluid admin-dashboard">
     <div class="row">
         <!-- Sidebar Navigation -->
@@ -27,20 +28,6 @@
                         </a>
                     </li>
                     <li class="nav-item hover-glow">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Department" ? "active" : "")"
-                           href="@Url.Action("Index", "Department")">
-                            <i class="fas fa-building-circle-check me-2"></i> Departments
-                            <div class="active-pulse"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item hover-glow">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Clinic" ? "active" : "")"
-                           href="@Url.Action("Index", "Clinic")">
-                            <i class="fas fa-clinic-medical me-2"></i> Clinics
-                            <div class="active-pulse"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item hover-glow">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Doctor" ? "active" : "")"
                            href="@Url.Action("Index", "Doctor")">
                             <i class="fas fa-user-doctor me-2"></i> Doctors
@@ -48,23 +35,16 @@
                         </a>
                     </li>
                     <li class="nav-item hover-glow">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Appointment" ? "active" : "")"
-                           href="@Url.Action("Index", "Appointment")">
-                            <i class="fas fa-appointment-medical me-2"></i> Clinics
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Staff" ? "active" : "")"
+                           href="@Url.Action("Index", "Staff")">
+                            <i class="fa-solid fa-hospital-user"></i></i> Stuff
                             <div class="active-pulse"></div>
                         </a>
                     </li>
                     <li class="nav-item hover-glow">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "LabeTests" ? "active" : "")"
-                           href="@Url.Action("Index", "LabTests")">
-                            <i class="fas fa-user-oatient me-2"></i> Clinics
-                            <div class="active-pulse"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item hover-glow">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MedicalRecord" ? "active" : "")"
-                           href="@Url.Action("Index", "MedicalRecord")">
-                            <i class="fas fa-user-doctor me-2"></i> MedicalRecord
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Patient" ? "active" : "")"
+                           href="@Url.Action("Index", "Patient")">
+                            <i class="fa-solid fa-hospital-user"></i> Patient
                             <div class="active-pulse"></div>
                         </a>
                     </li>
@@ -86,12 +66,12 @@
                 @foreach (var panel in new[] {
                 new { Title = "Departments", Icon = "fa-building", Description = "Manage hospital departments", Controller = "Department", Color = "primary" },
                 new { Title = "Clinics", Icon = "fa-clinic-medical", Description = "Manage clinic locations", Controller = "Clinic", Color = "info" },
-                new { Title = "Doctors", Icon = "fa-user-doctor", Description = "Manage medical staff", Controller = "Doctor", Color = "success" },
-                new { Title = "Staff", Icon = "fa-users", Description = "Manage clinic staff", Controller = "Staff", Color = "warning" },
-                new { Title = "Patients", Icon = "fa-hospital-user", Description = "Manage patient records", Controller = "Patient", Color = "danger" },
                 new { Title = "Appointment", Icon = "fa-calendar-check", Description = "Manage patients appointments", Controller = "Appointment", Color = "Primary" },
                 new { Title = "LabTests", Icon = "fa-user-doctor", Description = "Manage patients Lab Tests", Controller = "LabTests", Color = "success" },
-                new { Title = "MedicalRecord", Icon = "fa-user-doctor", Description = "Manage patients Medical Records", Controller = "MedicalRecord", Color = "success" }
+                new { Title = "MedicalRecord", Icon = "fa-user-doctor", Description = "Manage patients Medical Records", Controller = "MedicalRecord", Color = "success" },
+                new { Title = "Prescriptions", Icon = "fa-file-medical", Description = "Manage patients Prescriptions", Controller = "Prescription", Color = "success" },
+                new { Title = "Prescriptions", Icon = "fa-solid fa-pills", Description = "Manage Drug Section", Controller = "Medicine", Color = "success" }
+
                 })
                 {
                     <div class="col-xxl-3 col-lg-6">
@@ -120,139 +100,6 @@
         </p>
     </footer>
 </div>
-
-<style>
-    :root {
-        --neon-cyan: #00f3ff;
-        --neon-pink: #ff00ff;
-        --cyber-bg: #0a0a12;
-        --cyber-border: rgba(0,243,255,0.3);
-        --glass-bg: rgba(255,255,255,0.05);
-    }
-
-    .admin-dashboard {
-        background: var(--cyber-bg);
-        color: white;
-        min-height: 100vh;
-    }
-
-    .sidebar {
-        background: rgba(0,0,0,0.8);
-        backdrop-filter: blur(10px);
-        border-right: 1px solid var(--cyber-border);
-    }
-
-    .nav-link {
-        color: #aaa !important;
-        padding: 1rem 2rem;
-        margin: 0.5rem;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-        .nav-link:hover {
-            background: linear-gradient(90deg, rgba(0,243,255,0.1), transparent);
-            box-shadow: 0 0 15px rgba(0,243,255,0.2);
-            transform: translateX(10px);
-        }
-
-        .nav-link.active {
-            background: linear-gradient(90deg, rgba(0,243,255,0.2), transparent);
-            border-left: 3px solid var(--neon-cyan);
-        }
-
-    .management-card {
-        background: var(--glass-bg);
-        border: 1px solid var(--cyber-border);
-        border-radius: 15px;
-        padding: 2rem;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(5px);
-    }
-
-        .management-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 25px rgba(0,243,255,0.2);
-        }
-
-    .neon-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-        background: rgba(0,243,255,0.1);
-        border: 1px solid var(--cyber-border);
-        color: var(--neon-cyan);
-    }
-
-    .text-gradient {
-        background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .cyber-link {
-        color: var(--neon-cyan);
-        text-decoration: none;
-        position: relative;
-        padding-right: 25px;
-        transition: all 0.3s ease;
-    }
-
-        .cyber-link:hover {
-            letter-spacing: 1px;
-            padding-right: 35px;
-        }
-
-        .cyber-link i {
-            transition: inherit;
-            position: absolute;
-            right: 0;
-        }
-
-        .cyber-link:hover i {
-            right: -10px;
-        }
-
-    .dashboard-footer {
-        border-top: 1px solid var(--cyber-border);
-        background: rgba(0,0,0,0.5);
-        backdrop-filter: blur(5px);
-    }
-
-    @@keyframes float {
-        0%, 100% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-10px);
-        }
-    }
-
-    .floating {
-        animation: float 3s ease-in-out infinite;
-    }
-
-    .hover-glow:hover {
-        filter: drop-shadow(0 0 10px rgba(0,243,255,0.5));
-    }
-
-    @@media (max-width: 768px) {
-        .sidebar {
-            width: 100%;
-            min-height: auto;
-        }
-
-        .management-card {
-            margin: 1rem;
-        }
-    }
-</style>
 
 <script>
     // Interactive card effects

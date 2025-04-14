@@ -1,0 +1,23 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Medicine
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="Type" class="form-label"></label>
+            <select asp-for="Type" asp-items="ViewBag.MedicineTypes" class="form-select">
+                <option value="">-- Select Type --</option>
+            </select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+    </div>
+
+    <!-- Repeat other fields from Create view -->
+</div>

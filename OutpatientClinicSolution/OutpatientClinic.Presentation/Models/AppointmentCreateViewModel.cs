@@ -13,6 +13,8 @@ namespace OutpatientClinic.Presentation.Models
         [Required]
         public int DepartmentId { get; set; }
 
+        public int? DoctorId { get; set; }
+
         [Required]
         public int ClinicId { get; set; }
 

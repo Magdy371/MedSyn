@@ -26,4 +26,9 @@ public partial class Prescription
     public bool? IsDeleted { get; set; }
 
     public virtual MedicalRecord? Record { get; set; }
+
+    //new added
+    public int? MedicineId { get; set; } // Optional foreign key
+    public virtual Medicine? Medicine { get; set; }
+
 }

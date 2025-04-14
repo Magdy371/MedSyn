@@ -1,0 +1,41 @@
+﻿@model OutpatientClinic.DataAccess.Entities.Medicine
+
+@{
+    ViewData["Title"] = "Medicine Details";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">@Model.Name Details</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Medicine Name</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Type</dt>
+                <dd class="col-sm-9">@Model.Type</dd>
+
+                <dt class="col-sm-3">Default Dosage</dt>
+                <dd class="col-sm-9">@Model.DefaultDosage</dd>
+
+                <dt class="col-sm-3">For Adults</dt>
+                <dd class="col-sm-9">@(Model.ForAdult ? "Yes" : "No")</dd>
+
+                <dt class="col-sm-3">For Children</dt>
+                <dd class="col-sm-9">@(Model.ForChildren ? "Yes" : "No")</dd>
+
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+            </dl>
+
+            <div class="mt-4">
+                <a asp-action="Edit" asp-route-id="@Model.MedicineId" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

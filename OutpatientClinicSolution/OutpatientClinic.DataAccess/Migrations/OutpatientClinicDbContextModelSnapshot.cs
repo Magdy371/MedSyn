@@ -51,43 +51,43 @@ namespace OutpatientClinic.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bdfea6fa-93d0-4ef6-93b9-c2c74ef8df26",
+                            Id = "cc85a857-0008-4d5f-adfd-647de0a6d19f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ce266598-a64a-4e2d-84cd-a6c48729b237",
+                            Id = "95333524-c1ac-458b-9f9a-10d70237f1ea",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "f26fb5d7-07ab-4796-81a4-643350d3bc80",
+                            Id = "f94138e6-b2f5-4fc0-a515-d3feb6680caa",
                             Name = "Receptionist",
                             NormalizedName = "RECEPTIONIST"
                         },
                         new
                         {
-                            Id = "b34e7ba8-542e-422e-8d60-afc5b204ee3c",
+                            Id = "66c5da7a-30c5-44ac-a872-6f43d91864e9",
                             Name = "Nurse",
                             NormalizedName = "NURSE"
                         },
                         new
                         {
-                            Id = "f4d1029a-bec2-4dc9-8f0c-b661c06d1284",
+                            Id = "5c977cbd-03ae-47cf-9aa5-dbfc8f24975a",
                             Name = "Technical_Support",
                             NormalizedName = "TECHNICAL_SUPPORT"
                         },
                         new
                         {
-                            Id = "4ebe90ec-cb24-4db6-accc-c3f114e80a27",
+                            Id = "5e1a1e4b-f86e-4141-a01b-0aa888ff371e",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "c89b4dff-03b6-40b5-88cc-8039ef54e096",
+                            Id = "13045f24-6551-4562-9e48-4c51c41e0afb",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });
@@ -1040,7 +1040,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 1,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7631),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4817),
                             DefaultDosage = "500mg",
                             Description = "For mild to moderate pain and fever",
                             ForAdult = true,
@@ -1052,7 +1052,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 2,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7727),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4869),
                             DefaultDosage = "400mg",
                             Description = "NSAID for pain/inflammation",
                             ForAdult = true,
@@ -1064,7 +1064,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 3,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7737),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4874),
                             DefaultDosage = "81mg",
                             Description = "Pain relief and antiplatelet",
                             ForAdult = true,
@@ -1076,7 +1076,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 4,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7744),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4877),
                             DefaultDosage = "220mg",
                             Description = "Long-lasting NSAID",
                             ForAdult = true,
@@ -1088,7 +1088,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 5,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7752),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4881),
                             DefaultDosage = "50mg",
                             Description = "Opioid for moderate-severe pain",
                             ForAdult = true,
@@ -1100,7 +1100,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 6,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7760),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4898),
                             DefaultDosage = "500mg",
                             Description = "Penicillin-type antibiotic",
                             ForAdult = true,
@@ -1112,7 +1112,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 7,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7788),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4974),
                             DefaultDosage = "250mg",
                             Description = "Macrolide antibiotic",
                             ForAdult = true,
@@ -1124,7 +1124,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 8,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7796),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4980),
                             DefaultDosage = "500mg",
                             Description = "Fluoroquinolone antibiotic",
                             ForAdult = true,
@@ -1136,7 +1136,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 9,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7876),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4983),
                             DefaultDosage = "100mg",
                             Description = "Tetracycline antibiotic",
                             ForAdult = true,
@@ -1148,7 +1148,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 10,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7888),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4987),
                             DefaultDosage = "400mg",
                             Description = "For anaerobic infections",
                             ForAdult = true,
@@ -1160,7 +1160,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 11,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7901),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4992),
                             DefaultDosage = "10mg",
                             Description = "Non-drowsy allergy relief",
                             ForAdult = true,
@@ -1172,7 +1172,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 12,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(7908),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4998),
                             DefaultDosage = "10mg",
                             Description = "24-hour allergy relief",
                             ForAdult = true,
@@ -1184,7 +1184,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 13,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9112),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5002),
                             DefaultDosage = "180mg",
                             Description = "Non-sedating antihistamine",
                             ForAdult = true,
@@ -1196,7 +1196,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 14,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9264),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5005),
                             DefaultDosage = "25mg",
                             Description = "For allergies and sleep aid",
                             ForAdult = true,
@@ -1208,7 +1208,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 15,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9275),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5009),
                             DefaultDosage = "4mg/5ml",
                             Description = "Liquid antihistamine",
                             ForAdult = true,
@@ -1220,7 +1220,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 16,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9336),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5026),
                             DefaultDosage = "20mg",
                             Description = "Proton pump inhibitor",
                             ForAdult = true,
@@ -1232,7 +1232,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 17,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9344),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5030),
                             DefaultDosage = "150mg",
                             Description = "H2 blocker for heartburn",
                             ForAdult = true,
@@ -1244,7 +1244,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 18,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9351),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5034),
                             DefaultDosage = "500mg",
                             Description = "Fast-acting antacid",
                             ForAdult = true,
@@ -1256,7 +1256,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 19,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9359),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5038),
                             DefaultDosage = "400mg/5ml",
                             Description = "Liquid antacid",
                             ForAdult = true,
@@ -1268,7 +1268,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 20,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9371),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5042),
                             DefaultDosage = "20mg",
                             Description = "Acid reducer",
                             ForAdult = true,
@@ -1280,7 +1280,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 21,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9379),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5045),
                             DefaultDosage = "50mg",
                             Description = "SSRI antidepressant",
                             ForAdult = true,
@@ -1292,7 +1292,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 22,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9386),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5050),
                             DefaultDosage = "20mg",
                             Description = "SSRI for depression/OCD",
                             ForAdult = true,
@@ -1304,7 +1304,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 23,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9394),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5053),
                             DefaultDosage = "75mg",
                             Description = "SNRI antidepressant",
                             ForAdult = true,
@@ -1316,7 +1316,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 24,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9404),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5057),
                             DefaultDosage = "150mg",
                             Description = "Atypical antidepressant",
                             ForAdult = true,
@@ -1328,7 +1328,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 25,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9410),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5060),
                             DefaultDosage = "10mg",
                             Description = "SSRI for anxiety/depression",
                             ForAdult = true,
@@ -1340,7 +1340,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 26,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9417),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5064),
                             DefaultDosage = "500mg",
                             Description = "Type 2 diabetes management",
                             ForAdult = true,
@@ -1352,7 +1352,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 27,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9424),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5068),
                             DefaultDosage = "100 units/ml",
                             Description = "Long-acting insulin",
                             ForAdult = true,
@@ -1364,7 +1364,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 28,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9431),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5071),
                             DefaultDosage = "80mg",
                             Description = "Sulfonylurea for diabetes",
                             ForAdult = true,
@@ -1376,7 +1376,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 29,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9437),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5075),
                             DefaultDosage = "10mg",
                             Description = "SGLT2 inhibitor",
                             ForAdult = true,
@@ -1388,7 +1388,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 30,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9452),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5085),
                             DefaultDosage = "1.2mg",
                             Description = "GLP-1 receptor agonist",
                             ForAdult = true,
@@ -1400,7 +1400,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 31,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9514),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5120),
                             DefaultDosage = "100mcg/dose",
                             Description = "Relief of asthma symptoms",
                             ForAdult = true,
@@ -1412,7 +1412,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 32,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9525),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5124),
                             DefaultDosage = "0.5mg/ml",
                             Description = "For COPD",
                             ForAdult = true,
@@ -1424,7 +1424,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 33,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9532),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5128),
                             DefaultDosage = "12mcg/dose",
                             Description = "Long-acting bronchodilator",
                             ForAdult = true,
@@ -1436,7 +1436,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 34,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9538),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5133),
                             DefaultDosage = "200mg",
                             Description = "For chronic asthma",
                             ForAdult = true,
@@ -1448,7 +1448,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                         new
                         {
                             MedicineId = 35,
-                            CreatedDate = new DateTime(2025, 4, 13, 21, 42, 42, 848, DateTimeKind.Local).AddTicks(9545),
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5137),
                             DefaultDosage = "5mg",
                             Description = "Leukotriene receptor antagonist",
                             ForAdult = true,

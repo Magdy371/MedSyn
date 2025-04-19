@@ -12,8 +12,8 @@ using OutpatientClinic.DataAccess.Context;
 namespace OutpatientClinic.DataAccess.Migrations
 {
     [DbContext(typeof(OutpatientClinicDbContext))]
-    [Migration("20250413174342_NavigationPrepertyAppointment")]
-    partial class NavigationPrepertyAppointment
+    [Migration("20250419202524_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,43 +54,43 @@ namespace OutpatientClinic.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9578a417-6151-458f-9ec9-c9490e56f7e3",
+                            Id = "cc85a857-0008-4d5f-adfd-647de0a6d19f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "50b430eb-7d06-4f23-aa36-6a49f7bd6dcd",
+                            Id = "95333524-c1ac-458b-9f9a-10d70237f1ea",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "cf6b8bad-2532-4746-a74f-82c5ee41f99f",
+                            Id = "f94138e6-b2f5-4fc0-a515-d3feb6680caa",
                             Name = "Receptionist",
                             NormalizedName = "RECEPTIONIST"
                         },
                         new
                         {
-                            Id = "e269824f-ba2e-40f2-932a-58d42c1b9cea",
+                            Id = "66c5da7a-30c5-44ac-a872-6f43d91864e9",
                             Name = "Nurse",
                             NormalizedName = "NURSE"
                         },
                         new
                         {
-                            Id = "f1c12b63-bfa2-4455-9dab-7e1c8dc4806f",
+                            Id = "5c977cbd-03ae-47cf-9aa5-dbfc8f24975a",
                             Name = "Technical_Support",
                             NormalizedName = "TECHNICAL_SUPPORT"
                         },
                         new
                         {
-                            Id = "eb07caf9-0291-4631-b981-13b9e273ea05",
+                            Id = "5e1a1e4b-f86e-4141-a01b-0aa888ff371e",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "dceb27e1-bef7-45be-9f5a-0001ec6570e3",
+                            Id = "13045f24-6551-4562-9e48-4c51c41e0afb",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });
@@ -984,6 +984,484 @@ namespace OutpatientClinic.DataAccess.Migrations
                     b.ToTable("MedicalRecords");
                 });
 
+            modelBuilder.Entity("OutpatientClinic.DataAccess.Entities.Medicine", b =>
+                {
+                    b.Property<int>("MedicineId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicineId"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DefaultDosage")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ForAdult")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ForChildren")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("MedicineId")
+                        .HasName("PK__Medicines__1234567890ABCDEF");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Medicines");
+
+                    b.HasData(
+                        new
+                        {
+                            MedicineId = 1,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4817),
+                            DefaultDosage = "500mg",
+                            Description = "For mild to moderate pain and fever",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Paracetamol",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 2,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4869),
+                            DefaultDosage = "400mg",
+                            Description = "NSAID for pain/inflammation",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Ibuprofen",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 3,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4874),
+                            DefaultDosage = "81mg",
+                            Description = "Pain relief and antiplatelet",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Aspirin",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 4,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4877),
+                            DefaultDosage = "220mg",
+                            Description = "Long-lasting NSAID",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Naproxen",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 5,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4881),
+                            DefaultDosage = "50mg",
+                            Description = "Opioid for moderate-severe pain",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Tramadol",
+                            Type = "Capsule"
+                        },
+                        new
+                        {
+                            MedicineId = 6,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4898),
+                            DefaultDosage = "500mg",
+                            Description = "Penicillin-type antibiotic",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Amoxicillin",
+                            Type = "Capsule"
+                        },
+                        new
+                        {
+                            MedicineId = 7,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4974),
+                            DefaultDosage = "250mg",
+                            Description = "Macrolide antibiotic",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Azithromycin",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 8,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4980),
+                            DefaultDosage = "500mg",
+                            Description = "Fluoroquinolone antibiotic",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Ciprofloxacin",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 9,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4983),
+                            DefaultDosage = "100mg",
+                            Description = "Tetracycline antibiotic",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Doxycycline",
+                            Type = "Capsule"
+                        },
+                        new
+                        {
+                            MedicineId = 10,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4987),
+                            DefaultDosage = "400mg",
+                            Description = "For anaerobic infections",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Metronidazole",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 11,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4992),
+                            DefaultDosage = "10mg",
+                            Description = "Non-drowsy allergy relief",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Loratadine",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 12,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4998),
+                            DefaultDosage = "10mg",
+                            Description = "24-hour allergy relief",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Cetirizine",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 13,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5002),
+                            DefaultDosage = "180mg",
+                            Description = "Non-sedating antihistamine",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Fexofenadine",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 14,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5005),
+                            DefaultDosage = "25mg",
+                            Description = "For allergies and sleep aid",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Diphenhydramine",
+                            Type = "Capsule"
+                        },
+                        new
+                        {
+                            MedicineId = 15,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5009),
+                            DefaultDosage = "4mg/5ml",
+                            Description = "Liquid antihistamine",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Chlorpheniramine",
+                            Type = "Syrup"
+                        },
+                        new
+                        {
+                            MedicineId = 16,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5026),
+                            DefaultDosage = "20mg",
+                            Description = "Proton pump inhibitor",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Omeprazole",
+                            Type = "Capsule"
+                        },
+                        new
+                        {
+                            MedicineId = 17,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5030),
+                            DefaultDosage = "150mg",
+                            Description = "H2 blocker for heartburn",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Ranitidine",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 18,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5034),
+                            DefaultDosage = "500mg",
+                            Description = "Fast-acting antacid",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Calcium Carbonate",
+                            Type = "Chewable"
+                        },
+                        new
+                        {
+                            MedicineId = 19,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5038),
+                            DefaultDosage = "400mg/5ml",
+                            Description = "Liquid antacid",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Magnesium Hydroxide",
+                            Type = "Liquid"
+                        },
+                        new
+                        {
+                            MedicineId = 20,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5042),
+                            DefaultDosage = "20mg",
+                            Description = "Acid reducer",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Famotidine",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 21,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5045),
+                            DefaultDosage = "50mg",
+                            Description = "SSRI antidepressant",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Sertraline",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 22,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5050),
+                            DefaultDosage = "20mg",
+                            Description = "SSRI for depression/OCD",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Fluoxetine",
+                            Type = "Capsule"
+                        },
+                        new
+                        {
+                            MedicineId = 23,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5053),
+                            DefaultDosage = "75mg",
+                            Description = "SNRI antidepressant",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Venlafaxine",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 24,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5057),
+                            DefaultDosage = "150mg",
+                            Description = "Atypical antidepressant",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Bupropion",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 25,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5060),
+                            DefaultDosage = "10mg",
+                            Description = "SSRI for anxiety/depression",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Escitalopram",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 26,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5064),
+                            DefaultDosage = "500mg",
+                            Description = "Type 2 diabetes management",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Metformin",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 27,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5068),
+                            DefaultDosage = "100 units/ml",
+                            Description = "Long-acting insulin",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Insulin Glargine",
+                            Type = "Injection"
+                        },
+                        new
+                        {
+                            MedicineId = 28,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5071),
+                            DefaultDosage = "80mg",
+                            Description = "Sulfonylurea for diabetes",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Gliclazide",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 29,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5075),
+                            DefaultDosage = "10mg",
+                            Description = "SGLT2 inhibitor",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Empagliflozin",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 30,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5085),
+                            DefaultDosage = "1.2mg",
+                            Description = "GLP-1 receptor agonist",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Liraglutide",
+                            Type = "Injection"
+                        },
+                        new
+                        {
+                            MedicineId = 31,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5120),
+                            DefaultDosage = "100mcg/dose",
+                            Description = "Relief of asthma symptoms",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Salbutamol",
+                            Type = "Inhaler"
+                        },
+                        new
+                        {
+                            MedicineId = 32,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5124),
+                            DefaultDosage = "0.5mg/ml",
+                            Description = "For COPD",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Ipratropium",
+                            Type = "Nebulizer"
+                        },
+                        new
+                        {
+                            MedicineId = 33,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5128),
+                            DefaultDosage = "12mcg/dose",
+                            Description = "Long-acting bronchodilator",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Formoterol",
+                            Type = "Inhaler"
+                        },
+                        new
+                        {
+                            MedicineId = 34,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5133),
+                            DefaultDosage = "200mg",
+                            Description = "For chronic asthma",
+                            ForAdult = true,
+                            ForChildren = false,
+                            IsDeleted = false,
+                            Name = "Theophylline",
+                            Type = "Tablet"
+                        },
+                        new
+                        {
+                            MedicineId = 35,
+                            CreatedDate = new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5137),
+                            DefaultDosage = "5mg",
+                            Description = "Leukotriene receptor antagonist",
+                            ForAdult = true,
+                            ForChildren = true,
+                            IsDeleted = false,
+                            Name = "Montelukast",
+                            Type = "Chewable"
+                        });
+                });
+
             modelBuilder.Entity("OutpatientClinic.DataAccess.Entities.Patient", b =>
                 {
                     b.Property<int>("PatientId")
@@ -1090,6 +1568,9 @@ namespace OutpatientClinic.DataAccess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("MedicineId")
+                        .HasColumnType("int");
+
                     b.Property<int>("RecordId")
                         .HasColumnType("int")
                         .HasColumnName("RecordID");
@@ -1105,6 +1586,8 @@ namespace OutpatientClinic.DataAccess.Migrations
 
                     b.HasKey("PrescriptionId")
                         .HasName("PK__Prescrip__40130812F4CDA569");
+
+                    b.HasIndex("MedicineId");
 
                     b.HasIndex("RecordId");
 
@@ -1571,11 +2054,17 @@ namespace OutpatientClinic.DataAccess.Migrations
 
             modelBuilder.Entity("OutpatientClinic.DataAccess.Entities.Prescription", b =>
                 {
+                    b.HasOne("OutpatientClinic.DataAccess.Entities.Medicine", "Medicine")
+                        .WithMany()
+                        .HasForeignKey("MedicineId");
+
                     b.HasOne("OutpatientClinic.DataAccess.Entities.MedicalRecord", "Record")
                         .WithMany("Prescriptions")
                         .HasForeignKey("RecordId")
                         .IsRequired()
                         .HasConstraintName("FK__Prescript__Recor__5812160E");
+
+                    b.Navigation("Medicine");
 
                     b.Navigation("Record");
                 });

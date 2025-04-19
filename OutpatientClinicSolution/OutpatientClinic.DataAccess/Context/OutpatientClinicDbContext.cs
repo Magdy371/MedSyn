@@ -62,7 +62,7 @@ public class OutpatientClinicDbContext : IdentityDbContext<ApplicationUser>
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=OutpatientClinicDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+            optionsBuilder.UseSqlServer("Server=localhost,1433;Database=OutpatientClinicDB;User Id=sa;Password=Arh0u926@#$;TrustServerCertificate=True;");
         }
     }
 

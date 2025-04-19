@@ -111,6 +111,29 @@ namespace OutpatientClinic.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Medicines",
+                columns: table => new
+                {
+                    MedicineId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DefaultDosage = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ForAdult = table.Column<bool>(type: "bit", nullable: false),
+                    ForChildren = table.Column<bool>(type: "bit", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Medicines__1234567890ABCDEF", x => x.MedicineId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Suppliers",
                 columns: table => new
                 {
@@ -518,16 +541,15 @@ namespace OutpatientClinic.DataAccess.Migrations
                 {
                     table.PrimaryKey("PK__Appointm__8ECDFCA2E6C3C030", x => x.AppointmentID);
                     table.ForeignKey(
-                        name: "FK_Appointments_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "DepartmentID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK__Appointme__Clini__4AB81AF0",
                         column: x => x.ClinicID,
                         principalTable: "Clinics",
                         principalColumn: "ClinicID");
+                    table.ForeignKey(
+                        name: "FK__Appointme__Depar__4BC73F29",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentID");
                     table.ForeignKey(
                         name: "FK__Appointme__Docto__49C3F6B7",
                         column: x => x.DoctorID,
@@ -608,7 +630,7 @@ namespace OutpatientClinic.DataAccess.Migrations
                     PatientID = table.Column<int>(type: "int", nullable: false),
                     AppointmentID = table.Column<int>(type: "int", nullable: true),
                     TestName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    TestDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Results = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
@@ -670,11 +692,17 @@ namespace OutpatientClinic.DataAccess.Migrations
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
                     UpdatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValue: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
+                    MedicineId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Prescrip__40130812F4CDA569", x => x.PrescriptionID);
+                    table.ForeignKey(
+                        name: "FK_Prescriptions_Medicines_MedicineId",
+                        column: x => x.MedicineId,
+                        principalTable: "Medicines",
+                        principalColumn: "MedicineId");
                     table.ForeignKey(
                         name: "FK__Prescript__Recor__5812160E",
                         column: x => x.RecordID,
@@ -687,13 +715,55 @@ namespace OutpatientClinic.DataAccess.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3343f39a-3faf-4b42-ad80-e978229d57e1", null, "Patient", "PATIENT" },
-                    { "380c2017-1989-45f1-a87d-00d85ca6a182", null, "Admin", "ADMIN" },
-                    { "3fde6ca3-bb78-44d1-9aaf-5f11acb6d923", null, "Receptionist", "RECEPTIONIST" },
-                    { "56dce52e-61b1-471a-a289-ac957bbaa8e2", null, "Technical_Support", "TECHNICAL_SUPPORT" },
-                    { "652851bf-b069-4a81-b939-3b629cd1a5eb", null, "Nurse", "NURSE" },
-                    { "c20f7cea-5409-4225-8adb-7d086da01aaf", null, "Doctor", "DOCTOR" },
-                    { "f63bc467-2c60-4c4f-9d28-9898a7179eb2", null, "Staff", "STAFF" }
+                    { "13045f24-6551-4562-9e48-4c51c41e0afb", null, "Staff", "STAFF" },
+                    { "5c977cbd-03ae-47cf-9aa5-dbfc8f24975a", null, "Technical_Support", "TECHNICAL_SUPPORT" },
+                    { "5e1a1e4b-f86e-4141-a01b-0aa888ff371e", null, "Patient", "PATIENT" },
+                    { "66c5da7a-30c5-44ac-a872-6f43d91864e9", null, "Nurse", "NURSE" },
+                    { "95333524-c1ac-458b-9f9a-10d70237f1ea", null, "Doctor", "DOCTOR" },
+                    { "cc85a857-0008-4d5f-adfd-647de0a6d19f", null, "Admin", "ADMIN" },
+                    { "f94138e6-b2f5-4fc0-a515-d3feb6680caa", null, "Receptionist", "RECEPTIONIST" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Medicines",
+                columns: new[] { "MedicineId", "CreatedBy", "CreatedDate", "DefaultDosage", "Description", "ForAdult", "ForChildren", "IsDeleted", "Name", "Type", "UpdatedBy", "UpdatedDate" },
+                values: new object[,]
+                {
+                    { 1, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4817), "500mg", "For mild to moderate pain and fever", true, true, false, "Paracetamol", "Tablet", null, null },
+                    { 2, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4869), "400mg", "NSAID for pain/inflammation", true, true, false, "Ibuprofen", "Tablet", null, null },
+                    { 3, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4874), "81mg", "Pain relief and antiplatelet", true, false, false, "Aspirin", "Tablet", null, null },
+                    { 4, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4877), "220mg", "Long-lasting NSAID", true, false, false, "Naproxen", "Tablet", null, null },
+                    { 5, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4881), "50mg", "Opioid for moderate-severe pain", true, false, false, "Tramadol", "Capsule", null, null },
+                    { 6, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4898), "500mg", "Penicillin-type antibiotic", true, true, false, "Amoxicillin", "Capsule", null, null },
+                    { 7, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4974), "250mg", "Macrolide antibiotic", true, true, false, "Azithromycin", "Tablet", null, null },
+                    { 8, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4980), "500mg", "Fluoroquinolone antibiotic", true, false, false, "Ciprofloxacin", "Tablet", null, null },
+                    { 9, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4983), "100mg", "Tetracycline antibiotic", true, false, false, "Doxycycline", "Capsule", null, null },
+                    { 10, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4987), "400mg", "For anaerobic infections", true, true, false, "Metronidazole", "Tablet", null, null },
+                    { 11, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4992), "10mg", "Non-drowsy allergy relief", true, true, false, "Loratadine", "Tablet", null, null },
+                    { 12, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(4998), "10mg", "24-hour allergy relief", true, true, false, "Cetirizine", "Tablet", null, null },
+                    { 13, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5002), "180mg", "Non-sedating antihistamine", true, false, false, "Fexofenadine", "Tablet", null, null },
+                    { 14, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5005), "25mg", "For allergies and sleep aid", true, true, false, "Diphenhydramine", "Capsule", null, null },
+                    { 15, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5009), "4mg/5ml", "Liquid antihistamine", true, true, false, "Chlorpheniramine", "Syrup", null, null },
+                    { 16, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5026), "20mg", "Proton pump inhibitor", true, true, false, "Omeprazole", "Capsule", null, null },
+                    { 17, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5030), "150mg", "H2 blocker for heartburn", true, true, false, "Ranitidine", "Tablet", null, null },
+                    { 18, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5034), "500mg", "Fast-acting antacid", true, true, false, "Calcium Carbonate", "Chewable", null, null },
+                    { 19, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5038), "400mg/5ml", "Liquid antacid", true, true, false, "Magnesium Hydroxide", "Liquid", null, null },
+                    { 20, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5042), "20mg", "Acid reducer", true, true, false, "Famotidine", "Tablet", null, null },
+                    { 21, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5045), "50mg", "SSRI antidepressant", true, false, false, "Sertraline", "Tablet", null, null },
+                    { 22, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5050), "20mg", "SSRI for depression/OCD", true, true, false, "Fluoxetine", "Capsule", null, null },
+                    { 23, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5053), "75mg", "SNRI antidepressant", true, false, false, "Venlafaxine", "Tablet", null, null },
+                    { 24, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5057), "150mg", "Atypical antidepressant", true, false, false, "Bupropion", "Tablet", null, null },
+                    { 25, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5060), "10mg", "SSRI for anxiety/depression", true, false, false, "Escitalopram", "Tablet", null, null },
+                    { 26, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5064), "500mg", "Type 2 diabetes management", true, false, false, "Metformin", "Tablet", null, null },
+                    { 27, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5068), "100 units/ml", "Long-acting insulin", true, true, false, "Insulin Glargine", "Injection", null, null },
+                    { 28, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5071), "80mg", "Sulfonylurea for diabetes", true, false, false, "Gliclazide", "Tablet", null, null },
+                    { 29, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5075), "10mg", "SGLT2 inhibitor", true, false, false, "Empagliflozin", "Tablet", null, null },
+                    { 30, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5085), "1.2mg", "GLP-1 receptor agonist", true, false, false, "Liraglutide", "Injection", null, null },
+                    { 31, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5120), "100mcg/dose", "Relief of asthma symptoms", true, true, false, "Salbutamol", "Inhaler", null, null },
+                    { 32, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5124), "0.5mg/ml", "For COPD", true, true, false, "Ipratropium", "Nebulizer", null, null },
+                    { 33, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5128), "12mcg/dose", "Long-acting bronchodilator", true, false, false, "Formoterol", "Inhaler", null, null },
+                    { 34, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5133), "200mg", "For chronic asthma", true, false, false, "Theophylline", "Tablet", null, null },
+                    { 35, null, new DateTime(2025, 4, 19, 22, 25, 20, 52, DateTimeKind.Local).AddTicks(5137), "5mg", "Leukotriene receptor antagonist", true, true, false, "Montelukast", "Chewable", null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -864,6 +934,12 @@ namespace OutpatientClinic.DataAccess.Migrations
                 filter: "[AppointmentID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Medicines_Name",
+                table: "Medicines",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Patients_ContactID",
                 table: "Patients",
                 column: "ContactID");
@@ -882,6 +958,11 @@ namespace OutpatientClinic.DataAccess.Migrations
                 name: "IX_Prescriptions_MedicalName",
                 table: "Prescriptions",
                 column: "MedicalName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prescriptions_MedicineId",
+                table: "Prescriptions",
+                column: "MedicineId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prescriptions_RecordID",
@@ -963,6 +1044,9 @@ namespace OutpatientClinic.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "DeliveryNote");
+
+            migrationBuilder.DropTable(
+                name: "Medicines");
 
             migrationBuilder.DropTable(
                 name: "MedicalRecords");

@@ -19,14 +19,62 @@ namespace OutpatientClinic.Presentation.Controllers
         }
 
         // GET: Medicine
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Medicines
-                .Where(m => m.IsDeleted != true)
-                .OrderBy(m => m.Name)
-                .ToListAsync());
-        }
+        // public async Task<IActionResult> Index()
+        // {
+        //     return View(await _context.Medicines
+        //         .Where(m => m.IsDeleted != true)
+        //         .OrderBy(m => m.Name)
+        //         .ToListAsync());
+        // }
 
+        public async Task<IActionResult> Index(string searchString, string typeFilter, string forFilter)
+{
+    var medicines = _context.Medicines
+        .Where(m => m.IsDeleted != true)
+        .AsQueryable();
+
+    if (!string.IsNullOrEmpty(searchString))
+    {
+        medicines = medicines.Where(m => m.Name.Contains(searchString));
+    }
+
+    if (!string.IsNullOrEmpty(typeFilter))
+    {
+        medicines = medicines.Where(m => m.Type == typeFilter);
+    }
+
+    if (!string.IsNullOrEmpty(forFilter))
+    {
+        switch (forFilter)
+        {
+            case "Adult":
+                medicines = medicines.Where(m => m.ForAdult);
+                break;
+            case "Child":
+                medicines = medicines.Where(m => m.ForChildren);
+                break;
+            case "Both":
+                medicines = medicines.Where(m => m.ForAdult && m.ForChildren);
+                break;
+        }
+    }
+
+    // Populate dropdowns
+    ViewBag.TypeFilter = new SelectList(GetMedicineTypes(), typeFilter);
+    ViewBag.ForFilter = forFilter;
+    ViewBag.SearchString = searchString;
+
+    return View(await medicines.OrderBy(m => m.Name).ToListAsync());
+}
+
+        private List<string> GetMedicineTypes()
+        {
+            return new List<string>
+            {
+                "Tablet", "Capsule", "Liquid", "Injection",
+                "Inhaler", "Cream", "Syrup", "Chewable"
+            };
+        }
         // GET: Medicine/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -37,7 +85,6 @@ namespace OutpatientClinic.Presentation.Controllers
 
             return medicine == null ? NotFound() : View(medicine);
         }
-
         // GET: Medicine/Create
         public IActionResult Create()
         {

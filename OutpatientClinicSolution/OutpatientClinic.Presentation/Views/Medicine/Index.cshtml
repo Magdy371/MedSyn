@@ -1,48 +1,186 @@
 ﻿@model IEnumerable<OutpatientClinic.DataAccess.Entities.Medicine>
 
 @{
-    ViewData["Title"] = "Medicines";
+    ViewData["Title"] = "Pharmacy Inventory Management";
 }
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #f8f9fa;
+    }
+
+    .medical-header {
+        background: linear-gradient(135deg, #3a6073 0%, #3a7bd5 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .filter-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    }
+
+    .table-medicine {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    }
+
+    .table-medicine thead {
+        background: #3a6073;
+        color: white;
+    }
+
+    .table-medicine th {
+        font-weight: 500;
+        padding: 1rem;
+    }
+
+    .table-medicine td {
+        vertical-align: middle;
+        padding: 1rem;
+    }
+
+    .btn-medical {
+        background: #3a7bd5;
+        color: white;
+        border-radius: 8px;
+        padding: 0.5rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-medical:hover {
+        background: #3a6073;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .badge-type {
+        background: #e3f2fd;
+        color: #2196f3;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85em;
+    }
+
+    .icon-medical {
+        font-size: 1.2em;
+        margin-right: 8px;
+    }
+</style>
+
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>@ViewData["Title"]</h1>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Add New Medicine
-        </a>
+    <div class="medical-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-0"><i class="bi bi-capsule-pill icon-medical"></i> @ViewData["Title"]</h1>
+                <p class="mb-0 mt-2">Manage and review pharmaceutical inventory</p>
+            </div>
+            <a asp-action="Create" class="btn btn-medical">
+                <i class="bi bi-plus-circle"></i> Add New Medicine
+            </a>
+        </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
+    <!-- Filters Section -->
+    <div class="filter-card">
+        <form method="get" asp-action="Index">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchString" class="form-control" 
+                               placeholder="Search medicine..." value="@ViewBag.SearchString">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-filter-circle"></i></span>
+                        <select name="typeFilter" class="form-select" asp-items="ViewBag.TypeFilter">
+                            <option value="">All Types</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <select name="forFilter" class="form-select">
+                            <option value="">All Patients</option>
+                            <option value="Adult" selected="@(ViewBag.ForFilter == "Adult")">Adults Only</option>
+                            <option value="Child" selected="@(ViewBag.ForFilter == "Child")">Children Only</option>
+                            <option value="Both" selected="@(ViewBag.ForFilter == "Both")">All Ages</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-center gap-2">
+                    <button type="submit" class="btn btn-medical flex-grow-1">
+                        <i class="bi bi-funnel"></i> Apply Filters
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise">Reset</i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Medicine Table -->
+    <div class="table-medicine">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
                 <tr>
-                    <th>Medicine Name</th>
-                    <th>Type</th>
-                    <th>Dosage</th>
-                    <th>For Adults</th>
-                    <th>For Children</th>
-                    <th>Actions</th>
+                    <th><i class="bi bi-capsule icon-medical"></i> Medicine</th>
+                    <th><i class="bi bi-tag icon-medical"></i> Type</th>
+                    <th><i class="bi bi-speedometer2 icon-medical"></i> Dosage</th>
+                    <th><i class="bi bi-person-check icon-medical"></i> Adults</th>
+                    <th><i class="bi bi-person-heart icon-medical"></i> Children</th>
+                    <th><i class="bi bi-gear icon-medical"></i> Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.Name</td>
-                        <td>@item.Type</td>
-                        <td>@item.DefaultDosage</td>
-                        <td>@(item.ForAdult ? "Yes" : "No")</td>
-                        <td>@(item.ForChildren ? "Yes" : "No")</td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@item.MedicineId" class="btn btn-sm btn-info">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <a asp-action="Edit" asp-route-id="@item.MedicineId" class="btn btn-sm btn-warning">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@item.MedicineId" class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                            <div class="fw-medium">@item.Name</div>
+                            <div class="text-muted small">@item.Description</div>
+                        </td>
+                        <td><span class="badge-type">@item.Type</span></td>
+                        <td>@item.DefaultDosage</td>
+                        <td>
+                            <span class="badge @(item.ForAdult ? "bg-success" : "bg-secondary")">
+                                @(item.ForAdult ? "Yes" : "No")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(item.ForChildren ? "bg-success" : "bg-secondary")">
+                                @(item.ForChildren ? "Yes" : "No")
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Details" asp-route-id="@item.MedicineId" 
+                                   class="btn btn-sm btn-outline-primary" title="Details">
+                                    <i class="bi bi-eye">Details</i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.MedicineId" 
+                                   class="btn btn-sm btn-outline-warning" title="Edit">
+                                    <i class="bi bi-pencil-square">Edit</i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.MedicineId" 
+                                   class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash">Delete</i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }
